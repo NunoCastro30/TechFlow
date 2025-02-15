@@ -1,10 +1,10 @@
-#  TechFlow - Sistema de Gestão para Fábrica 
+#  TechFlow - Sistema de Gestão
 
-Descrição do Projeto
+## Descrição do Projeto
 
-TechFlow é um sistema de gestão empresarial desenvolvido para otimizar os processos de produção, logística e manutenção numa fábrica de perfis para pladur. A solução visa melhorar a eficiência operacional, garantindo rastreabilidade, controle de qualidade e gestão de recursos.
+TechFlow é um sistema de gestão empresarial desenvolvido para otimizar os processos de produção, logística e manutenção numa fábrica. A solução visa melhorar a eficiência operacional e gestão de recursos.
 
-Funcionalidades Principais
+## Funcionalidades Principais
 
 1. Gestão de Armazém (Logística)
 
