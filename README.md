@@ -1,4 +1,4 @@
-# TechFlow - Sistema de Gestão de Perfis para Pladur
+# TechFlow - Sistema de Gestão Industria
 
 ## Descrição do Projeto
 
