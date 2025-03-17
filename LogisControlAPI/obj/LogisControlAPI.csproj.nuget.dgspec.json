@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj": {}
+    "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj": {
+    "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
+        "projectUniqueName": "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj",
         "projectName": "LogisControlAPI",
-        "projectPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
+        "projectPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj",
         "packagesPath": "C:\\Users\\Nuno Castro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\obj\\",
+        "outputPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
