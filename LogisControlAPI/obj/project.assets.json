@@ -5156,23 +5156,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nuno Castro\\.nuget\\packages\\": {},
+    "C:\\Users\\Paulo\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
       "projectName": "LogisControlAPI",
-      "projectPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
-      "packagesPath": "C:\\Users\\Nuno Castro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\obj\\",
+      "projectPath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
+      "packagesPath": "C:\\Users\\Paulo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Nuno Castro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Paulo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5197,7 +5197,7 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "all"
+        "auditMode": "direct"
       },
       "SdkAnalysisLevel": "9.0.100"
     },
@@ -5239,7 +5239,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
