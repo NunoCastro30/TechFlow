@@ -5156,23 +5156,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nuno Castro\\.nuget\\packages\\": {},
+    "C:\\Users\\ruben\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
+      "projectUniqueName": "C:\\Users\\ruben\\Desktop\\PDS\\LogisControlAPI\\LogisControlAPI.csproj",
       "projectName": "LogisControlAPI",
-      "projectPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
-      "packagesPath": "C:\\Users\\Nuno Castro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Nuno Castro\\Source\\Repos\\TechFlow\\LogisControlAPI\\obj\\",
+      "projectPath": "C:\\Users\\ruben\\Desktop\\PDS\\LogisControlAPI\\LogisControlAPI.csproj",
+      "packagesPath": "C:\\Users\\ruben\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ruben\\Desktop\\PDS\\LogisControlAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Nuno Castro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ruben\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
