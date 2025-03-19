@@ -49,20 +49,31 @@
   },
   {
     "ContainingType": "LogisControlAPI.Controllers.UtilizadorController",
-    "Method": "AtualizarNomeSobrenome",
-    "RelativePath": "api/Utilizador/{id}",
+    "Method": "CriarUtilizador",
+    "RelativePath": "api/Utilizador/criar-utilizador",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "novoUtilizadorDto",
+        "Type": "LogisControlAPI.DTO.CriarUtilizadorDTO",
         "IsRequired": true
-      },
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.UtilizadorController",
+    "Method": "Login",
+    "RelativePath": "api/Utilizador/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Name": "updateDTO",
-        "Type": "LogisControlAPI.DTOs.UtilizadorUpdateDTO",
+        "Name": "loginDto",
+        "Type": "LogisControlAPI.DTO.LoginDTO",
         "IsRequired": true
       }
     ],
