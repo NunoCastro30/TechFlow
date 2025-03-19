@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Data;
+using LogisControlAPI.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddDbContext<LogisControlContext>(options =>
 
 //Ativar controladores para API REST
 builder.Services.AddControllers();
-
+builder.Services.AddScoped<UtilizadorService>();
 
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();
