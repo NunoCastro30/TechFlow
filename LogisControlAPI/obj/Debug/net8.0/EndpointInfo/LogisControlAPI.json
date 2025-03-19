@@ -85,37 +85,57 @@
         }
       }
     },
-    "/api/Utilizador/{id}": {
+    "/api/Utilizador/criar-utilizador": {
       "post": {
         "tags": [
           "Utilizador"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UtilizadorUpdateDTO"
+                "$ref": "#/components/schemas/CriarUtilizadorDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UtilizadorUpdateDTO"
+                "$ref": "#/components/schemas/CriarUtilizadorDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UtilizadorUpdateDTO"
+                "$ref": "#/components/schemas/CriarUtilizadorDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Utilizador/login": {
+      "post": {
+        "tags": [
+          "Utilizador"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
               }
             }
           }
@@ -192,6 +212,58 @@
         "additionalProperties": false,
         "description": "DTO para representar um utilizador sem informações sensíveis."
       },
+      "CriarUtilizadorDTO": {
+        "required": [
+          "numFuncionario",
+          "password",
+          "primeiroNome",
+          "role",
+          "sobrenome"
+        ],
+        "type": "object",
+        "properties": {
+          "primeiroNome": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sobrenome": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "numFuncionario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "password": {
+            "maxLength": 8,
+            "minLength": 3,
+            "type": "string"
+          },
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginDTO": {
+        "required": [
+          "numFuncionario",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "numFuncionario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "UtilizadorDTO": {
         "type": "object",
         "properties": {
@@ -221,20 +293,6 @@
         },
         "additionalProperties": false,
         "description": "DTO para representar um utilizador sem informações sensíveis."
-      },
-      "UtilizadorUpdateDTO": {
-        "type": "object",
-        "properties": {
-          "primeiroNome": {
-            "type": "string",
-            "nullable": true
-          },
-          "sobrenome": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       },
       "WeatherForecast": {
         "type": "object",

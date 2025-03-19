@@ -2,7 +2,9 @@
 using LogisControlAPI.Data;
 using LogisControlAPI.DTOs;
 using Microsoft.EntityFrameworkCore;
-
+using LogisControlAPI.Models;
+using LogisControlAPI.Services;
+using LogisControlAPI.DTO;
 
 namespace LogisControlAPI.Controllers
 {
@@ -11,11 +13,15 @@ namespace LogisControlAPI.Controllers
     public class UtilizadorController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly UtilizadorService _utilizadorService;
 
-        public UtilizadorController(LogisControlContext context)
+        public UtilizadorController(LogisControlContext context, UtilizadorService utilizadorService)
         {
             _context = context;
+            _utilizadorService = utilizadorService;
         }
+
+        #region Obter Utilizadores
 
         [HttpGet]
         [Produces("application/json")]
@@ -34,25 +40,60 @@ namespace LogisControlAPI.Controllers
                 .ToListAsync();
         }
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> AtualizarNomeSobrenome(int id, [FromBody] UtilizadorUpdateDTO updateDTO)
+        #endregion
+
+        #region Criar Utilizador
+
+        [HttpPost("criar-utilizador")]
+        public async Task<IActionResult> CriarUtilizador([FromBody] CriarUtilizadorDTO novoUtilizadorDto)
         {
-            // Verifica se o ID do utilizador existe na base de dados
-            var utilizador = await _context.Utilizadors.FindAsync(id);
-            if (utilizador == null)
+            // Verifica se o número de funcionário já existe
+            if (await _utilizadorService.VerificarSeExisteNumeroFuncionario(novoUtilizadorDto.NumFuncionario))
+                return BadRequest("Já existe um utilizador com esse número de funcionário.");
+
+            // Gerar o hash da senha antes de guardar
+            string senhaHash = _utilizadorService.HashPassword(novoUtilizadorDto.Password);
+
+            // Criar novo utilizador com a senha hashada
+            Utilizador novoUtilizador = new Utilizador
             {
-                return NotFound("Utilizador não encontrado.");
-            }
+                PrimeiroNome = novoUtilizadorDto.PrimeiroNome,
+                Sobrenome = novoUtilizadorDto.Sobrenome,
+                NumFuncionario = novoUtilizadorDto.NumFuncionario,
+                Password = senhaHash,
+                Role = novoUtilizadorDto.Role,
+                Estado = true 
+            };
 
-            // Atualiza os campos permitidos
-            utilizador.PrimeiroNome = updateDTO.PrimeiroNome;
-            utilizador.Sobrenome = updateDTO.Sobrenome;
-
-            // Guarda as alterações na base de dados
+            _context.Utilizadors.Add(novoUtilizador);
             await _context.SaveChangesAsync();
 
-            return Ok("Nome e sobrenome atualizados com sucesso.");
+            return Ok("Utilizador criado com sucesso!");
         }
 
+        #endregion
+
+        #region Login
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
+        {
+            // 📌 Procura o utilizador pelo número de funcionário
+            var utilizador = await _context.Utilizadors
+                .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
+
+            if (utilizador == null)
+                return Unauthorized("Número de funcionário ou senha inválidos.");
+
+            // 📌 Verifica se a senha fornecida corresponde ao hash armazenado
+            bool senhaCorreta = _utilizadorService.VerifyPassword(utilizador.Password, loginDto.Password);
+
+            if (!senhaCorreta)
+                return Unauthorized("Número de funcionário ou senha inválidos.");
+
+            return Ok("Login bem-sucedido!"); // 🔥 Apenas uma resposta de sucesso por enquanto
+        }
+
+        #endregion
     }
 }
