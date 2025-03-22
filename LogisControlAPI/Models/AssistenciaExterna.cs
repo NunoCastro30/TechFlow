@@ -17,5 +17,5 @@ public partial class AssistenciaExterna
 
     public virtual ICollection<Maquina> Maquinas { get; set; } = new List<Maquina>();
 
-    public virtual ICollection<RegistoManutencao> RegistoManutencaos { get; set; } = new List<RegistoManutencao>();
+    public virtual ICollection<RegistoManutencao> RegistosManutencao { get; set; } = new List<RegistoManutencao>();
 }

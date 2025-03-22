@@ -1,14 +1,8 @@
 {
   "version": 2,
-<<<<<<< HEAD
   "dgSpecHash": "Cf5Qs9fK830=",
   "success": true,
   "projectFilePath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
-=======
-  "dgSpecHash": "R5kDTojYkMg=",
-  "success": true,
-  "projectFilePath": "C:\\Projetos\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
->>>>>>> main
   "expectedPackageFiles": [
     "C:\\Users\\Paulo\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Paulo\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

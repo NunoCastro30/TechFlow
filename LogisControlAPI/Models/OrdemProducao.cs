@@ -23,9 +23,9 @@ public partial class OrdemProducao
 
     public virtual Maquina MaquinaMaquina { get; set; } = null!;
 
-    public virtual ICollection<ProdMateriai> ProdMateriais { get; set; } = new List<ProdMateriai>();
+    public virtual ICollection<ProdMateriais> ProdMateriais { get; set; } = new List<ProdMateriais>();
 
     public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
 
-    public virtual ICollection<RegistoProducao> RegistoProducaos { get; set; } = new List<RegistoProducao>();
+    public virtual ICollection<RegistoProducao> RegistosProducao { get; set; } = new List<RegistoProducao>();
 }

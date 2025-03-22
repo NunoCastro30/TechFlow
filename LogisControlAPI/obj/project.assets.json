@@ -5162,19 +5162,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
       "projectName": "LogisControlAPI",
       "projectPath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\LogisControlAPI.csproj",
       "packagesPath": "C:\\Users\\Paulo\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\obj\\",
-=======
-      "projectUniqueName": "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj",
-      "projectName": "LogisControlAPI",
-      "projectPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj",
-      "packagesPath": "C:\\Users\\Nuno Castro\\.nuget\\packages\\",
-      "outputPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\obj\\",
->>>>>>> main
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

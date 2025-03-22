@@ -1,7 +1,76 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\data\\logiscontrolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:data\\logiscontrolcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\controllers\\registoproducaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\registoproducaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\controllers\\ordemproducaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\ordemproducaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\assistenciaexterna.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\assistenciaexterna.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\encomendacliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\encomendacliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\fornecedor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\fornecedor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\maquina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\maquina.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\materiaprima.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\materiaprima.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\notaencomenda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\notaencomenda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\orcamento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\orcamento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\ordemproducao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\ordemproducao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\utilizador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\utilizador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\pedidomanutencao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\pedidomanutencao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\models\\produto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\produto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\users\\paulo\\desktop\\ipca\\pds\\techflow\\logiscontrolapi\\controllers\\materiaprimaprodutocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\materiaprimaprodutocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +78,232 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 13,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AssistenciaExterna.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\AssistenciaExterna.cs",
+              "RelativeDocumentMoniker": "Models\\AssistenciaExterna.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\AssistenciaExterna.cs",
+              "RelativeToolTip": "Models\\AssistenciaExterna.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:29:51.262Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Cliente.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Cliente.cs",
+              "RelativeDocumentMoniker": "Models\\Cliente.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Cliente.cs",
+              "RelativeToolTip": "Models\\Cliente.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:29:27.029Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EncomendaCliente.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\EncomendaCliente.cs",
+              "RelativeDocumentMoniker": "Models\\EncomendaCliente.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\EncomendaCliente.cs",
+              "RelativeToolTip": "Models\\EncomendaCliente.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:29:17.483Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Fornecedor.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Fornecedor.cs",
+              "RelativeDocumentMoniker": "Models\\Fornecedor.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Fornecedor.cs",
+              "RelativeToolTip": "Models\\Fornecedor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:29:07.907Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Maquina.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Maquina.cs",
+              "RelativeDocumentMoniker": "Models\\Maquina.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Maquina.cs",
+              "RelativeToolTip": "Models\\Maquina.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:28:56.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MateriaPrima.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\MateriaPrima.cs",
+              "RelativeDocumentMoniker": "Models\\MateriaPrima.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\MateriaPrima.cs",
+              "RelativeToolTip": "Models\\MateriaPrima.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:28:33.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "NotaEncomenda.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\NotaEncomenda.cs",
+              "RelativeDocumentMoniker": "Models\\NotaEncomenda.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\NotaEncomenda.cs",
+              "RelativeToolTip": "Models\\NotaEncomenda.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:28:13.656Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Orcamento.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Orcamento.cs",
+              "RelativeDocumentMoniker": "Models\\Orcamento.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Orcamento.cs",
+              "RelativeToolTip": "Models\\Orcamento.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:28:02.805Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "OrdemProducao.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\OrdemProducao.cs",
+              "RelativeDocumentMoniker": "Models\\OrdemProducao.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\OrdemProducao.cs",
+              "RelativeToolTip": "Models\\OrdemProducao.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:27:20.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "PedidoManutencao.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\PedidoManutencao.cs",
+              "RelativeDocumentMoniker": "Models\\PedidoManutencao.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\PedidoManutencao.cs",
+              "RelativeToolTip": "Models\\PedidoManutencao.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAABzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:27:04.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Utilizador.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Utilizador.cs",
+              "RelativeDocumentMoniker": "Models\\Utilizador.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Utilizador.cs",
+              "RelativeToolTip": "Models\\Utilizador.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:25:55.402Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RegistoProducaoController.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\RegistoProducaoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RegistoProducaoController.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\RegistoProducaoController.cs",
+              "RelativeToolTip": "Controllers\\RegistoProducaoController.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowCQAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:23:03.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LogisControlContext.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Data\\LogisControlContext.cs",
+              "RelativeDocumentMoniker": "Data\\LogisControlContext.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Data\\LogisControlContext.cs",
+              "RelativeToolTip": "Data\\LogisControlContext.cs",
+              "ViewState": "AgIAAK8BAAAAAAAAAAAcwOoBAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:20:26.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "OrdemProducaoController.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\OrdemProducaoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\OrdemProducaoController.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\OrdemProducaoController.cs",
+              "RelativeToolTip": "Controllers\\OrdemProducaoController.cs",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAwwGgAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:19:28.524Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Produto.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Produto.cs",
+              "RelativeDocumentMoniker": "Models\\Produto.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Models\\Produto.cs",
+              "RelativeToolTip": "Models\\Produto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:26:50.156Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ProdutoController.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\ProdutoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ProdutoController.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\ProdutoController.cs",
+              "RelativeToolTip": "Controllers\\ProdutoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:15:29.75Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MateriaPrimaProdutoController.cs",
+              "DocumentMoniker": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\MateriaPrimaProdutoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MateriaPrimaProdutoController.cs",
+              "ToolTip": "C:\\Users\\Paulo\\Desktop\\IPCA\\PDS\\TechFlow\\LogisControlAPI\\Controllers\\MateriaPrimaProdutoController.cs",
+              "RelativeToolTip": "Controllers\\MateriaPrimaProdutoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T15:01:52.574Z",
+              "EditorCaption": ""
             }
           ]
         }
