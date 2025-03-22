@@ -1,4 +1,4 @@
-﻿namespace LogisControlAPI.DTOs
+﻿namespace LogisControlAPI.DTO
 {
 
     public class UtilizadorUpdateDTO

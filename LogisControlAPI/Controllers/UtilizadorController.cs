@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LogisControlAPI.Data;
-using LogisControlAPI.DTOs;
+using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Models;
 using LogisControlAPI.Services;
-using LogisControlAPI.DTO;
+
 
 namespace LogisControlAPI.Controllers
 {

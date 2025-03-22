@@ -1,15 +1,58 @@
 [
   {
     "ContainingType": "LogisControlAPI.Controllers.ClienteController",
-    "Method": "GetClientes",
-    "RelativePath": "api/Cliente",
+    "Method": "AtualizarCliente",
+    "RelativePath": "api/Cliente/AtualizarCliente/{clienteId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clienteId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "clienteAtualizado",
+        "Type": "LogisControlAPI.DTO.AtualizarClienteDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.ClienteController",
+    "Method": "CriarCliente",
+    "RelativePath": "api/Cliente/CriarCliente",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "novoClienteDto",
+        "Type": "LogisControlAPI.DTO.CriarClienteDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.ClienteController",
+    "Method": "GetClientePorNif",
+    "RelativePath": "api/Cliente/ObterCliente/{nif}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "nif",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTOs.ClienteDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "LogisControlAPI.DTO.ClienteDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -18,6 +61,145 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.ClienteController",
+    "Method": "GetClientes",
+    "RelativePath": "api/Cliente/ObterClientes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTO.ClienteDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.EncomendaClienteController",
+    "Method": "ListarEncomendas",
+    "RelativePath": "api/EncomendaCliente/ListarEncomendas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTO.EncomendaClienteDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.FornecedorController",
+    "Method": "AtualizarFornecedor",
+    "RelativePath": "api/Fornecedor/AtualizarFornecedor/{fornecedorId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fornecedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "fornecedorAtualizado",
+        "Type": "LogisControlAPI.DTO.AtualizarFornecedorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.FornecedorController",
+    "Method": "CriarFornecedor",
+    "RelativePath": "api/Fornecedor/CriarFornecedor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "novoFornecedorDto",
+        "Type": "LogisControlAPI.DTO.CriarFornecedorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.FornecedorController",
+    "Method": "GetFornecedores",
+    "RelativePath": "api/Fornecedor/ObterFornecedores",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTO.FornecedorDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.FornecedorController",
+    "Method": "GetFornecedorPorNome",
+    "RelativePath": "api/Fornecedor/ObterFornecedorPorNome/{nome}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nome",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTO.FornecedorDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisControlAPI.Controllers.PedidoCompraController",
+    "Method": "CriarPedidoCompra",
+    "RelativePath": "api/PedidoCompra/CriarPedidoCompra",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "LogisControlAPI.DTO.CriarPedidoCompraDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "LogisControlAPI.Controllers.TesteController",
@@ -39,7 +221,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTOs.UtilizadorDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisControlAPI.DTO.UtilizadorDTO, LogisControlAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],

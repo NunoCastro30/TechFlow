@@ -1,17 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LogisControlAPI.Models;
-
-public partial class Cliente
+namespace LogisControlAPI.Models
 {
-    public int ClienteId { get; set; }
+    /// <summary>
+    /// Representa um cliente da empresa, com os respetivos dados de identificação e morada.
+    /// </summary>
+    public partial class Cliente
+    {
+        /// <summary>
+        /// Identificador único do cliente.
+        /// </summary>
+        public int ClienteId { get; set; }
 
-    public string Nome { get; set; } = null!;
+        /// <summary>
+        /// Nome completo ou designação do cliente.
+        /// </summary>
+        public string Nome { get; set; } = null!;
 
-    public int Nif { get; set; }
+        /// <summary>
+        /// Número de Identificação Fiscal (NIF) do cliente.
+        /// </summary>
+        public int Nif { get; set; }
 
-    public string Morada { get; set; } = null!;
+        /// <summary>
+        /// Morada completa do cliente.
+        /// </summary>
+        public string Morada { get; set; } = null!;
 
-   public virtual ICollection<EncomendaCliente> EncomendaClientes { get; set; } = new List<EncomendaCliente>();
+        /// <summary>
+        /// Lista de encomendas realizadas por este cliente.
+        /// </summary>
+        public virtual ICollection<EncomendaCliente> EncomendaClientes { get; set; } = new List<EncomendaCliente>();
+    }
 }

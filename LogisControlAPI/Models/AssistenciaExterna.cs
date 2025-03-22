@@ -1,21 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LogisControlAPI.Models;
-
-public partial class AssistenciaExterna
+namespace LogisControlAPI.Models
 {
-    public int AssistenteId { get; set; }
+    /// <summary>
+    /// Representa uma entidade de assistência externa que pode estar associada a máquinas ou registos de manutenção.
+    /// </summary>
+    public partial class AssistenciaExterna
+    {
+        /// <summary>
+        /// Identificador único da assistência externa.
+        /// </summary>
+        public int AssistenteId { get; set; }
 
-    public string Nome { get; set; } = null!;
+        /// <summary>
+        /// Nome da empresa ou pessoa responsável pela assistência externa.
+        /// </summary>
+        public string Nome { get; set; } = null!;
 
-    public int Nif { get; set; }
+        /// <summary>
+        /// Número de Identificação Fiscal (NIF) da assistência externa.
+        /// </summary>
+        public int Nif { get; set; }
 
-    public string Morada { get; set; } = null!;
+        /// <summary>
+        /// Morada (endereço) da assistência externa.
+        /// </summary>
+        public string Morada { get; set; } = null!;
 
-    public int Telefone { get; set; }
+        /// <summary>
+        /// Número de telefone de contacto da assistência externa.
+        /// </summary>
+        public int Telefone { get; set; }
 
-    public virtual ICollection<Maquina> Maquinas { get; set; } = new List<Maquina>();
+        /// <summary>
+        /// Lista de máquinas associadas a esta assistência externa.
+        /// </summary>
+        public virtual ICollection<Maquina> Maquinas { get; set; } = new List<Maquina>();
 
-    public virtual ICollection<RegistoManutencao> RegistoManutencaos { get; set; } = new List<RegistoManutencao>();
+        /// <summary>
+        /// Lista de registos de manutenção realizados por esta assistência externa.
+        /// </summary>
+        public virtual ICollection<RegistoManutencao> RegistoManutencaos { get; set; } = new List<RegistoManutencao>();
+    }
 }

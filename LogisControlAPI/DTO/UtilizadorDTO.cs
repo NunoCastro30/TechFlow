@@ -1,4 +1,4 @@
-﻿namespace LogisControlAPI.DTOs
+﻿namespace LogisControlAPI.DTO
 {
     /// <summary>
     /// DTO para representar um utilizador sem informações sensíveis.
