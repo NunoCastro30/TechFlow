@@ -11,7 +11,7 @@
         "projectName": "LogisControlAPI",
         "projectPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\LogisControlAPI.csproj",
         "packagesPath": "C:\\Users\\Nuno Castro\\.nuget\\packages\\",
-        "outputPath": "C:\\Projetos\\TechFlow\\LogisControlAPI\\obj\\",
+        "outputPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

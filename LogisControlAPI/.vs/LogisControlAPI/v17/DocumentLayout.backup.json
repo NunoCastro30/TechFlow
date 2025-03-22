@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\encomendascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\encomendascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\encomendaclientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\encomendaclientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,12 +35,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EncomendasController.cs",
-              "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendasController.cs",
-              "RelativeDocumentMoniker": "Controllers\\EncomendasController.cs",
-              "ToolTip": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendasController.cs*",
-              "RelativeToolTip": "Controllers\\EncomendasController.cs*",
-              "ViewState": "AgIAABoAAAAAAAAAAAAQwDIAAAAWAAAAAAAAAA==",
+              "Title": "EncomendaClienteController.cs",
+              "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendaClienteController.cs",
+              "RelativeDocumentMoniker": "Controllers\\EncomendaClienteController.cs",
+              "ToolTip": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendaClienteController.cs",
+              "RelativeToolTip": "Controllers\\EncomendaClienteController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwCkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-22T17:19:30.637Z",
               "EditorCaption": ""

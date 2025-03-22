@@ -3,20 +3,12 @@
   "WorkspaceRootPath": "C:\\Projetos\\Techflow\\LogisControlAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\encomendaclientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\encomendaclientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\models\\prodmateriai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:models\\prodmateriai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\controllers\\pedidocompracontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|solutionrelative:controllers\\pedidocompracontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE90ADAB-D69C-482E-95F2-C6230B1BC43F}|LogisControlAPI.csproj|c:\\projetos\\techflow\\logiscontrolapi\\models\\pedidocompra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,37 +22,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EncomendaClienteController.cs",
-              "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendaClienteController.cs",
-              "RelativeDocumentMoniker": "Controllers\\EncomendaClienteController.cs",
-              "ToolTip": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\EncomendaClienteController.cs",
-              "RelativeToolTip": "Controllers\\EncomendaClienteController.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAgwCkAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T17:19:30.637Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "ClienteController.cs",
               "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\ClienteController.cs",
               "RelativeDocumentMoniker": "Controllers\\ClienteController.cs",
               "ToolTip": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\ClienteController.cs",
               "RelativeToolTip": "Controllers\\ClienteController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABIAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACIAAABUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-22T17:02:42.421Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "ProdMateriai.cs",
               "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Models\\ProdMateriai.cs",
               "RelativeDocumentMoniker": "Models\\ProdMateriai.cs",
@@ -68,25 +51,11 @@
               "RelativeToolTip": "Models\\ProdMateriai.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T16:50:21.228Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-22T16:50:21.228Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PedidoCompraController.cs",
-              "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\PedidoCompraController.cs",
-              "RelativeDocumentMoniker": "Controllers\\PedidoCompraController.cs",
-              "ToolTip": "C:\\Projetos\\Techflow\\LogisControlAPI\\Controllers\\PedidoCompraController.cs",
-              "RelativeToolTip": "Controllers\\PedidoCompraController.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAowEIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T16:29:39.255Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "PedidoCompra.cs",
               "DocumentMoniker": "C:\\Projetos\\Techflow\\LogisControlAPI\\Models\\PedidoCompra.cs",
               "RelativeDocumentMoniker": "Models\\PedidoCompra.cs",
@@ -94,8 +63,7 @@
               "RelativeToolTip": "Models\\PedidoCompra.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T16:27:26.049Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-22T16:27:26.049Z"
             }
           ]
         }
