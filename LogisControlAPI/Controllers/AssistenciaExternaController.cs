@@ -36,7 +36,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var assistencias = await _context.AssistenciaExternas
+                var assistencias = await _context.AssistenciasExternas
                     .Select(a => new AssistenciaExternaDTO
                     {
                         AssistenteId = a.AssistenteId,
@@ -70,7 +70,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var assistencia = await _context.AssistenciaExternas
+                var assistencia = await _context.AssistenciasExternas
                     .Where(a => a.AssistenteId == id)
                     .Select(a => new AssistenciaExternaDTO
                     {
@@ -109,7 +109,7 @@ namespace LogisControlAPI.Controllers
             try
             {
                 // Verifica se já existe assistência com o mesmo NIF
-                var existente = await _context.AssistenciaExternas
+                var existente = await _context.AssistenciasExternas
                     .AnyAsync(a => a.Nif == novaAssistenciaDto.Nif);
 
                 if (existente)
@@ -123,7 +123,7 @@ namespace LogisControlAPI.Controllers
                     Telefone = novaAssistenciaDto.Telefone
                 };
 
-                _context.AssistenciaExternas.Add(novaAssistencia);
+                _context.AssistenciasExternas.Add(novaAssistencia);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(201, "Assistência externa criada com sucesso.");
@@ -151,13 +151,13 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var assistencia = await _context.AssistenciaExternas.FindAsync(assistenteId);
+                var assistencia = await _context.AssistenciasExternas.FindAsync(assistenteId);
 
                 if (assistencia == null)
                     return NotFound("Assistência externa não encontrada.");
 
                 // Verificar duplicação de NIF (em outro registo)
-                bool nifDuplicado = await _context.AssistenciaExternas
+                bool nifDuplicado = await _context.AssistenciasExternas
                     .AnyAsync(a => a.Nif == assistenciaAtualizada.Nif && a.AssistenteId != assistenteId);
 
                 if (nifDuplicado)

@@ -36,7 +36,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var pedidos = await _context.PedidoManutencaos
+                var pedidos = await _context.PedidosManutencao
                     .Select(p => new PedidoManutençãoDTO
                     {
                         PedidoManutId = p.PedidoManutId,
@@ -72,7 +72,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var pedido = await _context.PedidoManutencaos
+                var pedido = await _context.PedidosManutencao
                     .Where(p => p.PedidoManutId == id)
                     .Select(p => new PedidoManutençãoDTO
                     {
@@ -122,7 +122,7 @@ namespace LogisControlAPI.Controllers
                     UtilizadorUtilizadorId = novoPedidoDto.UtilizadorUtilizadorId
                 };
 
-                _context.PedidoManutencaos.Add(novoPedido);
+                _context.PedidosManutencao.Add(novoPedido);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(201, "Pedido de manutenção criado com sucesso.");
@@ -149,7 +149,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var pedido = await _context.PedidoManutencaos.FindAsync(pedidoId);
+                var pedido = await _context.PedidosManutencao.FindAsync(pedidoId);
 
                 if (pedido == null)
                     return NotFound("Pedido de manutenção não encontrado.");

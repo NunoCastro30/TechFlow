@@ -36,7 +36,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var registos = await _context.RegistoManutencaos
+                var registos = await _context.RegistosManutencao
                     .Select(r => new RegistoManutencaoDTO
                     {
                         RegistoManutencaoId = r.RegistoManutencaoId,
@@ -71,7 +71,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var registo = await _context.RegistoManutencaos
+                var registo = await _context.RegistosManutencao
                     .Where(r => r.RegistoManutencaoId == id)
                     .Select(r => new RegistoManutencaoDTO
                     {
@@ -119,7 +119,7 @@ namespace LogisControlAPI.Controllers
                     AssistenciaExternaAssistenteId = novoRegistoDto.AssistenciaExternaAssistenteId
                 };
 
-                _context.RegistoManutencaos.Add(novoRegisto);
+                _context.RegistosManutencao.Add(novoRegisto);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(201, "Registo de manutenção criado com sucesso.");
@@ -146,7 +146,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var registo = await _context.RegistoManutencaos.FindAsync(registoId);
+                var registo = await _context.RegistosManutencao.FindAsync(registoId);
 
                 if (registo == null)
                     return NotFound("Registo de manutenção não encontrado.");
