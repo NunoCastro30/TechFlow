@@ -4,6 +4,57 @@
         <name>LogisControlAPI</name>
     </assembly>
     <members>
+        <member name="T:LogisControlAPI.Controllers.AssistenciaExternaController">
+            <summary>
+            Controlador responsável pela gestão das assistências externas.
+            </summary>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.AssistenciaExternaController.#ctor(LogisControlAPI.Data.LogisControlContext)">
+            <summary>
+            Construtor do controlador que injeta o contexto da base de dados.
+            </summary>
+            <param name="context">Instância do contexto da base de dados.</param>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.AssistenciaExternaController.GetAssistencias">
+            <summary>
+            Obtém a lista de todas as assistências externas registadas.
+            </summary>
+            <returns>Lista de assistências externas.</returns>
+            <response code="200">Retorna a lista com sucesso.</response>
+            <response code="500">Erro interno ao tentar obter as assistências.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.AssistenciaExternaController.GetAssistenciaPorId(System.Int32)">
+            <summary>
+            Obtém uma assistência externa pelo seu ID.
+            </summary>
+            <param name="id">Identificador único da assistência.</param>
+            <returns>Dados da assistência correspondente.</returns>
+            <response code="200">Assistência encontrada com sucesso.</response>
+            <response code="404">Assistência não encontrada.</response>
+            <response code="500">Erro interno ao procurar a assistência.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.AssistenciaExternaController.CriarAssistencia(LogisControlAPI.DTO.AssistenciaExternaDTO)">
+            <summary>
+            Cria uma nova assistência externa.
+            </summary>
+            <param name="novaAssistenciaDto">Dados para criação da assistência.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="201">Assistência criada com sucesso.</response>
+            <response code="400">Dados inválidos ou duplicados.</response>
+            <response code="500">Erro interno ao criar a assistência.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.AssistenciaExternaController.AtualizarAssistencia(System.Int32,LogisControlAPI.DTO.AssistenciaExternaDTO)">
+            <summary>
+            Atualiza os dados de uma assistência externa existente.
+            </summary>
+            <param name="assistenteId">ID da assistência a atualizar.</param>
+            <param name="assistenciaAtualizada">Dados atualizados da assistência.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Assistência atualizada com sucesso.</response>
+            <response code="404">Assistência não encontrada.</response>
+            <response code="400">NIF duplicado ou dados inválidos.</response>
+            <response code="500">Erro interno ao tentar atualizar a assistência.</response>
+        </member>
         <member name="T:LogisControlAPI.Controllers.ClienteController">
             <summary>
             Controlador responsável pela gestão dos clientes.
@@ -22,6 +73,157 @@
             <returns>Lista de clientes sem encomendas associadas.</returns>
             <response code="200">Retorna a lista de clientes com sucesso.</response>
             <response code="500">Erro interno ao tentar obter os clientes.</response>
+        </member>
+        <member name="T:LogisControlAPI.Controllers.MaquinaController">
+            <summary>
+            Controlador responsável pela gestão das máquinas.
+            </summary>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.MaquinaController.#ctor(LogisControlAPI.Data.LogisControlContext)">
+            <summary>
+            Construtor do controlador que injeta o contexto da base de dados.
+            </summary>
+            <param name="context">Instância do contexto da base de dados.</param>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.MaquinaController.GetMaquinas">
+            <summary>
+            Obtém a lista de todas as máquinas registadas.
+            </summary>
+            <returns>Lista de máquinas sem relações associadas.</returns>
+            <response code="200">Retorna a lista de máquinas com sucesso.</response>
+            <response code="500">Erro interno ao tentar obter as máquinas.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.MaquinaController.GetMaquinaPorId(System.Int32)">
+            <summary>
+            Obtém uma máquina pelo seu ID.
+            </summary>
+            <param name="id">Identificador único da máquina.</param>
+            <returns>Dados da máquina correspondente.</returns>
+            <response code="200">Máquina encontrada com sucesso.</response>
+            <response code="404">Máquina não encontrada.</response>
+            <response code="500">Erro interno ao procurar a máquina.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.MaquinaController.CriarMaquina(LogisControlAPI.DTO.MaquinaDTO)">
+            <summary>
+            Cria uma nova máquina.
+            </summary>
+            <param name="novaMaquinaDto">Dados para criação da máquina.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="201">Máquina criada com sucesso.</response>
+            <response code="400">Dados inválidos ou duplicados.</response>
+            <response code="500">Erro interno ao criar a máquina.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.MaquinaController.AtualizarMaquina(System.Int32,LogisControlAPI.DTO.MaquinaDTO)">
+            <summary>
+            Atualiza os dados de uma máquina existente.
+            </summary>
+            <param name="maquinaId">ID da máquina a atualizar.</param>
+            <param name="maquinaAtualizada">Dados atualizados da máquina.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Máquina atualizada com sucesso.</response>
+            <response code="404">Máquina não encontrada.</response>
+            <response code="400">Dados inválidos ou duplicados.</response>
+            <response code="500">Erro interno ao tentar atualizar a máquina.</response>
+        </member>
+        <member name="T:LogisControlAPI.Controllers.PedidoManutencaoController">
+            <summary>
+            Controlador responsável pela gestão dos pedidos de manutenção.
+            </summary>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoManutencaoController.#ctor(LogisControlAPI.Data.LogisControlContext)">
+            <summary>
+            Construtor do controlador que injeta o contexto da base de dados.
+            </summary>
+            <param name="context">Instância do contexto da base de dados.</param>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoManutencaoController.GetPedidos">
+            <summary>
+            Obtém a lista de todos os pedidos de manutenção registados.
+            </summary>
+            <returns>Lista de pedidos de manutenção.</returns>
+            <response code="200">Retorna a lista de pedidos com sucesso.</response>
+            <response code="500">Erro interno ao tentar obter os pedidos.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoManutencaoController.GetPedidoPorId(System.Int32)">
+            <summary>
+            Obtém um pedido de manutenção pelo seu ID.
+            </summary>
+            <param name="id">Identificador único do pedido.</param>
+            <returns>Dados do pedido de manutenção correspondente.</returns>
+            <response code="200">Pedido encontrado com sucesso.</response>
+            <response code="404">Pedido não encontrado.</response>
+            <response code="500">Erro interno ao procurar o pedido.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoManutencaoController.CriarPedido(LogisControlAPI.DTO.PedidoManutençãoDTO)">
+            <summary>
+            Cria um novo pedido de manutenção.
+            </summary>
+            <param name="novoPedidoDto">Dados para criação do pedido.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="201">Pedido de manutenção criado com sucesso.</response>
+            <response code="400">Dados inválidos.</response>
+            <response code="500">Erro interno ao criar o pedido.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoManutencaoController.AtualizarPedido(System.Int32,LogisControlAPI.DTO.PedidoManutençãoDTO)">
+            <summary>
+            Atualiza os dados de um pedido de manutenção existente.
+            </summary>
+            <param name="pedidoId">ID do pedido a atualizar.</param>
+            <param name="pedidoAtualizado">Dados atualizados do pedido.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Pedido atualizado com sucesso.</response>
+            <response code="404">Pedido não encontrado.</response>
+            <response code="500">Erro interno ao tentar atualizar o pedido.</response>
+        </member>
+        <member name="T:LogisControlAPI.Controllers.RegistoManutencaoController">
+            <summary>
+            Controlador responsável pela gestão dos registos de manutenção.
+            </summary>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.RegistoManutencaoController.#ctor(LogisControlAPI.Data.LogisControlContext)">
+            <summary>
+            Construtor do controlador que injeta o contexto da base de dados.
+            </summary>
+            <param name="context">Instância do contexto da base de dados.</param>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.RegistoManutencaoController.GetRegistos">
+            <summary>
+            Obtém a lista de todos os registos de manutenção.
+            </summary>
+            <returns>Lista de registos de manutenção.</returns>
+            <response code="200">Retorna a lista de registos com sucesso.</response>
+            <response code="500">Erro interno ao tentar obter os registos.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.RegistoManutencaoController.GetRegistoPorId(System.Int32)">
+            <summary>
+            Obtém um registo de manutenção pelo seu ID.
+            </summary>
+            <param name="id">Identificador único do registo.</param>
+            <returns>Dados do registo correspondente.</returns>
+            <response code="200">Registo encontrado com sucesso.</response>
+            <response code="404">Registo não encontrado.</response>
+            <response code="500">Erro interno ao procurar o registo.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.RegistoManutencaoController.CriarRegisto(LogisControlAPI.DTO.RegistoManutencaoDTO)">
+            <summary>
+            Cria um novo registo de manutenção.
+            </summary>
+            <param name="novoRegistoDto">Dados para criação do registo.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="201">Registo criado com sucesso.</response>
+            <response code="400">Dados inválidos.</response>
+            <response code="500">Erro interno ao criar o registo.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.RegistoManutencaoController.AtualizarRegisto(System.Int32,LogisControlAPI.DTO.RegistoManutencaoDTO)">
+            <summary>
+            Atualiza os dados de um registo de manutenção existente.
+            </summary>
+            <param name="registoId">ID do registo a atualizar.</param>
+            <param name="registoAtualizado">Dados atualizados do registo.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Registo atualizado com sucesso.</response>
+            <response code="404">Registo não encontrado.</response>
+            <response code="500">Erro interno ao tentar atualizar o registo.</response>
         </member>
         <member name="T:LogisControlAPI.Controllers.TesteController">
             <summary>

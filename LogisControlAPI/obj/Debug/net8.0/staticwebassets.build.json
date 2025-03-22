@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "85l5can7Xl4c3twjmkrxYQoaQoOidUhOH6RB/Lmf9B0=",
+  "Hash": "DwF1ew10mP94YLfOiJ+8prozKNjcM9ZEqkoFD0nMlPE=",
   "Source": "LogisControlAPI",
   "BasePath": "_content/LogisControlAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
