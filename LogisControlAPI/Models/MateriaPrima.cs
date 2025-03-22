@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogisControlAPI.Models;
 
 public partial class MateriaPrima
 {
-    public int MateriaPrimalD { get; set; }
+    [Column("MateriaPrimaID")]
+    public int MateriaPrimaId { get; set; }
 
     public string Nome { get; set; } = null!;
 
@@ -21,9 +23,9 @@ public partial class MateriaPrima
 
     public virtual ICollection<MateriaPrimaProduto> MateriaPrimaProdutos { get; set; } = new List<MateriaPrimaProduto>();
 
-    public virtual ICollection<NotaEncomendaIten> NotaEncomendaItens { get; set; } = new List<NotaEncomendaIten>();
+    public virtual ICollection<NotaEncomendaItens> NotasEncomendaItem { get; set; } = new List<NotaEncomendaItens>();
 
-    public virtual ICollection<OrcamentoItem> OrcamentoItems { get; set; } = new List<OrcamentoItem>();
+    public virtual ICollection<OrcamentoItem> OrcamentosItem { get; set; } = new List<OrcamentoItem>();
 
-    public virtual ICollection<ProdMateriai> ProdMateriais { get; set; } = new List<ProdMateriai>();
+    public virtual ICollection<ProdMateriais> ProdMateriais { get; set; } = new List<ProdMateriais>();
 }

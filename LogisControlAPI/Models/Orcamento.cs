@@ -13,9 +13,9 @@ public partial class Orcamento
 
     public int PedidoCotacaoPedidoCotacaoId { get; set; }
 
-    public virtual ICollection<NotaEncomendum> NotaEncomenda { get; set; } = new List<NotaEncomendum>();
+    public virtual ICollection<NotaEncomenda> NotaEncomenda { get; set; } = new List<NotaEncomenda>();
 
-    public virtual ICollection<OrcamentoItem> OrcamentoItems { get; set; } = new List<OrcamentoItem>();
+    public virtual ICollection<OrcamentoItem> OrcamentosItem { get; set; } = new List<OrcamentoItem>();
 
     public virtual PedidoCotacao PedidoCotacaoPedidoCotacao { get; set; } = null!;
 }
