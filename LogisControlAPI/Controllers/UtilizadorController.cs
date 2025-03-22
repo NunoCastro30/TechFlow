@@ -27,7 +27,7 @@ namespace LogisControlAPI.Controllers
         [Produces("application/json")]
         public async Task<IEnumerable<UtilizadorDTO>> GetUtilizadores()
         {
-            return await _context.Utilizadors
+            return await _context.Utilizadores
                 .Select(u => new UtilizadorDTO
                 {
                     UtilizadorId = u.UtilizadorId,
@@ -65,7 +65,7 @@ namespace LogisControlAPI.Controllers
                 Estado = true 
             };
 
-            _context.Utilizadors.Add(novoUtilizador);
+            _context.Utilizadores.Add(novoUtilizador);
             await _context.SaveChangesAsync();
 
             return Ok("Utilizador criado com sucesso!");
@@ -79,7 +79,7 @@ namespace LogisControlAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
             // 📌 Procura o utilizador pelo número de funcionário
-            var utilizador = await _context.Utilizadors
+            var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
 
             if (utilizador == null)

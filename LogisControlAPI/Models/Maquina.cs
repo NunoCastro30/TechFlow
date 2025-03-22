@@ -15,7 +15,7 @@ public partial class Maquina
 
     public virtual AssistenciaExterna AssistenciaExternaAssistente { get; set; } = null!;
 
-    public virtual ICollection<OrdemProducao> OrdemProducaos { get; set; } = new List<OrdemProducao>();
+    public virtual ICollection<OrdemProducao> OrdensProducao { get; set; } = new List<OrdemProducao>();
 
-    public virtual ICollection<PedidoManutencao> PedidoManutencaos { get; set; } = new List<PedidoManutencao>();
+    public virtual ICollection<PedidoManutencao> PedidosManutencao { get; set; } = new List<PedidoManutencao>();
 }

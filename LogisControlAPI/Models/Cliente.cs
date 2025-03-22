@@ -13,5 +13,5 @@ public partial class Cliente
 
     public string Morada { get; set; } = null!;
 
-   public virtual ICollection<EncomendaCliente> EncomendaClientes { get; set; } = new List<EncomendaCliente>();
+   public virtual ICollection<EncomendaCliente> EncomendasCliente { get; set; } = new List<EncomendaCliente>();
 }

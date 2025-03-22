@@ -15,7 +15,7 @@ public partial class EncomendaCliente
 
     public virtual Cliente ClienteCliente { get; set; } = null!;
 
-    public virtual ICollection<EncomendaIten> EncomendaItens { get; set; } = new List<EncomendaIten>();
+    public virtual ICollection<EncomendaItens> EncomendasItem { get; set; } = new List<EncomendaItens>();
 
-    public virtual ICollection<OrdemProducao> OrdemProducaos { get; set; } = new List<OrdemProducao>();
+    public virtual ICollection<OrdemProducao> OrdensProducao { get; set; } = new List<OrdemProducao>();
 }
