@@ -1,6 +1,7 @@
-################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+﻿################################################################################
+# Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
 ################################################################################
 
-/LogisControlAPI/.vs/LogisControlAPI/FileContentIndex
-/LogisControlAPI/.vs
+/LogisControlAPI/bin/
+/LogisControlAPI/obj/
+/LogisControlAPI/.vs/

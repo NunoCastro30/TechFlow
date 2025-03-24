@@ -118,6 +118,8 @@ public partial class LogisControlContext : DbContext
         {
             entity.HasKey(e => e.EncomendaItensId).HasName("PK__Encomend__A1D00A02E7FB7FED");
 
+            entity.ToTable("EncomendaItens");
+
             entity.Property(e => e.EncomendaClienteEncomendaClienteId).HasColumnName("EncomendaClienteEncomendaClienteID");
 
             entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.EncomendasItem)
