@@ -506,7 +506,7 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.UtilizadorId).HasColumnName("UtilizadorID");
             entity.Property(e => e.Password)
-                .HasMaxLength(25)
+                .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.PrimeiroNome)
                 .HasMaxLength(25)

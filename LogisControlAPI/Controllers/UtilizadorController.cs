@@ -165,20 +165,32 @@ namespace LogisControlAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
-           
+            // Procura o utilizador pelo número de funcionário
             var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
 
             if (utilizador == null)
                 return Unauthorized("Número de funcionário ou senha inválidos.");
 
-            
+            // Verifica se a senha está correta
             bool senhaCorreta = _utilizadorService.VerifyPassword(utilizador.Password, loginDto.Password);
 
             if (!senhaCorreta)
                 return Unauthorized("Número de funcionário ou senha inválidos.");
 
-            return Ok("Login bem-sucedido!"); 
+            // Se chegou aqui, o login está válido
+            // Retorna o JSON com as informações necessárias
+            var respostaLogin = new
+            {
+                Sucesso = true,
+                Mensagem = "Login bem-sucedido!",
+                UtilizadorId = utilizador.UtilizadorId,
+                Nome = utilizador.PrimeiroNome + " " + utilizador.Sobrenome,
+                Role = utilizador.Role,
+                NumFuncionario = utilizador.NumFuncionario
+            };
+
+            return Ok(respostaLogin);
         }
 
         #endregion
