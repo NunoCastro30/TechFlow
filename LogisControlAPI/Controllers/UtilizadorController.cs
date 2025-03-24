@@ -166,7 +166,7 @@ namespace LogisControlAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
             // Procura o utilizador pelo número de funcionário
-            var utilizador = await _context.Utilizadors
+            var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
 
             if (utilizador == null)
