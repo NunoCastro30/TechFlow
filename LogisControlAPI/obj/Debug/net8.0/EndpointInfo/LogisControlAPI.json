@@ -5,6 +5,192 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/AssistenciaExterna/ObterAssistencias": {
+      "get": {
+        "tags": [
+          "AssistenciaExterna"
+        ],
+        "summary": "Obtém a lista de todas as assistências externas registadas.",
+        "responses": {
+          "200": {
+            "description": "Retorna a lista com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao tentar obter as assistências."
+          }
+        }
+      }
+    },
+    "/api/AssistenciaExterna/ObterAssistencia/{id}": {
+      "get": {
+        "tags": [
+          "AssistenciaExterna"
+        ],
+        "summary": "Obtém uma assistência externa pelo seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador único da assistência.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assistência encontrada com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistenciaExternaDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Assistência não encontrada."
+          },
+          "500": {
+            "description": "Erro interno ao procurar a assistência."
+          }
+        }
+      }
+    },
+    "/api/AssistenciaExterna/CriarAssistencia": {
+      "post": {
+        "tags": [
+          "AssistenciaExterna"
+        ],
+        "summary": "Cria uma nova assistência externa.",
+        "requestBody": {
+          "description": "Dados para criação da assistência.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Assistência criada com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos ou duplicados."
+          },
+          "500": {
+            "description": "Erro interno ao criar a assistência."
+          }
+        }
+      }
+    },
+    "/api/AssistenciaExterna/AtualizarAssistencia/{assistenteId}": {
+      "put": {
+        "tags": [
+          "AssistenciaExterna"
+        ],
+        "summary": "Atualiza os dados de uma assistência externa existente.",
+        "parameters": [
+          {
+            "name": "assistenteId",
+            "in": "path",
+            "description": "ID da assistência a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados da assistência.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistenciaExternaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assistência atualizada com sucesso."
+          },
+          "404": {
+            "description": "Assistência não encontrada."
+          },
+          "400": {
+            "description": "NIF duplicado ou dados inválidos."
+          },
+          "500": {
+            "description": "Erro interno ao tentar atualizar a assistência."
+          }
+        }
+      }
+    },
     "/api/Cliente/ObterClientes": {
       "get": {
         "tags": [
@@ -100,7 +286,7 @@
         "tags": [
           "Cliente"
         ],
-        "summary": "Cria um novo pedido de compra.",
+        "summary": "Cria um novo cliente.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -125,10 +311,7 @@
             "description": "OK"
           },
           "201": {
-            "description": "Pedido de compra criado com sucesso."
-          },
-          "400": {
-            "description": "Utilizador não encontrado ou dados inválidos."
+            "description": "Cliente criado com sucesso."
           },
           "500": {
             "description": "Erro interno ao criar o pedido de compra."
@@ -195,9 +378,10 @@
         "tags": [
           "EncomendaCliente"
         ],
+        "summary": "Lista encomendas",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Lista obtida com sucesso.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -224,6 +408,243 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Erro ao obter encomendas."
+          }
+        }
+      }
+    },
+    "/api/EncomendaCliente/AtualizarEstado/{id}": {
+      "put": {
+        "tags": [
+          "EncomendaCliente"
+        ],
+        "summary": "Atualiza manualmente o estado de uma encomenda.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da encomenda a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo estado da encomenda.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoEncomendaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoEncomendaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoEncomendaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado atualizado com sucesso."
+          },
+          "404": {
+            "description": "Encomenda não encontrada."
+          },
+          "500": {
+            "description": "Erro interno ao atualizar o estado."
+          }
+        }
+      }
+    },
+    "/api/EncomendaItens/ObterEncomendaItens": {
+      "get": {
+        "tags": [
+          "EncomendaItens"
+        ],
+        "summary": "Obtém a lista de todos os itens de encomenda registados.",
+        "responses": {
+          "200": {
+            "description": "Retorna a lista com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EncomendaItensDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EncomendaItensDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EncomendaItensDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao tentar obter os itens."
+          }
+        }
+      }
+    },
+    "/api/EncomendaItens/ObterEncomendaItem/{id}": {
+      "get": {
+        "tags": [
+          "EncomendaItens"
+        ],
+        "summary": "Obtém um item de encomenda pelo seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador único do item.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item encontrado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncomendaItensDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncomendaItensDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncomendaItensDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao procurar o item."
+          }
+        }
+      }
+    },
+    "/api/EncomendaItens/CriarEncomendaItem": {
+      "post": {
+        "tags": [
+          "EncomendaItens"
+        ],
+        "summary": "Cria um novo item de encomenda.",
+        "requestBody": {
+          "description": "Dados para criação do item.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Item de encomenda criado com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "500": {
+            "description": "Erro interno ao criar o item."
+          }
+        }
+      }
+    },
+    "/api/EncomendaItens/AtualizarEncomendaItem/{itemId}": {
+      "put": {
+        "tags": [
+          "EncomendaItens"
+        ],
+        "summary": "Atualiza os dados de um item de encomenda existente.",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "ID do item a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados do item.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncomendaItensDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item atualizado com sucesso."
+          },
+          "404": {
+            "description": "Item não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao tentar atualizar o item."
           }
         }
       }
@@ -419,6 +840,747 @@
         }
       }
     },
+    "/api/Maquina/ObterMaquinas": {
+      "get": {
+        "tags": [
+          "Maquina"
+        ],
+        "summary": "Obtém a lista de todas as máquinas registadas.",
+        "responses": {
+          "200": {
+            "description": "Retorna a lista de máquinas com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaquinaDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaquinaDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MaquinaDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao tentar obter as máquinas."
+          }
+        }
+      }
+    },
+    "/api/Maquina/ObterMaquina/{id}": {
+      "get": {
+        "tags": [
+          "Maquina"
+        ],
+        "summary": "Obtém uma máquina pelo seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador único da máquina.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Máquina encontrada com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaquinaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaquinaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaquinaDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Máquina não encontrada."
+          },
+          "500": {
+            "description": "Erro interno ao procurar a máquina."
+          }
+        }
+      }
+    },
+    "/api/Maquina/CriarMaquina": {
+      "post": {
+        "tags": [
+          "Maquina"
+        ],
+        "summary": "Cria uma nova máquina.",
+        "requestBody": {
+          "description": "Dados para criação da máquina.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Máquina criada com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos ou duplicados."
+          },
+          "500": {
+            "description": "Erro interno ao criar a máquina."
+          }
+        }
+      }
+    },
+    "/api/Maquina/AtualizarMaquina/{maquinaId}": {
+      "put": {
+        "tags": [
+          "Maquina"
+        ],
+        "summary": "Atualiza os dados de uma máquina existente.",
+        "parameters": [
+          {
+            "name": "maquinaId",
+            "in": "path",
+            "description": "ID da máquina a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados da máquina.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaquinaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Máquina atualizada com sucesso."
+          },
+          "404": {
+            "description": "Máquina não encontrada."
+          },
+          "400": {
+            "description": "Dados inválidos ou duplicados."
+          },
+          "500": {
+            "description": "Erro interno ao tentar atualizar a máquina."
+          }
+        }
+      }
+    },
+    "/api/MateriaPrima": {
+      "get": {
+        "tags": [
+          "MateriaPrima"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "MateriaPrima"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MateriaPrima/{id}": {
+      "get": {
+        "tags": [
+          "MateriaPrima"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "MateriaPrima"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MateriaPrima"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MateriaPrimaProduto": {
+      "get": {
+        "tags": [
+          "MateriaPrimaProduto"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "MateriaPrimaProduto"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MateriaPrimaProduto/{id}": {
+      "get": {
+        "tags": [
+          "MateriaPrimaProduto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "MateriaPrimaProduto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPrimaProdutoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MateriaPrimaProduto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/OrdemProducao": {
+      "get": {
+        "tags": [
+          "OrdemProducao"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrdemProducaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrdemProducaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrdemProducaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OrdemProducao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrdemProducao/{id}": {
+      "get": {
+        "tags": [
+          "OrdemProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdemProducaoDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "OrdemProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdemProducaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "OrdemProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/PedidoCompra/CriarPedidoCompra": {
       "post": {
         "tags": [
@@ -461,6 +1623,940 @@
         }
       }
     },
+    "/api/PedidoCompra/ListarPedidoCompra": {
+      "get": {
+        "tags": [
+          "PedidoCompra"
+        ],
+        "summary": "Lista todos os pedidos de compra com o nome do utilizador associado.",
+        "responses": {
+          "200": {
+            "description": "Lista obtida com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoCompraDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoCompraDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoCompraDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao obter os pedidos."
+          }
+        }
+      }
+    },
+    "/api/PedidoCompra/AtualizarEstado/{pedidoId}": {
+      "put": {
+        "tags": [
+          "PedidoCompra"
+        ],
+        "summary": "Atualiza o estado de um pedido de compra. Se o estado for \"Concluído\", define também a data de conclusão.",
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "description": "ID do pedido a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo estado.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoPedidoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoPedidoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarEstadoPedidoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado atualizado com sucesso."
+          },
+          "404": {
+            "description": "Pedido de compra não encontrado."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "500": {
+            "description": "Erro interno ao atualizar o estado."
+          }
+        }
+      }
+    },
+    "/api/PedidoCompra/AtualizarDescricao/{pedidoId}": {
+      "put": {
+        "tags": [
+          "PedidoCompra"
+        ],
+        "summary": "Atualiza a descrição de um pedido de compra.",
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "description": "ID do pedido.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nova descrição.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarDescricaoPedidoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarDescricaoPedidoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarDescricaoPedidoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Descrição atualizada com sucesso."
+          },
+          "404": {
+            "description": "Pedido não encontrado."
+          },
+          "500": {
+            "description": "Erro interno."
+          }
+        }
+      }
+    },
+    "/api/PedidoManutencao/ObterPedidos": {
+      "get": {
+        "tags": [
+          "PedidoManutencao"
+        ],
+        "summary": "Obtém a lista de todos os pedidos de manutenção registados.",
+        "responses": {
+          "200": {
+            "description": "Retorna a lista de pedidos com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao tentar obter os pedidos."
+          }
+        }
+      }
+    },
+    "/api/PedidoManutencao/ObterPedido/{id}": {
+      "get": {
+        "tags": [
+          "PedidoManutencao"
+        ],
+        "summary": "Obtém um pedido de manutenção pelo seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador único do pedido.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido encontrado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedidoManutençãoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pedido não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao procurar o pedido."
+          }
+        }
+      }
+    },
+    "/api/PedidoManutencao/CriarPedido": {
+      "post": {
+        "tags": [
+          "PedidoManutencao"
+        ],
+        "summary": "Cria um novo pedido de manutenção.",
+        "requestBody": {
+          "description": "Dados para criação do pedido.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Pedido de manutenção criado com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "500": {
+            "description": "Erro interno ao criar o pedido."
+          }
+        }
+      }
+    },
+    "/api/PedidoManutencao/AtualizarPedido/{pedidoId}": {
+      "put": {
+        "tags": [
+          "PedidoManutencao"
+        ],
+        "summary": "Atualiza os dados de um pedido de manutenção existente.",
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "description": "ID do pedido a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados do pedido.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoManutençãoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pedido atualizado com sucesso."
+          },
+          "404": {
+            "description": "Pedido não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao tentar atualizar o pedido."
+          }
+        }
+      }
+    },
+    "/api/ProdMateriais/AtualizarQuantidade/{id}": {
+      "put": {
+        "tags": [
+          "ProdMateriais"
+        ],
+        "summary": "Atualiza a quantidade utilizada de uma matéria-prima numa ordem de produção.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do registo ProdMateriais.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nova quantidade a atualizar.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdMaterialDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdMaterialDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdMaterialDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quantidade atualizada com sucesso."
+          },
+          "404": {
+            "description": "Registo não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao atualizar o registo."
+          }
+        }
+      }
+    },
+    "/api/Produto": {
+      "get": {
+        "tags": [
+          "Produto"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProdutoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProdutoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProdutoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Produto"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Produto/{id}": {
+      "get": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdutoDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/RegistoManutencao/ObterRegistos": {
+      "get": {
+        "tags": [
+          "RegistoManutencao"
+        ],
+        "summary": "Obtém a lista de todos os registos de manutenção.",
+        "responses": {
+          "200": {
+            "description": "Retorna a lista de registos com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao tentar obter os registos."
+          }
+        }
+      }
+    },
+    "/api/RegistoManutencao/ObterRegisto/{id}": {
+      "get": {
+        "tags": [
+          "RegistoManutencao"
+        ],
+        "summary": "Obtém um registo de manutenção pelo seu ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador único do registo.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registo encontrado com sucesso.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoManutencaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registo não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao procurar o registo."
+          }
+        }
+      }
+    },
+    "/api/RegistoManutencao/CriarRegisto": {
+      "post": {
+        "tags": [
+          "RegistoManutencao"
+        ],
+        "summary": "Cria um novo registo de manutenção.",
+        "requestBody": {
+          "description": "Dados para criação do registo.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Registo criado com sucesso."
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "500": {
+            "description": "Erro interno ao criar o registo."
+          }
+        }
+      }
+    },
+    "/api/RegistoManutencao/AtualizarRegisto/{registoId}": {
+      "put": {
+        "tags": [
+          "RegistoManutencao"
+        ],
+        "summary": "Atualiza os dados de um registo de manutenção existente.",
+        "parameters": [
+          {
+            "name": "registoId",
+            "in": "path",
+            "description": "ID do registo a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados do registo.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoManutencaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registo atualizado com sucesso."
+          },
+          "404": {
+            "description": "Registo não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao tentar atualizar o registo."
+          }
+        }
+      }
+    },
+    "/api/RegistoProducao": {
+      "get": {
+        "tags": [
+          "RegistoProducao"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoProducaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoProducaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistoProducaoDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "RegistoProducao"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RegistoProducao/{id}": {
+      "get": {
+        "tags": [
+          "RegistoProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistoProducaoDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "RegistoProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistoProducaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "RegistoProducao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Teste/ping": {
       "get": {
         "tags": [
@@ -477,14 +2573,15 @@
         }
       }
     },
-    "/api/Utilizador": {
+    "/api/Utilizador/ObterUtilizadores": {
       "get": {
         "tags": [
           "Utilizador"
         ],
+        "summary": "Obtém a lista de todos os utilizadores registados.",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Lista de utilizadores obtida com sucesso.",
             "content": {
               "application/json": {
                 "schema": {
@@ -499,12 +2596,14 @@
         }
       }
     },
-    "/api/Utilizador/criar-utilizador": {
+    "/api/Utilizador/CriarUtilizador": {
       "post": {
         "tags": [
           "Utilizador"
         ],
+        "summary": "Cria um novo utilizador com os dados fornecidos.",
         "requestBody": {
+          "description": "Dados do novo utilizador.",
           "content": {
             "application/json": {
               "schema": {
@@ -525,7 +2624,115 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Utilizador criado com sucesso."
+          },
+          "400": {
+            "description": "Número de funcionário já existe."
+          },
+          "500": {
+            "description": "Erro interno ao criar o utilizador."
+          }
+        }
+      }
+    },
+    "/api/Utilizador/AtualizarPerfil/{id}": {
+      "put": {
+        "tags": [
+          "Utilizador"
+        ],
+        "summary": "Atualiza o perfil do utilizador: primeiro nome, sobrenome e/ou password.\r\nApenas os campos preenchidos serão atualizados. A password é guardada com hash.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do utilizador a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados a atualizar.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarPerfilUtilizadorDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarPerfilUtilizadorDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtualizarPerfilUtilizadorDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil atualizado com sucesso."
+          },
+          "404": {
+            "description": "Utilizador não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao atualizar o perfil."
+          }
+        }
+      }
+    },
+    "/api/Utilizador/AtualizarEstadoRole/{id}": {
+      "put": {
+        "tags": [
+          "Utilizador"
+        ],
+        "summary": "Atualiza o estado e o perfil (role) de um utilizador. Apenas usado por administradores.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do utilizador a atualizar.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Novo role e estado.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorUpdateAdminDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorUpdateAdminDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtilizadorUpdateAdminDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Utilizador atualizado com sucesso."
+          },
+          "404": {
+            "description": "Utilizador não encontrado."
+          },
+          "500": {
+            "description": "Erro interno ao atualizar o utilizador."
           }
         }
       }
@@ -603,6 +2810,32 @@
   },
   "components": {
     "schemas": {
+      "AssistenciaExternaDTO": {
+        "type": "object",
+        "properties": {
+          "assistenteId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "nif": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "morada": {
+            "type": "string",
+            "nullable": true
+          },
+          "telefone": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "AtualizarClienteDTO": {
         "required": [
           "morada",
@@ -627,6 +2860,38 @@
         "additionalProperties": false,
         "description": "DTO para atualização de dados de um cliente."
       },
+      "AtualizarDescricaoPedidoDTO": {
+        "type": "object",
+        "properties": {
+          "novaDescricao": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AtualizarEstadoEncomendaDTO": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "description": "Novo estado da encomenda.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "DTO utilizado para atualizar o estado de uma encomenda."
+      },
+      "AtualizarEstadoPedidoDTO": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "AtualizarFornecedorDTO": {
         "required": [
           "nome"
@@ -650,6 +2915,25 @@
         },
         "additionalProperties": false,
         "description": "DTO utilizado para atualizar os dados de um fornecedor existente."
+      },
+      "AtualizarPerfilUtilizadorDTO": {
+        "type": "object",
+        "properties": {
+          "primeiroNome": {
+            "type": "string",
+            "nullable": true
+          },
+          "sobrenome": {
+            "type": "string",
+            "nullable": true
+          },
+          "novaPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "DTO para atualizar o perfil do utilizador (dados pessoais + password)."
       },
       "ClienteDTO": {
         "type": "object",
@@ -813,6 +3097,25 @@
         "additionalProperties": false,
         "description": "DTO para leitura de encomendas com nome do cliente."
       },
+      "EncomendaItensDTO": {
+        "type": "object",
+        "properties": {
+          "encomendaItensId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "encomendaClienteEncomendaClienteId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "FornecedorDTO": {
         "type": "object",
         "properties": {
@@ -855,6 +3158,299 @@
         },
         "additionalProperties": false
       },
+      "MaquinaDTO": {
+        "type": "object",
+        "properties": {
+          "maquinaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "linhaProd": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assistenciaExternaAssistenteId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MateriaPrimaDTO": {
+        "type": "object",
+        "properties": {
+          "materiaPrimaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoria": {
+            "type": "string",
+            "nullable": true
+          },
+          "codInterno": {
+            "type": "string",
+            "nullable": true
+          },
+          "preco": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MateriaPrimaProdutoDTO": {
+        "type": "object",
+        "properties": {
+          "materiaPrimaProdutoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantidadeNec": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "materiaPrimaMateriaPrimaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "produtoProdutoId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrdemProducaoDTO": {
+        "type": "object",
+        "properties": {
+          "ordemProdId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidade": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataAbertura": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataConclusao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maquinaMaquinaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "encomendaClienteEncomendaClienteId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PedidoCompraDTO": {
+        "type": "object",
+        "properties": {
+          "pedidoCompraId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataAbertura": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataConclusao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "nomeUtilizador": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "DTO para leitura de pedidos de compra."
+      },
+      "PedidoManutençãoDTO": {
+        "type": "object",
+        "properties": {
+          "pedidoManutId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descicao": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataAbertura": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataConclusao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maquinaMaquinaId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "utilizadorUtilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProdMaterialDTO": {
+        "type": "object",
+        "properties": {
+          "quantidadeUtilizada": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "DTO utilizado para apresentar os dados de matérias-primas usadas numa ordem de produção."
+      },
+      "ProdutoDTO": {
+        "type": "object",
+        "properties": {
+          "produtoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidade": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "codInterno": {
+            "type": "string",
+            "nullable": true
+          },
+          "preco": {
+            "type": "number",
+            "format": "double"
+          },
+          "ordemProducaoOrdemProdId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "encomendaItensEncomendaItensId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistoManutencaoDTO": {
+        "type": "object",
+        "properties": {
+          "registoManutencaoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "pedidoManutencaoPedidoManutId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "utilizadorUtilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assistenciaExternaAssistenteId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistoProducaoDTO": {
+        "type": "object",
+        "properties": {
+          "registoProducaoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataProducao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "observacoes": {
+            "type": "string",
+            "nullable": true
+          },
+          "utilizadorUtilizadorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "produtoProdutoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordemProducaoOrdemProdId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "UtilizadorDTO": {
         "type": "object",
         "properties": {
@@ -884,6 +3480,20 @@
         },
         "additionalProperties": false,
         "description": "DTO para representar um utilizador sem informações sensíveis."
+      },
+      "UtilizadorUpdateAdminDTO": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": "DTO usado para o administrador atualizar o estado e o perfil do utilizador."
       },
       "WeatherForecast": {
         "type": "object",
