@@ -21,7 +21,7 @@ public partial class PedidoManutencao
 
     public virtual Maquina MaquinaMaquina { get; set; } = null!;
 
-    public virtual ICollection<RegistoManutencao> RegistoManutencaos { get; set; } = new List<RegistoManutencao>();
+    public virtual ICollection<RegistoManutencao> RegistosManutencao { get; set; } = new List<RegistoManutencao>();
 
     public virtual Utilizador UtilizadorUtilizador { get; set; } = null!;
 }
