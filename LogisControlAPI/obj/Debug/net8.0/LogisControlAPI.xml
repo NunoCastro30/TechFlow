@@ -35,12 +35,11 @@
         </member>
         <member name="M:LogisControlAPI.Controllers.ClienteController.CriarCliente(LogisControlAPI.DTO.CriarClienteDTO)">
             <summary>
-            Cria um novo pedido de compra.
+            Cria um novo cliente.
             </summary>
             <param name="dto">Dados para criação do pedido.</param>
             <returns>Mensagem de sucesso ou erro.</returns>
-            <response code="201">Pedido de compra criado com sucesso.</response>
-            <response code="400">Utilizador não encontrado ou dados inválidos.</response>
+            <response code="201">Cliente criado com sucesso.</response>
             <response code="500">Erro interno ao criar o pedido de compra.</response>
         </member>
         <member name="M:LogisControlAPI.Controllers.ClienteController.AtualizarCliente(System.Int32,LogisControlAPI.DTO.AtualizarClienteDTO)">
@@ -65,6 +64,25 @@
             Construtor do controlador que injeta o contexto da base de dados.
             </summary>
             <param name="context">Instância do contexto da base de dados.</param>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.EncomendaClienteController.ListarEncomendas">
+            <summary>
+            Lista encomendas
+            </summary>
+            <returns>Lista de encomendas.</returns>
+            <response code="200">Lista obtida com sucesso.</response>
+            <response code="500">Erro ao obter encomendas.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.EncomendaClienteController.AtualizarEstado(System.Int32,LogisControlAPI.DTO.AtualizarEstadoEncomendaDTO)">
+            <summary>
+            Atualiza manualmente o estado de uma encomenda.
+            </summary>
+            <param name="id">ID da encomenda a atualizar.</param>
+            <param name="dto">Novo estado da encomenda.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Estado atualizado com sucesso.</response>
+            <response code="404">Encomenda não encontrada.</response>
+            <response code="500">Erro interno ao atualizar o estado.</response>
         </member>
         <member name="T:LogisControlAPI.Controllers.FornecedorController">
             <summary>
@@ -135,6 +153,53 @@
             <response code="400">Utilizador não encontrado ou dados inválidos.</response>
             <response code="500">Erro interno ao criar o pedido de compra.</response>
         </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoCompraController.ListarPedidosCompra">
+            <summary>
+            Lista todos os pedidos de compra com o nome do utilizador associado.
+            </summary>
+            <returns>Lista de pedidos de compra.</returns>
+            <response code="200">Lista obtida com sucesso.</response>
+            <response code="500">Erro ao obter os pedidos.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoCompraController.AtualizarEstadoPedido(System.Int32,LogisControlAPI.DTO.AtualizarEstadoPedidoDTO)">
+            <summary>
+            Atualiza o estado de um pedido de compra. Se o estado for "Concluído", define também a data de conclusão.
+            </summary>
+            <param name="pedidoId">ID do pedido a atualizar.</param>
+            <param name="dto">Novo estado.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Estado atualizado com sucesso.</response>
+            <response code="404">Pedido de compra não encontrado.</response>
+            <response code="400">Dados inválidos.</response>
+            <response code="500">Erro interno ao atualizar o estado.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.PedidoCompraController.AtualizarDescricao(System.Int32,LogisControlAPI.DTO.AtualizarDescricaoPedidoDTO)">
+            <summary>
+            Atualiza a descrição de um pedido de compra.
+            </summary>
+            <param name="pedidoId">ID do pedido.</param>
+            <param name="dto">Nova descrição.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Descrição atualizada com sucesso.</response>
+            <response code="404">Pedido não encontrado.</response>
+            <response code="500">Erro interno.</response>
+        </member>
+        <member name="T:LogisControlAPI.Controllers.ProdMateriaisController">
+            <summary>
+            Controlador responsável por atualizar a quantidade de matérias-primas utilizadas numa ordem de produção.
+            </summary>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.ProdMateriaisController.AtualizarQuantidade(System.Int32,LogisControlAPI.DTO.ProdMaterialDTO)">
+            <summary>
+            Atualiza a quantidade utilizada de uma matéria-prima numa ordem de produção.
+            </summary>
+            <param name="id">ID do registo ProdMateriais.</param>
+            <param name="dto">Nova quantidade a atualizar.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Quantidade atualizada com sucesso.</response>
+            <response code="404">Registo não encontrado.</response>
+            <response code="500">Erro interno ao atualizar o registo.</response>
+        </member>
         <member name="T:LogisControlAPI.Controllers.TesteController">
             <summary>
             Controlador para testar a conectividade com a base de dados SQL Server.
@@ -153,6 +218,56 @@
             <returns>Mensagem indicando sucesso ou erro na conexão.</returns>
             <response code="200">Conexão bem-sucedida com a BD.</response>
             <response code="500">Erro ao tentar conectar a BD.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.UtilizadorController.GetUtilizadores">
+            <summary>
+            Obtém a lista de todos os utilizadores registados.
+            </summary>
+            <returns>Lista de utilizadores com dados públicos (sem password).</returns>
+            <response code="200">Lista de utilizadores obtida com sucesso.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.UtilizadorController.CriarUtilizador(LogisControlAPI.DTO.CriarUtilizadorDTO)">
+            <summary>
+            Cria um novo utilizador com os dados fornecidos.
+            </summary>
+            <param name="novoUtilizadorDto">Dados do novo utilizador.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Utilizador criado com sucesso.</response>
+            <response code="400">Número de funcionário já existe.</response>
+            <response code="500">Erro interno ao criar o utilizador.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.UtilizadorController.AtualizarPerfil(System.Int32,LogisControlAPI.DTO.AtualizarPerfilUtilizadorDTO)">
+            <summary>
+            Atualiza o perfil do utilizador: primeiro nome, sobrenome e/ou password.
+            Apenas os campos preenchidos serão atualizados. A password é guardada com hash.
+            </summary>
+            <param name="id">ID do utilizador a atualizar.</param>
+            <param name="dto">Dados a atualizar.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Perfil atualizado com sucesso.</response>
+            <response code="404">Utilizador não encontrado.</response>
+            <response code="500">Erro interno ao atualizar o perfil.</response>
+        </member>
+        <member name="M:LogisControlAPI.Controllers.UtilizadorController.AtualizarEstadoRole(System.Int32,LogisControlAPI.DTO.UtilizadorUpdateAdminDTO)">
+            <summary>
+            Atualiza o estado e o perfil (role) de um utilizador. Apenas usado por administradores.
+            </summary>
+            <param name="id">ID do utilizador a atualizar.</param>
+            <param name="dto">Novo role e estado.</param>
+            <returns>Mensagem de sucesso ou erro.</returns>
+            <response code="200">Utilizador atualizado com sucesso.</response>
+            <response code="404">Utilizador não encontrado.</response>
+            <response code="500">Erro interno ao atualizar o utilizador.</response>
+        </member>
+        <member name="T:LogisControlAPI.DTO.AtualizarEstadoEncomendaDTO">
+            <summary>
+            DTO utilizado para atualizar o estado de uma encomenda.
+            </summary>
+        </member>
+        <member name="P:LogisControlAPI.DTO.AtualizarEstadoEncomendaDTO.Estado">
+            <summary>
+            Novo estado da encomenda.
+            </summary>
         </member>
         <member name="T:LogisControlAPI.DTO.ClienteDTO">
             <summary>
@@ -219,6 +334,11 @@
             ID do utilizador que está a criar o pedido.
             </summary>
         </member>
+        <member name="T:LogisControlAPI.DTO.CriarProdMaterialDTO">
+            <summary>
+            DTO utilizado para criar uma associação entre matéria-prima e ordem de produção.
+            </summary>
+        </member>
         <member name="T:LogisControlAPI.DTO.CriarUtilizadorDTO">
             <summary>
             DTO utilizado para criar um novo utilizador, contendo apenas os dados necessários para o registo.
@@ -274,119 +394,39 @@
             DTO para leitura de pedidos de compra.
             </summary>
         </member>
+        <member name="T:LogisControlAPI.DTO.ProdMaterialDTO">
+            <summary>
+            DTO utilizado para apresentar os dados de matérias-primas usadas numa ordem de produção.
+            </summary>
+        </member>
+        <member name="P:LogisControlAPI.DTO.ProdMaterialListar.ProdMateriaisId">
+            <summary>
+            ID do registo na tabela ProdMateriais.
+            </summary>
+        </member>
+        <member name="P:LogisControlAPI.DTO.ProdMaterialListar.MateriaPrimaNome">
+            <summary>
+            Nome da matéria-prima utilizada.
+            </summary>
+        </member>
+        <member name="P:LogisControlAPI.DTO.ProdMaterialListar.QuantidadeUtilizada">
+            <summary>
+            Quantidade da matéria-prima utilizada.
+            </summary>
+        </member>
         <member name="T:LogisControlAPI.DTO.UtilizadorDTO">
             <summary>
             DTO para representar um utilizador sem informações sensíveis.
             </summary>
         </member>
-        <member name="T:LogisControlAPI.Models.AssistenciaExterna">
+        <member name="T:LogisControlAPI.DTO.UtilizadorUpdateAdminDTO">
             <summary>
-            Representa uma entidade de assistência externa que pode estar associada a máquinas ou registos de manutenção.
+            DTO usado para o administrador atualizar o estado e o perfil do utilizador.
             </summary>
         </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.AssistenteId">
+        <member name="T:LogisControlAPI.DTO.AtualizarPerfilUtilizadorDTO">
             <summary>
-            Identificador único da assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.Nome">
-            <summary>
-            Nome da empresa ou pessoa responsável pela assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.Nif">
-            <summary>
-            Número de Identificação Fiscal (NIF) da assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.Morada">
-            <summary>
-            Morada (endereço) da assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.Telefone">
-            <summary>
-            Número de telefone de contacto da assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.Maquinas">
-            <summary>
-            Lista de máquinas associadas a esta assistência externa.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.AssistenciaExterna.RegistoManutencaos">
-            <summary>
-            Lista de registos de manutenção realizados por esta assistência externa.
-            </summary>
-        </member>
-        <member name="T:LogisControlAPI.Models.Cliente">
-            <summary>
-            Representa um cliente da empresa, com os respetivos dados de identificação e morada.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.Cliente.ClienteId">
-            <summary>
-            Identificador único do cliente.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.Cliente.Nome">
-            <summary>
-            Nome completo ou designação do cliente.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.Cliente.Nif">
-            <summary>
-            Número de Identificação Fiscal (NIF) do cliente.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.Cliente.Morada">
-            <summary>
-            Morada completa do cliente.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.Cliente.EncomendaClientes">
-            <summary>
-            Lista de encomendas realizadas por este cliente.
-            </summary>
-        </member>
-        <member name="T:LogisControlAPI.Models.EncomendaCliente">
-            <summary>
-            Representa uma encomenda realizada por um cliente, com data, estado e ligação a itens e ordens de produção.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.EncomendaClienteId">
-            <summary>
-            Identificador único da encomenda do cliente.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.DataEncomenda">
-            <summary>
-            Data em que a encomenda foi registada.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.Estado">
-            <summary>
-            Estado atual da encomenda (ex: Pendente, Em Produção, Concluída).
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.ClienteClienteId">
-            <summary>
-            Chave estrangeira que referencia o cliente que fez a encomenda.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.ClienteCliente">
-            <summary>
-            Referência ao cliente associado a esta encomenda.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.EncomendaItens">
-            <summary>
-            Lista de itens incluídos nesta encomenda.
-            </summary>
-        </member>
-        <member name="P:LogisControlAPI.Models.EncomendaCliente.OrdemProducaos">
-            <summary>
-            Lista de ordens de produção geradas a partir desta encomenda.
+            DTO para atualizar o perfil do utilizador (dados pessoais + password).
             </summary>
         </member>
     </members>

@@ -97,12 +97,11 @@ namespace LogisControlAPI.Controllers
 
         #region CriarCliente
         /// <summary>
-        /// Cria um novo pedido de compra.
+        /// Cria um novo cliente.
         /// </summary>
         /// <param name="dto">Dados para criação do pedido.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="201">Pedido de compra criado com sucesso.</response>
-        /// <response code="400">Utilizador não encontrado ou dados inválidos.</response>
+        /// <response code="201">Cliente criado com sucesso.</response>
         /// <response code="500">Erro interno ao criar o pedido de compra.</response>
         [HttpPost("CriarCliente")]
         public async Task<ActionResult> CriarCliente([FromBody] CriarClienteDTO novoClienteDto)

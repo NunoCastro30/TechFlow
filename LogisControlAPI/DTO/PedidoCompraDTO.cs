@@ -10,7 +10,6 @@
         public string Estado { get; set; } = null!;
         public DateTime DataAbertura { get; set; }
         public DateTime? DataConclusao { get; set; }
-        public int UtilizadorId { get; set; }
         public string NomeUtilizador { get; set; } = null!;
     }
 }

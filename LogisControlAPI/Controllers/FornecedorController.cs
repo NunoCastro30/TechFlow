@@ -37,7 +37,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var fornecedores = await _context.Fornecedors
+                var fornecedores = await _context.Fornecedores
                     .Select(f => new FornecedorDTO
                     {
                         FornecedorId = f.FornecedorId,
@@ -70,7 +70,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var fornecedores = await _context.Fornecedors
+                var fornecedores = await _context.Fornecedores
                     .Where(f => f.Nome.Contains(nome))
                     .Select(f => new FornecedorDTO
                     {
@@ -114,7 +114,7 @@ namespace LogisControlAPI.Controllers
                     Email = novoFornecedorDto.Email
                 };
 
-                _context.Fornecedors.Add(novoFornecedor);
+                _context.Fornecedores.Add(novoFornecedor);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(201, "Fornecedor criado com sucesso.");
@@ -141,7 +141,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var fornecedor = await _context.Fornecedors.FindAsync(fornecedorId);
+                var fornecedor = await _context.Fornecedores.FindAsync(fornecedorId);
 
                 if (fornecedor == null)
                     return NotFound("Fornecedor não encontrado.");

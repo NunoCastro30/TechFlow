@@ -3,37 +3,28 @@ using System.Collections.Generic;
 
 namespace LogisControlAPI.Models
 {
-    /// <summary>
-    /// Representa uma encomenda realizada por um cliente, com data, estado e ligação a itens e ordens de produção.
-    /// </summary>
+    
     public partial class EncomendaCliente
     {
-        /// <summary>
-        /// Identificador único da encomenda do cliente.
-        /// </summary>
+        
         public int EncomendaClienteId { get; set; }
 
-        /// <summary>
-        /// Data em que a encomenda foi registada.
-        /// </summary>
+        
         public DateTime DataEncomenda { get; set; }
 
-        /// <summary>
-        /// Estado atual da encomenda (ex: Pendente, Em Produção, Concluída).
-        /// </summary>
+        
         public string Estado { get; set; } = null!;
 
-        /// <summary>
-        /// Chave estrangeira que referencia o cliente que fez a encomenda.
-        /// </summary>
+        
         public int ClienteClienteId { get; set; }
 
-        /// <summary>
-        /// Referência ao cliente associado a esta encomenda.
-        /// </summary>
+        
         public virtual Cliente ClienteCliente { get; set; } = null!;
+       
 
-    public virtual ICollection<EncomendaIten> EncomendaItens { get; set; } = new List<EncomendaIten>();
+        public virtual ICollection<EncomendaItens> EncomendasItem { get; set; } = new List<EncomendaItens>();
 
-    public virtual ICollection<OrdemProducao> OrdemProducaos { get; set; } = new List<OrdemProducao>();
+        
+        public virtual ICollection<OrdemProducao> OrdensProducao { get; set; } = new List<OrdemProducao>();
+    }
 }

@@ -29,18 +29,20 @@ namespace LogisControlAPI.Controllers
             _context = context;
         }
 
-        [HttpGet("ListarEncomendas")]
+
+        #region ListarEncomenda
         /// <summary>
-        /// Lista todas as encomendas com o nome do cliente associado.
+        /// Lista encomendas
         /// </summary>
         /// <returns>Lista de encomendas.</returns>
         /// <response code="200">Lista obtida com sucesso.</response>
         /// <response code="500">Erro ao obter encomendas.</response>
+        [HttpGet("ListarEncomendas")]
         public async Task<ActionResult<IEnumerable<EncomendaClienteDTO>>> ListarEncomendas()
         {
             try
             {
-                var encomendas = await _context.EncomendaClientes
+                var encomendas = await _context.EncomendasCliente
                     .Include(e => e.ClienteCliente)
                     .Select(e => new EncomendaClienteDTO
                     {
@@ -58,7 +60,40 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro ao obter encomendas: {ex.Message}");
             }
         }
+        #endregion
 
+       
+        #region AtualizarEstado
+        /// <summary>
+        /// Atualiza manualmente o estado de uma encomenda.
+        /// </summary>
+        /// <param name="id">ID da encomenda a atualizar.</param>
+        /// <param name="dto">Novo estado da encomenda.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        /// <response code="200">Estado atualizado com sucesso.</response>
+        /// <response code="404">Encomenda não encontrada.</response>
+        /// <response code="500">Erro interno ao atualizar o estado.</response>
+        [HttpPut("AtualizarEstado/{id}")]
+        public async Task<IActionResult> AtualizarEstado(int id, [FromBody] AtualizarEstadoEncomendaDTO dto)
+        {
+            try
+            {
+                var encomenda = await _context.EncomendasCliente.FindAsync(id);
+                if (encomenda == null)
+                    return NotFound("Encomenda não encontrada.");
+
+                encomenda.Estado = dto.Estado;
+                await _context.SaveChangesAsync();
+
+                return Ok("Estado da encomenda atualizado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar estado: {ex.Message}");
+            }
+        }
+
+        #endregion
 
 
     }
