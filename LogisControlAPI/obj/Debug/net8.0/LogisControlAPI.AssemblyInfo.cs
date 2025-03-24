@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LogisControlAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a1fd4297af84ad4fb9deb2a9fc709a845bf6e8e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ddc68587ed2c17cc2d184c5dd1e2676f91a18e6")]
 [assembly: System.Reflection.AssemblyProductAttribute("LogisControlAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LogisControlAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
