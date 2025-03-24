@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LogisControlAPI.Models;
 
-public partial class NotaEncomendaIten
+public partial class NotaEncomendaItens
 {
     public int NotaEncomendaItensId { get; set; }
 
@@ -13,9 +13,9 @@ public partial class NotaEncomendaIten
 
     public int NotaEncomendaNotaEncomendaId { get; set; }
 
-    public int MateriaPrimaMateriaPrimalD { get; set; }
+    public int MateriaPrimaMateriaPrimaId { get; set; }
 
-    public virtual MateriaPrima MateriaPrimaMateriaPrimalDNavigation { get; set; } = null!;
+    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
 
-    public virtual NotaEncomendum NotaEncomendaNotaEncomenda { get; set; } = null!;
+    public virtual NotaEncomenda NotaEncomendaNotaEncomenda { get; set; } = null!;
 }

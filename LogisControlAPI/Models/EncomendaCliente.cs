@@ -33,14 +33,7 @@ namespace LogisControlAPI.Models
         /// </summary>
         public virtual Cliente ClienteCliente { get; set; } = null!;
 
-        /// <summary>
-        /// Lista de itens incluídos nesta encomenda.
-        /// </summary>
-        public virtual ICollection<EncomendaIten> EncomendaItens { get; set; } = new List<EncomendaIten>();
+    public virtual ICollection<EncomendaIten> EncomendaItens { get; set; } = new List<EncomendaIten>();
 
-        /// <summary>
-        /// Lista de ordens de produção geradas a partir desta encomenda.
-        /// </summary>
-        public virtual ICollection<OrdemProducao> OrdemProducaos { get; set; } = new List<OrdemProducao>();
-    }
+    public virtual ICollection<OrdemProducao> OrdemProducaos { get; set; } = new List<OrdemProducao>();
 }

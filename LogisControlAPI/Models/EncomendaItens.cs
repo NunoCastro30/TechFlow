@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace LogisControlAPI.Models;
 
-public partial class EncomendaIten
+public partial class EncomendaItens
 {
-    public int EncomendaItens { get; set; }
+    public int EncomendaItensId { get; set; }
 
     public int? Quantidade { get; set; }
 

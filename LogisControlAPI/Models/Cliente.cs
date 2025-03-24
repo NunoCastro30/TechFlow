@@ -34,3 +34,5 @@ namespace LogisControlAPI.Models
         public virtual ICollection<EncomendaCliente> EncomendaClientes { get; set; } = new List<EncomendaCliente>();
     }
 }
+   public virtual ICollection<EncomendaCliente> EncomendasCliente { get; set; } = new List<EncomendaCliente>();
+}

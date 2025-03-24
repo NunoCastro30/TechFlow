@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LogisControlAPI.Models;
 
-public partial class ProdMateriai
+public partial class ProdMateriais
 {
     public int ProdMateriaisId { get; set; }
 
@@ -11,9 +11,9 @@ public partial class ProdMateriai
 
     public int OrdemProducaoOrdemProdId { get; set; }
 
-    public int MateriaPrimaMateriaPrimalD { get; set; }
+    public int MateriaPrimaMateriaPrimaId { get; set; }
 
-    public virtual MateriaPrima MateriaPrimaMateriaPrimalDNavigation { get; set; } = null!;
+    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
 
     public virtual OrdemProducao OrdemProducaoOrdemProd { get; set; } = null!;
 }

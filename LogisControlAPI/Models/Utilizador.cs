@@ -19,11 +19,11 @@ public partial class Utilizador
 
     public bool Estado { get; set; }
 
-    public virtual ICollection<PedidoCompra> PedidoCompras { get; set; } = new List<PedidoCompra>();
+    public virtual ICollection<PedidoCompra> PedidosCompra { get; set; } = new List<PedidoCompra>();
 
-    public virtual ICollection<PedidoManutencao> PedidoManutencaos { get; set; } = new List<PedidoManutencao>();
+    public virtual ICollection<PedidoManutencao> PedidosManutencao { get; set; } = new List<PedidoManutencao>();
 
-    public virtual ICollection<RegistoManutencao> RegistoManutencaos { get; set; } = new List<RegistoManutencao>();
+    public virtual ICollection<RegistoManutencao> RegistosManutencao { get; set; } = new List<RegistoManutencao>();
 
-    public virtual ICollection<RegistoProducao> RegistoProducaos { get; set; } = new List<RegistoProducao>();
+    public virtual ICollection<RegistoProducao> RegistosProducao { get; set; } = new List<RegistoProducao>();
 }

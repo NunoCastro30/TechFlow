@@ -9,11 +9,11 @@ public partial class MateriaPrimaProduto
 
     public int QuantidadeNec { get; set; }
 
-    public int MateriaPrimaMateriaPrimalD { get; set; }
+    public int MateriaPrimaMateriaPrimaId { get; set; }
 
     public int ProdutoProdutoId { get; set; }
 
-    public virtual MateriaPrima MateriaPrimaMateriaPrimalDNavigation { get; set; } = null!;
+    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
 
     public virtual Produto ProdutoProduto { get; set; } = null!;
 }
