@@ -14,7 +14,6 @@ namespace LogisControlAPI.DTO
         public int NumFuncionario { get; set; }  // Número único do funcionário
 
         [Required]
-        [StringLength(8, MinimumLength = 3, ErrorMessage = "A Password deve ter exatamente 3 caracteres.")]
         public string Password { get; set; }
 
         [Required]
