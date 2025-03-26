@@ -6,19 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisControlAPI.Controllers
 {
-
+    /// <summary>
+    /// Controlador responsável pela gestão dos registos de produção.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class RegistoProducaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
 
+        /// <summary>
+        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// </summary>
+        /// <param name="context">Instância do contexto da base de dados.</param>
         public RegistoProducaoController(LogisControlContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
+        #region ListarRegistos
+        /// <summary>
+        /// Obtém todos os registos de produção.
+        /// </summary>
+        /// <returns>Lista de registos de produção.</returns>
+        /// <response code="200">Lista obtida com sucesso.</response>
+        /// <response code="500">Erro ao obter os registos de produção.</response>
+        [HttpGet("ListarRegistosProducao")]
         public async Task<ActionResult<IEnumerable<RegistoProducaoDTO>>> GetAll()
         {
             try
@@ -40,11 +53,20 @@ namespace LogisControlAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno ao obter os registros de produção: {ex.Message}");
+                return StatusCode(500, $"Erro interno ao obter os registos de produção: {ex.Message}");
             }
         }
+        #endregion
 
-        [HttpGet("{id}")]
+        #region ObterPorId
+        /// <summary>
+        /// Obtém um registo de produção pelo ID.
+        /// </summary>
+        /// <param name="id">ID do registo de produção.</param>
+        /// <returns>Dados do registo de produção.</returns>
+        /// <response code="200">Registo encontrado.</response>
+        /// <response code="404">Registo não encontrado.</response>
+        [HttpGet("ObterRegistoProducaoPorId/{id}")]
         public async Task<ActionResult<RegistoProducaoDTO>> GetById(int id)
         {
             var registo = await _context.RegistosProducao.FindAsync(id);
@@ -52,10 +74,31 @@ namespace LogisControlAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(registo);
-        }
 
-        [HttpPost]
+            // Mapeia a entidade para DTO antes de retornar
+            var registoDto = new RegistoProducaoDTO
+            {
+                RegistoProducaoId = registo.RegistoProducaoId,
+                Estado = registo.Estado,
+                DataProducao = registo.DataProducao,
+                Observacoes = registo.Observacoes,
+                UtilizadorUtilizadorId = registo.UtilizadorUtilizadorId,
+                ProdutoProdutoId = registo.ProdutoProdutoId,
+                OrdemProducaoOrdemProdId = registo.OrdemProducaoOrdemProdId
+            };
+
+            return Ok(registoDto);
+        }
+        #endregion
+
+        #region CriarRegisto
+        /// <summary>
+        /// Cria um novo registo de produção.
+        /// </summary>
+        /// <param name="dto">Dados do novo registo de produção.</param>
+        /// <returns>Registo criado.</returns>
+        /// <response code="201">Registo criado com sucesso.</response>
+        [HttpPost("CriarRegistoProducao")]
         public async Task<ActionResult<RegistoProducaoDTO>> Create([FromBody] RegistoProducaoDTO dto)
         {
             var registo = new RegistoProducao
@@ -73,8 +116,18 @@ namespace LogisControlAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = registo.RegistoProducaoId }, registo);
         }
+        #endregion
 
-        [HttpPut("{id}")]
+        #region AtualizarRegisto
+        /// <summary>
+        /// Atualiza os dados de um registo de produção.
+        /// </summary>
+        /// <param name="id">ID do registo a ser atualizado.</param>
+        /// <param name="dto">Novos dados do registo de produção.</param>
+        /// <returns>Sem conteúdo em caso de sucesso.</returns>
+        /// <response code="204">Registo atualizado com sucesso.</response>
+        /// <response code="404">Registo não encontrado.</response>
+        [HttpPut("AtualizarRegistoProducao/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] RegistoProducaoDTO dto)
         {
             var registo = await _context.RegistosProducao.FindAsync(id);
@@ -93,8 +146,17 @@ namespace LogisControlAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        #endregion
 
-        [HttpDelete("{id}")]
+        #region DeletarRegisto
+        /// <summary>
+        /// Exclui um registo de produção pelo ID.
+        /// </summary>
+        /// <param name="id">ID do registo a ser excluído.</param>
+        /// <returns>Sem conteúdo em caso de sucesso.</returns>
+        /// <response code="204">Registo excluído com sucesso.</response>
+        /// <response code="404">Registo não encontrado.</response>
+        [HttpDelete("ApagarRegistoProducao/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var registo = await _context.RegistosProducao.FindAsync(id);
@@ -108,5 +170,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }

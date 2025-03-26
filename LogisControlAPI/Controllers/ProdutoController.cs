@@ -6,18 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisControlAPI.Controllers
 {
+    /// <summary>
+    /// Controlador responsável pela gestão dos produtos.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProdutoController : ControllerBase
     {
         private readonly LogisControlContext _context;
 
+        /// <summary>
+        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// </summary>
+        /// <param name="context">Instância do contexto da base de dados.</param>
         public ProdutoController(LogisControlContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
+        #region ListarProdutos
+        /// <summary>
+        /// Lista todos os produtos.
+        /// </summary>
+        /// <returns>Lista de produtos.</returns>
+        /// <response code="200">Lista obtida com sucesso.</response>
+        /// <response code="500">Erro interno ao obter produtos.</response>
+        [HttpGet("ListarProdutos")]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetAll()
         {
             try
@@ -43,8 +57,17 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro interno ao obter os produtos: {ex.Message}");
             }
         }
+        #endregion
 
-        [HttpGet("{id}")]
+        #region ObterProdutoPorId
+        /// <summary>
+        /// Obtém um produto pelo ID.
+        /// </summary>
+        /// <param name="id">ID do produto.</param>
+        /// <returns>Produto correspondente ao ID.</returns>
+        /// <response code="200">Produto encontrado.</response>
+        /// <response code="404">Produto não encontrado.</response>
+        [HttpGet("ObterProdutoPorId/{id}")]
         public async Task<ActionResult<ProdutoDTO>> GetById(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -54,8 +77,16 @@ namespace LogisControlAPI.Controllers
             }
             return Ok(produto);
         }
+        #endregion
 
-        [HttpPost]
+        #region CriarProduto
+        /// <summary>
+        /// Cria um novo produto.
+        /// </summary>
+        /// <param name="dto">Dados do produto a ser criado.</param>
+        /// <returns>Produto criado.</returns>
+        /// <response code="201">Produto criado com sucesso.</response>
+        [HttpPost("CriarProduto")]
         public async Task<ActionResult<ProdutoDTO>> Create([FromBody] ProdutoDTO dto)
         {
             var produto = new Produto
@@ -74,8 +105,18 @@ namespace LogisControlAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = produto.ProdutoId }, produto);
         }
+        #endregion
 
-        [HttpPut("{id}")]
+        #region AtualizarProduto
+        /// <summary>
+        /// Atualiza um produto existente.
+        /// </summary>
+        /// <param name="id">ID do produto a ser atualizado.</param>
+        /// <param name="dto">Novos dados do produto.</param>
+        /// <returns>Status da atualização.</returns>
+        /// <response code="204">Produto atualizado com sucesso.</response>
+        /// <response code="404">Produto não encontrado.</response>
+        [HttpPut("AtualizarProduto/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ProdutoDTO dto)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -95,8 +136,17 @@ namespace LogisControlAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        #endregion
 
-        [HttpDelete("{id}")]
+        #region DeletarProduto
+        /// <summary>
+        /// Exclui um produto pelo ID.
+        /// </summary>
+        /// <param name="id">ID do produto a ser excluído.</param>
+        /// <returns>Status da exclusão.</returns>
+        /// <response code="204">Produto excluído com sucesso.</response>
+        /// <response code="404">Produto não encontrado.</response>
+        [HttpDelete("ApagarProduto/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -110,5 +160,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }
