@@ -6,9 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisControlAPI.Controllers
 {
+    /// <summary>
+    /// Controlador responsável pela autenticação dos utilizadores.
+    /// </summary>
+    [Route("api/[controller]")]
+    [ApiController]
     public class LoginController : ControllerBase
     {
-
         private readonly LogisControlContext _context;
         private readonly UtilizadorService _utilizadorService;
         private readonly AuthService _authService;
@@ -21,37 +25,45 @@ namespace LogisControlAPI.Controllers
         }
 
         /// <summary>
-        /// Efetuar Login
+        /// Autentica o utilizador e devolve um token JWT.
         /// </summary>
-        /// <returns>Efetua login na aplicação.</returns>
+        /// <param name="loginDto">Credenciais do utilizador (nº funcionário e password).</param>
+        /// <returns>Token JWT e dados do utilizador.</returns>
         /// <response code="200">Login efetuado com sucesso.</response>
-        /// <response code="500">Erro ao efetuar login.</response>
+        /// <response code="401">Número de funcionário ou password inválidos.</response>
+        /// <response code="500">Erro interno ao efetuar login.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
-            // Procura o utilizador pelo número de funcionário
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
-
-            if (utilizador == null)
-                return Unauthorized("Número de funcionário ou senha inválidos.");
-
-            // Verifica se a senha está correta
-            bool senhaCorreta = _utilizadorService.VerifyPassword(utilizador.Password, loginDto.Password);
-
-            if (!senhaCorreta)
-                return Unauthorized("Número de funcionário ou senha inválidos.");
-
-            // Gera o token JWT usando o AuthService
-            var token = _authService.GenerateToken(utilizador.NumFuncionario, utilizador.Role);
-
-            // Se chegou aqui, o login está válido
-            // Retorna o JSON com as informações necessárias
-            // Retorna o token
-            return Ok(new
+            try
             {
-                Token = token
-            });
+                var utilizador = await _context.Utilizadores
+                    .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
+
+                if (utilizador == null)
+                    return Unauthorized("Número de funcionário ou senha inválidos.");
+
+                bool senhaCorreta = _utilizadorService.VerifyPassword(utilizador.Password, loginDto.Password);
+
+                if (!senhaCorreta)
+                    return Unauthorized("Número de funcionário ou senha inválidos.");
+
+                var token = _authService.GenerateToken(utilizador.UtilizadorId,utilizador.NumFuncionario, utilizador.Role);
+
+                return Ok(new
+                {
+                    Token = token,
+                    Id = utilizador.UtilizadorId,
+                    Nome = utilizador.PrimeiroNome,
+                    Role = utilizador.Role,
+                    Estado = utilizador.Estado,
+                    NumFuncionario = utilizador.NumFuncionario
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao efetuar login: {ex.Message}");
+            }
         }
     }
 }

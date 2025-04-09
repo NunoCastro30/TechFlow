@@ -8,7 +8,7 @@ namespace LogisControlAPI.Services
 {
     public class AuthService
     {
-        public string GenerateToken(int numFuncionario, string role)
+        public string GenerateToken(int utilizadorId,int numFuncionario, string role)
         {
             var handler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(AuthSettings.PrivateKey);//class AuthSettings criada
@@ -19,7 +19,7 @@ namespace LogisControlAPI.Services
             //Inf para criar o JWT: Subject, Expires, SigningCredentials
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = GenerateClaims(numFuncionario, role),
+                Subject = GenerateClaims(utilizadorId,numFuncionario, role),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = credentials,
             };
@@ -35,9 +35,10 @@ namespace LogisControlAPI.Services
         /// <param name="numFuncionario"></param>
         /// <param name="role></param>
         /// <returns></returns>
-        private static ClaimsIdentity GenerateClaims(int numFuncionario, string role)
+        private static ClaimsIdentity GenerateClaims(int utilizadorId, int numFuncionario, string role)
         {
             var claims = new ClaimsIdentity();
+            claims.AddClaim(new Claim("id", utilizadorId.ToString())); // ID do utilizador
             claims.AddClaim(new Claim(ClaimTypes.SerialNumber, numFuncionario.ToString()));
             claims.AddClaim(new Claim(ClaimTypes.Role, role));
 
