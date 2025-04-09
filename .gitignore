@@ -3,3 +3,6 @@
 ################################################################################
 
 /LogisControlAPI/.vs/LogisControlAPI/FileContentIndex
+/LogisControlAPI/.vs
+/LogisControlAPI/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/.gitignore
