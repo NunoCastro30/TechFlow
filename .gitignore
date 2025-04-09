@@ -6,3 +6,11 @@
 /LogisControlAPI/.vs
 /LogisControlAPI/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /.gitignore
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.AssemblyInfo.cs
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.AssemblyInfoInputs.cache
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.assets.cache
+*.cache
+/LogisControlAPI/obj/LogisControlAPI.csproj.nuget.dgspec.json
+/LogisControlAPI/obj/LogisControlAPI.csproj.nuget.g.props
+/LogisControlAPI/obj/project.assets.json
+/LogisControlAPI/obj/project.nuget.cache
