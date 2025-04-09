@@ -20,7 +20,7 @@ namespace LogisControlAPI.Services
         //Verifica se um número de funcionário já existe
         public async Task<bool> VerificarSeExisteNumeroFuncionario(int numFuncionario)
         {
-            return await _context.Utilizadors.AnyAsync(u => u.NumFuncionario == numFuncionario);
+            return await _context.Utilizadores.AnyAsync(u => u.NumFuncionario == numFuncionario);
         }
 
         //Gera um hash seguro da pass
