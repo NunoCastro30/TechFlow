@@ -359,7 +359,7 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.PedidoManutId).HasColumnName("PedidoManutID");
             entity.Property(e => e.DataAbertura).HasColumnType("datetime");
             entity.Property(e => e.DataConclusao).HasColumnType("datetime");
-            entity.Property(e => e.Descicao)
+            entity.Property(e => e.Descricao)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
             entity.Property(e => e.Estado)
