@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Data;
 using LogisControlAPI.Services;
+using LogisControlAPI.Interfaces;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +18,11 @@ builder.Services.AddDbContext<LogisControlContext>(options =>
 //Ativar controladores para API REST
 builder.Services.AddControllers();
 builder.Services.AddScoped<UtilizadorService>();
+
+//Configurar o serviço de email
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<StockService>();
 
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();

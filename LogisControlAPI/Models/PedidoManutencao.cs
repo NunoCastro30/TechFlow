@@ -7,7 +7,7 @@ public partial class PedidoManutencao
 {
     public int PedidoManutId { get; set; }
 
-    public string Descicao { get; set; } = null!;
+    public string Descricao { get; set; } = null!;
 
     public string Estado { get; set; } = null!;
 
