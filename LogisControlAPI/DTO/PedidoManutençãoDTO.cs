@@ -4,7 +4,7 @@
     {
         public int PedidoManutId { get; set; }
 
-        public string Descicao { get; set; } = null!;
+        public string Descricao { get; set; } = null!;
 
         public string Estado { get; set; } = null!;
 
@@ -15,5 +15,8 @@
         public int MaquinaMaquinaId { get; set; }
 
         public int UtilizadorUtilizadorId { get; set; }
+        public string? MaquinaNome { get; set; }
+        public string? UtilizadorNome { get; set; }
+
     }
 }
