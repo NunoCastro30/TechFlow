@@ -1,6 +1,7 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,17 @@ namespace LogisControlAPI.Controllers
     public class MateriaPrimaController : ControllerBase
     {
         private readonly LogisControlContext _context;
-
+        private readonly StockService _stockService;
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public MateriaPrimaController(LogisControlContext context)
+        public MateriaPrimaController(LogisControlContext context, StockService stockService)
         {
             _context = context;
+            _stockService = stockService;
         }
+
 
         #region ListarMateriasPrimas
         /// <summary>
@@ -134,6 +137,10 @@ namespace LogisControlAPI.Controllers
             materiaPrima.Preco = materiaPrimaDTO.Preco;
 
             await _context.SaveChangesAsync();
+
+            // Verifica se a quantidade ficou crítica
+            await _stockService.VerificarStockCritico(id);
+
             return NoContent();
         }
         #endregion

@@ -6,3 +6,6 @@
 /LogisControlAPI/bin/
 /LogisControlAPI/obj/
 /LogisControlAPI/.vs/
+
+# Ignorar o projeto de testes xUnit
+/LogisControlAPI.Tests/
