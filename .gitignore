@@ -5,8 +5,10 @@
 ./vs
 /LogisControlAPI/bin/
 /LogisControlAPI/obj/
+/LogisControlAPI/.vs/
 
 
 # projeto de testes
 /LogisControlAPI.Tests/bin/
 /LogisControlAPI.Tests/obj/
+/LogisControlAPITests/.vs/
