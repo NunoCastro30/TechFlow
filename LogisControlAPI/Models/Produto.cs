@@ -9,7 +9,7 @@ public partial class Produto
 
     public string Nome { get; set; } = null!;
 
-    public string Quantidade { get; set; } = null!;
+    public int Quantidade { get; set; }
 
     public string Descricao { get; set; } = null!;
 
@@ -19,13 +19,13 @@ public partial class Produto
 
     public int OrdemProducaoOrdemProdId { get; set; }
 
-    public int EncomendaItensEncomendaItens { get; set; }
+    public int EncomendaItensEncomendaItensId { get; set; }
 
-    public virtual EncomendaIten EncomendaItensEncomendaItensNavigation { get; set; } = null!;
+    public virtual EncomendaItens EncomendaItensEncomendaItensNavigation { get; set; } = null!;
 
     public virtual ICollection<MateriaPrimaProduto> MateriaPrimaProdutos { get; set; } = new List<MateriaPrimaProduto>();
 
     public virtual OrdemProducao OrdemProducaoOrdemProd { get; set; } = null!;
 
-    public virtual ICollection<RegistoProducao> RegistoProducaos { get; set; } = new List<RegistoProducao>();
+    public virtual ICollection<RegistoProducao> RegistosProducao { get; set; } = new List<RegistoProducao>();
 }

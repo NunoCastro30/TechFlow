@@ -15,9 +15,9 @@ public partial class OrcamentoItem
 
     public int OrcamentoOrcamentoId { get; set; }
 
-    public int MateriaPrimaMateriaPrimalD { get; set; }
+    public int MateriaPrimaMateriaPrimaId { get; set; }
 
-    public virtual MateriaPrima MateriaPrimaMateriaPrimalDNavigation { get; set; } = null!;
+    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
 
     public virtual Orcamento OrcamentoOrcamento { get; set; } = null!;
 }

@@ -13,5 +13,5 @@ public partial class Fornecedor
 
     public string? Email { get; set; }
 
-    public virtual ICollection<PedidoCotacao> PedidoCotacaos { get; set; } = new List<PedidoCotacao>();
+    public virtual ICollection<PedidoCotacao> PedidosCotacao { get; set; } = new List<PedidoCotacao>();
 }

@@ -16,47 +16,47 @@ public partial class LogisControlContext : DbContext
     {
     }
 
-    public virtual DbSet<AssistenciaExterna> AssistenciaExternas { get; set; }
+    public virtual DbSet<AssistenciaExterna> AssistenciasExternas { get; set; }
 
     public virtual DbSet<Cliente> Clientes { get; set; }
 
-    public virtual DbSet<EncomendaCliente> EncomendaClientes { get; set; }
+    public virtual DbSet<EncomendaCliente> EncomendasCliente { get; set; }
 
-    public virtual DbSet<EncomendaIten> EncomendaItens { get; set; }
+    public virtual DbSet<EncomendaItens> EncomendasItem { get; set; }
 
-    public virtual DbSet<Fornecedor> Fornecedors { get; set; }
+    public virtual DbSet<Fornecedor> Fornecedores { get; set; }
 
     public virtual DbSet<Maquina> Maquinas { get; set; }
 
-    public virtual DbSet<MateriaPrima> MateriaPrimas { get; set; }
+    public virtual DbSet<MateriaPrima> MateriasPrimas { get; set; }
 
     public virtual DbSet<MateriaPrimaProduto> MateriaPrimaProdutos { get; set; }
 
-    public virtual DbSet<NotaEncomendaIten> NotaEncomendaItens { get; set; }
+    public virtual DbSet<NotaEncomendaItens> NotasEncomendaItem { get; set; }
 
-    public virtual DbSet<NotaEncomendum> NotaEncomenda { get; set; }
+    public virtual DbSet<NotaEncomenda> NotasEncomenda { get; set; }
 
     public virtual DbSet<Orcamento> Orcamentos { get; set; }
 
-    public virtual DbSet<OrcamentoItem> OrcamentoItems { get; set; }
+    public virtual DbSet<OrcamentoItem> OrcamentosItem { get; set; }
 
-    public virtual DbSet<OrdemProducao> OrdemProducaos { get; set; }
+    public virtual DbSet<OrdemProducao> OrdensProducao { get; set; }
 
-    public virtual DbSet<PedidoCompra> PedidoCompras { get; set; }
+    public virtual DbSet<PedidoCompra> PedidosCompra { get; set; }
 
-    public virtual DbSet<PedidoCotacao> PedidoCotacaos { get; set; }
+    public virtual DbSet<PedidoCotacao> PedidosCotacao { get; set; }
 
-    public virtual DbSet<PedidoManutencao> PedidoManutencaos { get; set; }
+    public virtual DbSet<PedidoManutencao> PedidosManutencao { get; set; }
 
-    public virtual DbSet<ProdMateriai> ProdMateriais { get; set; }
+    public virtual DbSet<ProdMateriais> ProdMateriais { get; set; }
 
     public virtual DbSet<Produto> Produtos { get; set; }
 
-    public virtual DbSet<RegistoManutencao> RegistoManutencaos { get; set; }
+    public virtual DbSet<RegistoManutencao> RegistosManutencao { get; set; }
 
-    public virtual DbSet<RegistoProducao> RegistoProducaos { get; set; }
+    public virtual DbSet<RegistoProducao> RegistosProducao { get; set; }
 
-    public virtual DbSet<Utilizador> Utilizadors { get; set; }
+    public virtual DbSet<Utilizador> Utilizadores { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -108,19 +108,21 @@ public partial class LogisControlContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.ClienteCliente).WithMany(p => p.EncomendaClientes)
+            entity.HasOne(d => d.ClienteCliente).WithMany(p => p.EncomendasCliente)
                 .HasForeignKey(d => d.ClienteClienteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKEncomendaC556375");
         });
 
-        modelBuilder.Entity<EncomendaIten>(entity =>
+        modelBuilder.Entity<EncomendaItens>(entity =>
         {
-            entity.HasKey(e => e.EncomendaItens).HasName("PK__Encomend__A1D00A02E7FB7FED");
+            entity.HasKey(e => e.EncomendaItensId).HasName("PK__Encomend__A1D00A02E7FB7FED");
+
+            entity.ToTable("EncomendaItens");
 
             entity.Property(e => e.EncomendaClienteEncomendaClienteId).HasColumnName("EncomendaClienteEncomendaClienteID");
 
-            entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.EncomendaItens)
+            entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.EncomendasItem)
                 .HasForeignKey(d => d.EncomendaClienteEncomendaClienteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKEncomendaI428182");
@@ -161,10 +163,11 @@ public partial class LogisControlContext : DbContext
 
         modelBuilder.Entity<MateriaPrima>(entity =>
         {
-            entity.HasKey(e => e.MateriaPrimalD).HasName("PK__MateriaP__5C2641D25D8355F5");
+            entity.HasKey(e => e.MateriaPrimaId).HasName("PK__MateriaP__5C2641D25D8355F5");
 
             entity.ToTable("MateriaPrima");
 
+            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaID");
             entity.HasIndex(e => e.CodInterno, "UQ__MateriaP__39F955FCFF814842").IsUnique();
 
             entity.Property(e => e.Categoria)
@@ -189,9 +192,10 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.MateriaPrimaProdutoId).HasColumnName("MateriaPrimaProdutoID");
             entity.Property(e => e.ProdutoProdutoId).HasColumnName("ProdutoProdutoID");
+            entity.Property(e => e.MateriaPrimaMateriaPrimaId).HasColumnName("MateriaPrimaMateriaPrimaID");
 
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimalDNavigation).WithMany(p => p.MateriaPrimaProdutos)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimalD)
+            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.MateriaPrimaProdutos)
+                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKMateriaPri691498");
 
@@ -201,25 +205,25 @@ public partial class LogisControlContext : DbContext
                 .HasConstraintName("FKMateriaPri932813");
         });
 
-        modelBuilder.Entity<NotaEncomendaIten>(entity =>
+        modelBuilder.Entity<NotaEncomendaItens>(entity =>
         {
             entity.HasKey(e => e.NotaEncomendaItensId).HasName("PK__NotaEnco__988B175BEF17ADA7");
 
             entity.Property(e => e.NotaEncomendaItensId).HasColumnName("NotaEncomendaItensID");
             entity.Property(e => e.NotaEncomendaNotaEncomendaId).HasColumnName("NotaEncomendaNotaEncomendaID");
 
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimalDNavigation).WithMany(p => p.NotaEncomendaItens)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimalD)
+            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.NotasEncomendaItem)
+                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKNotaEncome850921");
 
-            entity.HasOne(d => d.NotaEncomendaNotaEncomenda).WithMany(p => p.NotaEncomendaItens)
+            entity.HasOne(d => d.NotaEncomendaNotaEncomenda).WithMany(p => p.NotasEncomendaItem)
                 .HasForeignKey(d => d.NotaEncomendaNotaEncomendaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKNotaEncome419194");
         });
 
-        modelBuilder.Entity<NotaEncomendum>(entity =>
+        modelBuilder.Entity<NotaEncomenda>(entity =>
         {
             entity.HasKey(e => e.NotaEncomendaId).HasName("PK__NotaEnco__9B94B6476CB9B6CB");
 
@@ -264,12 +268,12 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.OrcamentoItemId).HasColumnName("OrcamentoItemID");
             entity.Property(e => e.OrcamentoOrcamentoId).HasColumnName("OrcamentoOrcamentoID");
 
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimalDNavigation).WithMany(p => p.OrcamentoItems)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimalD)
+            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.OrcamentosItem)
+                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKOrcamentoI247272");
 
-            entity.HasOne(d => d.OrcamentoOrcamento).WithMany(p => p.OrcamentoItems)
+            entity.HasOne(d => d.OrcamentoOrcamento).WithMany(p => p.OrcamentosItem)
                 .HasForeignKey(d => d.OrcamentoOrcamentoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKOrcamentoI811131");
@@ -290,12 +294,12 @@ public partial class LogisControlContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.MaquinaMaquinaId).HasColumnName("MaquinaMaquinaID");
 
-            entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.OrdemProducaos)
+            entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.OrdensProducao)
                 .HasForeignKey(d => d.EncomendaClienteEncomendaClienteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKOrdemProdu255309");
 
-            entity.HasOne(d => d.MaquinaMaquina).WithMany(p => p.OrdemProducaos)
+            entity.HasOne(d => d.MaquinaMaquina).WithMany(p => p.OrdensProducao)
                 .HasForeignKey(d => d.MaquinaMaquinaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKOrdemProdu935284");
@@ -318,7 +322,7 @@ public partial class LogisControlContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.UtilizadorUtilizadorId).HasColumnName("UtilizadorUtilizadorID");
 
-            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.PedidoCompras)
+            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.PedidosCompra)
                 .HasForeignKey(d => d.UtilizadorUtilizadorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKPedidoComp502741");
@@ -340,7 +344,7 @@ public partial class LogisControlContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.FornecedorFornecedorId).HasColumnName("FornecedorFornecedorID");
 
-            entity.HasOne(d => d.FornecedorFornecedor).WithMany(p => p.PedidoCotacaos)
+            entity.HasOne(d => d.FornecedorFornecedor).WithMany(p => p.PedidosCotacao)
                 .HasForeignKey(d => d.FornecedorFornecedorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKPedidoCota347557");
@@ -364,26 +368,26 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.MaquinaMaquinaId).HasColumnName("MaquinaMaquinaID");
             entity.Property(e => e.UtilizadorUtilizadorId).HasColumnName("UtilizadorUtilizadorID");
 
-            entity.HasOne(d => d.MaquinaMaquina).WithMany(p => p.PedidoManutencaos)
+            entity.HasOne(d => d.MaquinaMaquina).WithMany(p => p.PedidosManutencao)
                 .HasForeignKey(d => d.MaquinaMaquinaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKPedidoManu589131");
 
-            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.PedidoManutencaos)
+            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.PedidosManutencao)
                 .HasForeignKey(d => d.UtilizadorUtilizadorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKPedidoManu67204");
         });
 
-        modelBuilder.Entity<ProdMateriai>(entity =>
+        modelBuilder.Entity<ProdMateriais>(entity =>
         {
             entity.HasKey(e => e.ProdMateriaisId).HasName("PK__ProdMate__812930CE2175FA55");
 
             entity.Property(e => e.ProdMateriaisId).HasColumnName("ProdMateriaisID");
             entity.Property(e => e.OrdemProducaoOrdemProdId).HasColumnName("OrdemProducaoOrdemProdID");
 
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimalDNavigation).WithMany(p => p.ProdMateriais)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimalD)
+            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.ProdMateriais)
+                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProdMateri754466");
 
@@ -415,7 +419,7 @@ public partial class LogisControlContext : DbContext
                 .IsUnicode(false);
 
             entity.HasOne(d => d.EncomendaItensEncomendaItensNavigation).WithMany(p => p.Produtos)
-                .HasForeignKey(d => d.EncomendaItensEncomendaItens)
+                .HasForeignKey(d => d.EncomendaItensEncomendaItensId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduto171408");
 
@@ -442,17 +446,17 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.PedidoManutencaoPedidoManutId).HasColumnName("PedidoManutencaoPedidoManutID");
             entity.Property(e => e.UtilizadorUtilizadorId).HasColumnName("UtilizadorUtilizadorID");
 
-            entity.HasOne(d => d.AssistenciaExternaAssistente).WithMany(p => p.RegistoManutencaos)
+            entity.HasOne(d => d.AssistenciaExternaAssistente).WithMany(p => p.RegistosManutencao)
                 .HasForeignKey(d => d.AssistenciaExternaAssistenteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoMan998094");
 
-            entity.HasOne(d => d.PedidoManutencaoPedidoManut).WithMany(p => p.RegistoManutencaos)
+            entity.HasOne(d => d.PedidoManutencaoPedidoManut).WithMany(p => p.RegistosManutencao)
                 .HasForeignKey(d => d.PedidoManutencaoPedidoManutId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoMan791617");
 
-            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.RegistoManutencaos)
+            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.RegistosManutencao)
                 .HasForeignKey(d => d.UtilizadorUtilizadorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoMan601844");
@@ -476,17 +480,17 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.ProdutoProdutoId).HasColumnName("ProdutoProdutoID");
             entity.Property(e => e.UtilizadorUtilizadorId).HasColumnName("UtilizadorUtilizadorID");
 
-            entity.HasOne(d => d.OrdemProducaoOrdemProd).WithMany(p => p.RegistoProducaos)
+            entity.HasOne(d => d.OrdemProducaoOrdemProd).WithMany(p => p.RegistosProducao)
                 .HasForeignKey(d => d.OrdemProducaoOrdemProdId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoPro913410");
 
-            entity.HasOne(d => d.ProdutoProduto).WithMany(p => p.RegistoProducaos)
+            entity.HasOne(d => d.ProdutoProduto).WithMany(p => p.RegistosProducao)
                 .HasForeignKey(d => d.ProdutoProdutoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoPro11086");
 
-            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.RegistoProducaos)
+            entity.HasOne(d => d.UtilizadorUtilizador).WithMany(p => p.RegistosProducao)
                 .HasForeignKey(d => d.UtilizadorUtilizadorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRegistoPro479439");
@@ -502,7 +506,7 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.UtilizadorId).HasColumnName("UtilizadorID");
             entity.Property(e => e.Password)
-                .HasMaxLength(25)
+                .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.PrimeiroNome)
                 .HasMaxLength(25)
