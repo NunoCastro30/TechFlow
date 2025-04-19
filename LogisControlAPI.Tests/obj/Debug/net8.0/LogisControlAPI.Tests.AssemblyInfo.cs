@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("LogisControlAPI")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("LogisControlAPI.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f25705bead4b0e7b062e8b02f5eed0b66ea1af64")]
-[assembly: System.Reflection.AssemblyProductAttribute("LogisControlAPI")]
-[assembly: System.Reflection.AssemblyTitleAttribute("LogisControlAPI")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+019080462e80905c3889a96083dfd5f69b55ab33")]
+[assembly: System.Reflection.AssemblyProductAttribute("LogisControlAPI.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("LogisControlAPI.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.
