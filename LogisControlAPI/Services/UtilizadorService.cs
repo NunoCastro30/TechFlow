@@ -31,6 +31,9 @@ namespace LogisControlAPI.Services
 
         public bool VerifyPassword(string hashedPassword, string inputPassword)
         {
+            if (string.IsNullOrWhiteSpace(inputPassword))
+                return false;
+
             return _passwordHasher.VerifyHashedPassword(null, hashedPassword, inputPassword) == PasswordVerificationResult.Success;
         }
 

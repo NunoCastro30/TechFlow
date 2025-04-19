@@ -1,4 +1,5 @@
-﻿namespace LogisControlAPI.DTO
+﻿
+namespace LogisControlAPI.DTO
 {
     public partial class ProdutoDTO
     {
@@ -6,7 +7,7 @@
 
         public string Nome { get; set; } = null!;
 
-        public string Quantidade { get; set; } = null!;
+        public int Quantidade { get; set; }
 
         public string Descricao { get; set; } = null!;
 
