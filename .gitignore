@@ -1,5 +1,5 @@
 ﻿################################################################################
-# Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
+Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
 ################################################################################
 
 ./vs
@@ -8,7 +8,19 @@
 /LogisControlAPI/.vs/
 
 
-# projeto de testes
+projeto de testes
 /LogisControlAPI.Tests/bin/
 /LogisControlAPI.Tests/obj/
 /LogisControlAPITests/.vs/
+
+
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+/bin/
+/obj/
+/TestResults/
+/out/
