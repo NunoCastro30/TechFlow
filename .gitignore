@@ -1,16 +1,26 @@
 ﻿################################################################################
-# Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
+Este arquivo .gitignore foi criado automaticamente pelo Microsoft(R) Visual Studio.
 ################################################################################
 
 ./vs
 /LogisControlAPI/bin/
 /LogisControlAPI/obj/
 /LogisControlAPI/.vs/
-/.vs/PDS/v17/DocumentLayout.json
-/.vs/VSWorkspaceState.json
-/.vs/PDS/v17/.wsuo
-/.gitignore
-/.gitignore
-/.gitignore
-/.gitignore
-/.gitignore
+
+
+projeto de testes
+/LogisControlAPI.Tests/bin/
+/LogisControlAPI.Tests/obj/
+/LogisControlAPITests/.vs/
+
+
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+/bin/
+/obj/
+/TestResults/
+/out/
