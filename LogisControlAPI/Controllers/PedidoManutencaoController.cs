@@ -63,6 +63,53 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
+        #region ListarPedidosManutencaoPorUtilizador
+        /// <summary>
+        /// Lista os pedidos de manutenção do utilizador autenticado.
+        /// </summary>
+        /// <returns>Lista de pedidos de manutenção do utilizador.</returns>
+        /// <response code="200">Lista obtida com sucesso.</response>
+        /// <response code="401">Utilizador não autenticado.</response>
+        /// <response code="500">Erro ao obter os pedidos.</response>
+        [HttpGet("ListarPedidosManutencaoPorUtilizador")]
+        [Authorize]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<PedidoManutençãoDTO>>> ListarPedidosManutencaoPorUtilizador()
+        {
+            try
+            {
+                // Obter o ID do token JWT
+                var idClaim = User.FindFirst("id")?.Value;
+                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                    return Unauthorized("Não foi possível identificar o utilizador.");
+
+                var pedidos = await _context.PedidosManutencao
+                    .Include(p => p.UtilizadorUtilizador)
+                    .Include(p => p.MaquinaMaquina)
+                    .Where(p => p.UtilizadorUtilizadorId == utilizadorId)
+                    .Select(p => new PedidoManutençãoDTO
+                    {
+                        PedidoManutId = p.PedidoManutId,
+                        Descricao = p.Descricao,
+                        Estado = p.Estado,
+                        DataAbertura = p.DataAbertura,
+                        DataConclusao = p.DataConclusao,
+                        MaquinaMaquinaId = p.MaquinaMaquinaId,
+                        UtilizadorUtilizadorId = p.UtilizadorUtilizadorId,
+                        MaquinaNome = p.MaquinaMaquina.Nome,
+                        UtilizadorNome = $"{p.UtilizadorUtilizador.PrimeiroNome} {p.UtilizadorUtilizador.Sobrenome}"
+                    })
+                    .ToListAsync();
+
+                return Ok(pedidos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao obter pedidos de manutenção: {ex.Message}");
+            }
+        }
+        #endregion
+
         #region ObterPedidoPorId
         /// <summary>
         /// Obtém um pedido de manutenção pelo seu ID.
