@@ -12,11 +12,5 @@ namespace LogisControlAPI.DTO
         /// </summary>
         [Required]
         public string Descricao { get; set; }
-
-        /// <summary>
-        /// ID do utilizador que está a criar o pedido.
-        /// </summary>
-        [Required]
-        public int UtilizadorId { get; set; }
     }
 }

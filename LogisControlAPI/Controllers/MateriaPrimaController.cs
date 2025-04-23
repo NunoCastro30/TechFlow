@@ -1,24 +1,43 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LogisControlAPI.Controllers
 {
-
+    /// <summary>
+    /// Controlador responsável pela gestão das matérias-primas.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MateriaPrimaController : ControllerBase
     {
         private readonly LogisControlContext _context;
-
-        public MateriaPrimaController(LogisControlContext context)
+        private readonly StockService _stockService;
+        /// <summary>
+        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// </summary>
+        /// <param name="context">Instância do contexto da base de dados.</param>
+        public MateriaPrimaController(LogisControlContext context, StockService stockService)
         {
             _context = context;
+            _stockService = stockService;
         }
 
-        [HttpGet]
+
+        #region ListarMateriasPrimas
+        /// <summary>
+        /// Lista todas as matérias-primas.
+        /// </summary>
+        /// <returns>Lista de matérias-primas.</returns>
+        /// <response code="200">Lista obtida com sucesso.</response>
+        /// <response code="500">Erro interno ao obter matérias-primas.</response>
+        [HttpGet("ListarMateriasPrimas")]
         public async Task<ActionResult<IEnumerable<MateriaPrimaDTO>>> GetMateriasPrimas()
         {
             try
@@ -43,8 +62,17 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro interno ao obter matérias-primas: {ex.Message}");
             }
         }
+        #endregion
 
-        [HttpGet("{id}")]
+        #region ObterMateriaPrimaPorId
+        /// <summary>
+        /// Obtém uma matéria-prima pelo ID.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima.</param>
+        /// <returns>Dados da matéria-prima.</returns>
+        /// <response code="200">Matéria-prima encontrada.</response>
+        /// <response code="404">Matéria-prima não encontrada.</response>
+        [HttpGet("ObterMateriaPrimaPorId/{id}")]
         public async Task<ActionResult<MateriaPrimaDTO>> GetMateriaPrima(int id)
         {
             var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
@@ -54,8 +82,16 @@ namespace LogisControlAPI.Controllers
             }
             return Ok(materiaPrima);
         }
+        #endregion
 
-        [HttpPost]
+        #region CriarMateriaPrima
+        /// <summary>
+        /// Cria uma nova matéria-prima.
+        /// </summary>
+        /// <param name="materiaPrimaDTO">Dados da nova matéria-prima.</param>
+        /// <returns>Matéria-prima criada.</returns>
+        /// <response code="201">Matéria-prima criada com sucesso.</response>
+        [HttpPost("CriarMateriaPrima")]
         public async Task<ActionResult<MateriaPrimaDTO>> CreateMateriaPrima([FromBody] MateriaPrimaDTO materiaPrimaDTO)
         {
             var materiaPrima = new MateriaPrima
@@ -73,8 +109,18 @@ namespace LogisControlAPI.Controllers
 
             return CreatedAtAction(nameof(GetMateriaPrima), new { id = materiaPrima.MateriaPrimaId }, materiaPrima);
         }
+        #endregion
 
-        [HttpPut("{id}")]
+        #region AtualizarMateriaPrima
+        /// <summary>
+        /// Atualiza os dados de uma matéria-prima existente.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima a ser atualizada.</param>
+        /// <param name="materiaPrimaDTO">Novos dados da matéria-prima.</param>
+        /// <returns>Resultado da atualização.</returns>
+        /// <response code="204">Matéria-prima atualizada com sucesso.</response>
+        /// <response code="404">Matéria-prima não encontrada.</response>
+        [HttpPut("AtualizarMateriaPrima/{id}")]
         public async Task<IActionResult> UpdateMateriaPrima(int id, [FromBody] MateriaPrimaDTO materiaPrimaDTO)
         {
             var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
@@ -91,10 +137,23 @@ namespace LogisControlAPI.Controllers
             materiaPrima.Preco = materiaPrimaDTO.Preco;
 
             await _context.SaveChangesAsync();
+
+            // Verifica se a quantidade ficou crítica
+            await _stockService.VerificarStockCritico(id);
+
             return NoContent();
         }
+        #endregion
 
-        [HttpDelete("{id}")]
+        #region DeletarMateriaPrima
+        /// <summary>
+        /// Exclui uma matéria-prima pelo ID.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima a ser excluída.</param>
+        /// <returns>Resultado da exclusão.</returns>
+        /// <response code="204">Matéria-prima excluída com sucesso.</response>
+        /// <response code="404">Matéria-prima não encontrada.</response>
+        [HttpDelete("ApagarMateriaPrima/{id}")]
         public async Task<IActionResult> DeleteMateriaPrima(int id)
         {
             var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
@@ -108,5 +167,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }

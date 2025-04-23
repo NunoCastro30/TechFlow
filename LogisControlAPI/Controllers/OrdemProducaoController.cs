@@ -6,18 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisControlAPI.Controllers
 {
+    /// <summary>
+    /// Controlador responsável pela gestão das ordens de produção.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class OrdemProducaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
 
+        /// <summary>
+        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// </summary>
+        /// <param name="context">Instância do contexto da base de dados.</param>
         public OrdemProducaoController(LogisControlContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
+        #region ListarOrdens
+        /// <summary>
+        /// Obtém todas as ordens de produção.
+        /// </summary>
+        /// <returns>Lista de ordens de produção.</returns>
+        /// <response code="200">Lista obtida com sucesso.</response>
+        /// <response code="500">Erro ao obter as ordens de produção.</response>
+        [HttpGet("ListarOrdensProducao")]
         public async Task<ActionResult<IEnumerable<OrdemProducaoDTO>>> GetAll()
         {
             try
@@ -42,8 +56,17 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro interno ao obter as ordens de produção: {ex.Message}");
             }
         }
+        #endregion
 
-        [HttpGet("{id}")]
+        #region ObterPorId
+        /// <summary>
+        /// Obtém uma ordem de produção pelo ID.
+        /// </summary>
+        /// <param name="id">ID da ordem de produção.</param>
+        /// <returns>Dados da ordem de produção.</returns>
+        /// <response code="200">Ordem encontrada.</response>
+        /// <response code="404">Ordem não encontrada.</response>
+        [HttpGet("ObterOrdemProducaoPorId/{id}")]
         public async Task<ActionResult<OrdemProducaoDTO>> GetById(int id)
         {
             var ordem = await _context.OrdensProducao.FindAsync(id);
@@ -53,8 +76,16 @@ namespace LogisControlAPI.Controllers
             }
             return Ok(ordem);
         }
+        #endregion
 
-        [HttpPost]
+        #region CriarOrdem
+        /// <summary>
+        /// Cria uma nova ordem de produção.
+        /// </summary>
+        /// <param name="dto">Dados da nova ordem.</param>
+        /// <returns>Ordem criada.</returns>
+        /// <response code="201">Ordem criada com sucesso.</response>
+        [HttpPost("CriarOrdemProducao")]
         public async Task<ActionResult<OrdemProducaoDTO>> Create([FromBody] OrdemProducaoDTO dto)
         {
             var ordem = new OrdemProducao
@@ -72,8 +103,18 @@ namespace LogisControlAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = ordem.OrdemProdId }, ordem);
         }
+        #endregion
 
-        [HttpPut("{id}")]
+        #region AtualizarOrdem
+        /// <summary>
+        /// Atualiza os dados de uma ordem de produção.
+        /// </summary>
+        /// <param name="id">ID da ordem a ser atualizada.</param>
+        /// <param name="dto">Novos dados da ordem.</param>
+        /// <returns>Sem conteúdo em caso de sucesso.</returns>
+        /// <response code="204">Ordem atualizada com sucesso.</response>
+        /// <response code="404">Ordem não encontrada.</response>
+        [HttpPut("AtualizarOrdemProducao/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] OrdemProducaoDTO dto)
         {
             var ordem = await _context.OrdensProducao.FindAsync(id);
@@ -92,8 +133,17 @@ namespace LogisControlAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        #endregion
 
-        [HttpDelete("{id}")]
+        #region DeletarOrdem
+        /// <summary>
+        /// Exclui uma ordem de produção pelo ID.
+        /// </summary>
+        /// <param name="id">ID da ordem a ser excluída.</param>
+        /// <returns>Sem conteúdo em caso de sucesso.</returns>
+        /// <response code="204">Ordem excluída com sucesso.</response>
+        /// <response code="404">Ordem não encontrada.</response>
+        [HttpDelete("ApagarOrdemProducao/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var ordem = await _context.OrdensProducao.FindAsync(id);
@@ -107,5 +157,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }

@@ -4,6 +4,7 @@ using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Models;
 using LogisControlAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace LogisControlAPI.Controllers
@@ -27,6 +28,7 @@ namespace LogisControlAPI.Controllers
         /// </summary>
         /// <returns>Lista de utilizadores com dados públicos (sem password).</returns>
         /// <response code="200">Lista de utilizadores obtida com sucesso.</response>
+        [Authorize(Roles = "Gestor")]
         [HttpGet ("ObterUtilizadores")]
         [Produces("application/json")]
         public async Task<IEnumerable<UtilizadorDTO>> GetUtilizadores()
@@ -55,7 +57,9 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Utilizador criado com sucesso.</response>
         /// <response code="400">Número de funcionário já existe.</response>
         /// <response code="500">Erro interno ao criar o utilizador.</response>
+        [Authorize(Roles = "Gestor")]
         [HttpPost("CriarUtilizador")]
+        [Produces("application/json")]
         public async Task<IActionResult> CriarUtilizador([FromBody] CriarUtilizadorDTO novoUtilizadorDto)
         {
             // Verifica se o número de funcionário já existe
@@ -86,25 +90,32 @@ namespace LogisControlAPI.Controllers
 
         #region AtualizarPerfil
         /// <summary>
-        /// Atualiza o perfil do utilizador: primeiro nome, sobrenome e/ou password.
-        /// Apenas os campos preenchidos serão atualizados. A password é guardada com hash.
+        /// Atualiza o primeiro nome, sobrenome e/ou password do utilizador autenticado.
+        /// Apenas os campos preenchidos serão alterados.
         /// </summary>
-        /// <param name="id">ID do utilizador a atualizar.</param>
-        /// <param name="dto">Dados a atualizar.</param>
+        /// <param name="dto">Dados do utilizador a atualizar.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
         /// <response code="200">Perfil atualizado com sucesso.</response>
+        /// <response code="401">Utilizador não identificado (token inválido).</response>
         /// <response code="404">Utilizador não encontrado.</response>
         /// <response code="500">Erro interno ao atualizar o perfil.</response>
-        [HttpPut("AtualizarPerfil/{id}")]
-        public async Task<IActionResult> AtualizarPerfil(int id, [FromBody] AtualizarPerfilUtilizadorDTO dto)
+        [Authorize]
+        [HttpPut("AtualizarPerfil")]
+        [Produces("application/json")]
+        public async Task<IActionResult> AtualizarPerfil([FromBody] UtilizadorUpdateDTO dto)
         {
             try
             {
-                var utilizador = await _context.Utilizadores.FindAsync(id);
+                // Obter ID do utilizador autenticado a partir das claims (JWT)
+                var idClaim = User.FindFirst("id")?.Value;
+                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                    return Unauthorized("Não foi possível identificar o utilizador.");
+
+                var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
                 if (utilizador == null)
                     return NotFound("Utilizador não encontrado.");
 
-                // Atualiza os dados se forem fornecidos
+                // Atualizar apenas os campos fornecidos
                 if (!string.IsNullOrWhiteSpace(dto.PrimeiroNome))
                     utilizador.PrimeiroNome = dto.PrimeiroNome;
 
@@ -113,7 +124,6 @@ namespace LogisControlAPI.Controllers
 
                 if (!string.IsNullOrWhiteSpace(dto.NovaPassword))
                 {
-                    // Usar o serviço para gerar o hash da nova password
                     var novaHash = _utilizadorService.HashPassword(dto.NovaPassword);
                     utilizador.Password = novaHash;
                 }
@@ -128,6 +138,47 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
+        #region ObterPerfil
+        /// <summary>
+        /// Obtém os dados do perfil do utilizador autenticado.
+        /// </summary>
+        /// <returns>Dados do utilizador autenticado.</returns>
+        /// <response code="200">Perfil obtido com sucesso.</response>
+        /// <response code="401">Token inválido ou ID não encontrado nas claims.</response>
+        /// <response code="404">Utilizador não encontrado.</response>
+        /// <response code="500">Erro interno ao obter perfil.</response>
+        [Authorize]
+        [HttpGet("ObterPerfil")]
+        [Produces("application/json")]
+        public async Task<IActionResult> ObterPerfil()
+        {
+            try
+            {
+                // Obter o ID do token JWT
+                var idClaim = User.FindFirst("id")?.Value;
+                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                    return Unauthorized("Não foi possível identificar o utilizador.");
+
+                
+                var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+                if (utilizador == null)
+                    return NotFound("Utilizador não encontrado.");
+
+                
+                return Ok(new
+                {
+                    utilizador.PrimeiroNome,
+                    utilizador.Sobrenome,
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao obter perfil: {ex.Message}");
+            }
+        }
+        #endregion
+
+
         #region AtualizarEstadoRole
         /// <summary>
         /// Atualiza o estado e o perfil (role) de um utilizador. Apenas usado por administradores.
@@ -138,7 +189,9 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Utilizador atualizado com sucesso.</response>
         /// <response code="404">Utilizador não encontrado.</response>
         /// <response code="500">Erro interno ao atualizar o utilizador.</response>
+        [Authorize(Roles = "Gestor")]
         [HttpPut("AtualizarEstadoRole/{id}")]
+        [Produces("application/json")]
         public async Task<IActionResult> AtualizarEstadoRole(int id, [FromBody] UtilizadorUpdateAdminDTO dto)
         {
             try
@@ -158,41 +211,7 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro ao atualizar o utilizador: {ex.Message}");
             }
         }
-        #endregion
+        #endregion      
 
-        #region LoginTestes
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
-        {
-            // Procura o utilizador pelo número de funcionário
-            var utilizador = await _context.Utilizadores
-                .FirstOrDefaultAsync(u => u.NumFuncionario == loginDto.NumFuncionario);
-
-            if (utilizador == null)
-                return Unauthorized("Número de funcionário ou senha inválidos.");
-
-            // Verifica se a senha está correta
-            bool senhaCorreta = _utilizadorService.VerifyPassword(utilizador.Password, loginDto.Password);
-
-            if (!senhaCorreta)
-                return Unauthorized("Número de funcionário ou senha inválidos.");
-
-            // Se chegou aqui, o login está válido
-            // Retorna o JSON com as informações necessárias
-            var respostaLogin = new
-            {
-                Sucesso = true,
-                Mensagem = "Login bem-sucedido!",
-                UtilizadorId = utilizador.UtilizadorId,
-                Nome = utilizador.PrimeiroNome + " " + utilizador.Sobrenome,
-                Role = utilizador.Role,
-                NumFuncionario = utilizador.NumFuncionario
-            };
-
-            return Ok(respostaLogin);
-        }
-
-        #endregion
     }
 }
