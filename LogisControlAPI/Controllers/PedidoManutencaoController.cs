@@ -2,6 +2,7 @@
 using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
+using LogisControlAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
@@ -15,14 +16,16 @@ namespace LogisControlAPI.Controllers
     public class PedidoManutencaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly PedidoManutencaoService _pedidoManutencaoService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public PedidoManutencaoController(LogisControlContext context)
+        public PedidoManutencaoController(LogisControlContext context, PedidoManutencaoService pedidoManutencaoService)
         {
             _context = context;
+            _pedidoManutencaoService = pedidoManutencaoService;
         }
 
         #region ObterPedidos
@@ -33,6 +36,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Retorna a lista de pedidos com sucesso.</response>
         /// <response code="500">Erro interno ao tentar obter os pedidos.</response>
         [HttpGet("ObterPedidos")]
+        [Authorize]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<PedidoManutençãoDTO>>> GetPedidos()
         {
             try
@@ -120,6 +125,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Pedido não encontrado.</response>
         /// <response code="500">Erro interno ao procurar o pedido.</response>
         [HttpGet("ObterPedido/{id}")]
+        [Authorize]
+        [Produces("application/json")]
         public async Task<ActionResult<PedidoManutençãoDTO>> GetPedidoPorId(int id)
         {
             try
@@ -203,6 +210,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Pedido não encontrado.</response>
         /// <response code="500">Erro interno ao tentar atualizar o pedido.</response>
         [HttpPut("AtualizarPedido/{pedidoId}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<IActionResult> AtualizarPedido(int pedidoId, [FromBody] PedidoManutençãoDTO pedidoAtualizado)
         {
             try
@@ -230,6 +239,37 @@ namespace LogisControlAPI.Controllers
             }
         }
         #endregion
+
+        #region Pedidos de Manutenção Atrasados
+
+        /// <summary>
+        /// Obtém os pedidos de manutenção que estão abertos há mais de 7 dias.
+        /// </summary>
+        /// <remarks>
+        /// Apenas são devolvidos pedidos que ainda não se encontram resolvidos.
+        /// A data de abertura é usada como referência para calcular o tempo em aberto.
+        /// </remarks>
+        /// <returns>Lista de pedidos de manutenção em atraso.</returns>
+        /// <response code="200">Pedidos obtidos com sucesso.</response>
+        /// <response code="500">Erro ao obter os pedidos.</response>
+        [Authorize(Roles = "Gestor")]
+        [Produces("application/json")]
+        [HttpGet("PedidosAtrasados")]
+        public async Task<IActionResult> ObterPedidosAtrasados()
+        {
+            try
+            {
+                var pedidos = await _pedidoManutencaoService.ObterPedidosAtrasadosAsync();
+                return Ok(pedidos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao obter pedidos atrasados: {ex.Message}");
+            }
+        }
+
+        #endregion
+
     }
 }
 

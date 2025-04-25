@@ -15,9 +15,9 @@ public partial class RegistoManutencao
 
     public int UtilizadorUtilizadorId { get; set; }
 
-    public int AssistenciaExternaAssistenteId { get; set; }
+    public int? AssistenciaExternaAssistenteId { get; set; }
 
-    public virtual AssistenciaExterna AssistenciaExternaAssistente { get; set; } = null!;
+    public virtual AssistenciaExterna? AssistenciaExternaAssistente { get; set; } = null!;
 
     public virtual PedidoManutencao PedidoManutencaoPedidoManut { get; set; } = null!;
 
