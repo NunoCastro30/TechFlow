@@ -47,7 +47,7 @@ namespace LogisControlAPI.Controllers
                     .Select(e => new EncomendaClienteDTO
                     {
                         EncomendaClienteId = e.EncomendaClienteId,
-                        DataEncomenda = e.DataEncomenda,
+                        DataEncomenda = DateTime.Now,
                         Estado = e.Estado,
                         NomeCliente = e.ClienteCliente.Nome
                     })
