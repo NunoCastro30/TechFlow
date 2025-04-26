@@ -140,7 +140,6 @@ namespace LogisControlAPI.Controllers
                 new { id = m.MateriaPrimaId },
                 resultDto);
         }
-        #endregion
 
         /// <summary>
         /// Atualiza uma matéria-prima existente.
@@ -187,7 +186,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
-        #endregion
 
         /// <summary>
         /// Remove uma matéria-prima.
@@ -213,6 +211,5 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
-        #endregion
     }
 }
