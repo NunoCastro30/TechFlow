@@ -5,17 +5,13 @@ namespace LogisControlAPI.Models;
 
 public partial class Orcamento
 {
-    public int OrcamentoId { get; set; }
-
+    public int OrcamentoID { get; set; }
     public DateTime Data { get; set; }
-
     public string Estado { get; set; } = null!;
+    // FK para PedidoCotacao
+    public int PedidoCotacaoPedidoCotacaoID { get; set; }
 
-    public int PedidoCotacaoPedidoCotacaoId { get; set; }
-
-    public virtual ICollection<NotaEncomenda> NotaEncomenda { get; set; } = new List<NotaEncomenda>();
-
-    public virtual ICollection<OrcamentoItem> OrcamentosItem { get; set; } = new List<OrcamentoItem>();
-
+    // Navegações
     public virtual PedidoCotacao PedidoCotacaoPedidoCotacao { get; set; } = null!;
+    public virtual ICollection<OrcamentoItem> OrcamentoItems { get; set; } = new List<OrcamentoItem>();
 }

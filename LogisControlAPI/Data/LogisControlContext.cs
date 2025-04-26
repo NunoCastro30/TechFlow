@@ -58,6 +58,10 @@ public partial class LogisControlContext : DbContext
 
     public virtual DbSet<Utilizador> Utilizadores { get; set; }
 
+    public virtual DbSet<PedidoCompraItem> PedidoCompraItems { get; set; }
+
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
 
@@ -167,7 +171,7 @@ public partial class LogisControlContext : DbContext
 
             entity.ToTable("MateriaPrima");
 
-            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaID");
+            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaLD");
             entity.HasIndex(e => e.CodInterno, "UQ__MateriaP__39F955FCFF814842").IsUnique();
 
             entity.Property(e => e.Categoria)
@@ -205,78 +209,104 @@ public partial class LogisControlContext : DbContext
                 .HasConstraintName("FKMateriaPri932813");
         });
 
-        modelBuilder.Entity<NotaEncomendaItens>(entity =>
-        {
-            entity.HasKey(e => e.NotaEncomendaItensId).HasName("PK__NotaEnco__988B175BEF17ADA7");
-
-            entity.Property(e => e.NotaEncomendaItensId).HasColumnName("NotaEncomendaItensID");
-            entity.Property(e => e.NotaEncomendaNotaEncomendaId).HasColumnName("NotaEncomendaNotaEncomendaID");
-
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.NotasEncomendaItem)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNotaEncome850921");
-
-            entity.HasOne(d => d.NotaEncomendaNotaEncomenda).WithMany(p => p.NotasEncomendaItem)
-                .HasForeignKey(d => d.NotaEncomendaNotaEncomendaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNotaEncome419194");
-        });
-
         modelBuilder.Entity<NotaEncomenda>(entity =>
         {
-            entity.HasKey(e => e.NotaEncomendaId).HasName("PK__NotaEnco__9B94B6476CB9B6CB");
+            entity.ToTable("NotaEncomenda");
+            entity.HasKey(e => e.NotaEncomendaId).HasName("PK_NotaEncomenda");
 
-            entity.Property(e => e.NotaEncomendaId).HasColumnName("NotaEncomendaID");
-            entity.Property(e => e.DataEmissao).HasColumnType("datetime");
+            entity.Property(e => e.NotaEncomendaId)
+                  .HasColumnName("NotaEncomendaID");
+            entity.Property(e => e.DataEmissao)
+                  .HasColumnType("datetime");
             entity.Property(e => e.Estado)
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.OrcamentoOrcamentoId).HasColumnName("OrcamentoOrcamentoID");
+                  .HasMaxLength(10)
+                  .IsUnicode(false);
+            entity.Property(e => e.ValorTotal);
 
-            entity.HasOne(d => d.OrcamentoOrcamento).WithMany(p => p.NotaEncomenda)
-                .HasForeignKey(d => d.OrcamentoOrcamentoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNotaEncome702864");
+            // FK → Orcamento
+            entity.Property(e => e.OrcamentoId)
+                  .HasColumnName("OrcamentoOrcamentoID");
+            entity.HasOne(e => e.Orcamento)
+                  .WithMany()
+                  .HasForeignKey(e => e.OrcamentoId)
+                  .OnDelete(DeleteBehavior.Cascade)
+                  .HasConstraintName("FK_NotaEncomenda_Orcamento");
+        });
+
+        modelBuilder.Entity<NotaEncomendaItens>(entity =>
+        {
+            entity.ToTable("NotaEncomendaItens");
+            entity.HasKey(e => e.NotaEncomendaItensId).HasName("PK_NotaEncomendaItens");
+
+            entity.Property(e => e.NotaEncomendaItensId)
+                  .HasColumnName("NotaEncomendaItensID");
+
+            // FK → NotaEncomenda
+            entity.Property(e => e.NotaEncomendaId)
+                  .HasColumnName("NotaEncomendaNotaEncomendaID");
+            entity.HasOne(e => e.NotaEncomenda)
+                  .WithMany(n => n.Itens)               // corresponde à propriedade ICollection<NotaEncomendaItens> Itens
+                  .HasForeignKey(e => e.NotaEncomendaId)
+                  .OnDelete(DeleteBehavior.Cascade)
+                  .HasConstraintName("FK_NotaEncomendaItens_NotaEncomenda");
+
+            // FK → MateriaPrima
+            entity.Property(e => e.MateriaPrimaId)
+                  .HasColumnName("MateriaPrimaMateriaPrimaID");
+            entity.HasOne(e => e.MateriaPrima)
+                  .WithMany(m => m.NotasEncomendaItem)   // ou outro nome que tenhas usado na MateriaPrima
+                  .HasForeignKey(e => e.MateriaPrimaId)
+                  .OnDelete(DeleteBehavior.Restrict)
+                  .HasConstraintName("FK_NotaEncomendaItens_MateriaPrima");
+
+            entity.Property(e => e.Quantidade).IsRequired();
+            entity.Property(e => e.PrecoUnit).IsRequired();
         });
 
         modelBuilder.Entity<Orcamento>(entity =>
         {
-            entity.HasKey(e => e.OrcamentoId).HasName("PK__Orcament__4E96F759D136FF91");
+            entity.HasKey(e => e.OrcamentoID).HasName("PK__Orcament__4E96F759D136FF91");
 
             entity.ToTable("Orcamento");
 
-            entity.Property(e => e.OrcamentoId).HasColumnName("OrcamentoID");
+            entity.Property(e => e.OrcamentoID).HasColumnName("OrcamentoID");
             entity.Property(e => e.Data).HasColumnType("datetime");
             entity.Property(e => e.Estado)
                 .HasMaxLength(10)
                 .IsUnicode(false);
-            entity.Property(e => e.PedidoCotacaoPedidoCotacaoId).HasColumnName("PedidoCotacaoPedidoCotacaoID");
+            entity.Property(e => e.PedidoCotacaoPedidoCotacaoID).HasColumnName("PedidoCotacaoPedidoCotacaoID");
 
             entity.HasOne(d => d.PedidoCotacaoPedidoCotacao).WithMany(p => p.Orcamentos)
-                .HasForeignKey(d => d.PedidoCotacaoPedidoCotacaoId)
+                .HasForeignKey(d => d.PedidoCotacaoPedidoCotacaoID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKOrcamento236624");
         });
 
         modelBuilder.Entity<OrcamentoItem>(entity =>
         {
-            entity.HasKey(e => e.OrcamentoItemId).HasName("PK__Orcament__8AEC7376D11B449F");
+            entity.HasKey(e => e.OrcamentoItemID)
+                  .HasName("PK__Orcament__8AEC7376D11B449F");
 
             entity.ToTable("OrcamentoItem");
 
-            entity.Property(e => e.OrcamentoItemId).HasColumnName("OrcamentoItemID");
-            entity.Property(e => e.OrcamentoOrcamentoId).HasColumnName("OrcamentoOrcamentoID");
+            entity.Property(e => e.OrcamentoItemID).HasColumnName("OrcamentoItemID");
+            entity.Property(e => e.OrcamentoOrcamentoID).HasColumnName("OrcamentoOrcamentoID");
+            entity.Property(e => e.MateriaPrimaID).HasColumnName("MateriaPrimaID");
+            entity.Property(e => e.PrazoEntrega).HasColumnName("PrazoEntrega");
 
-            entity.HasOne(d => d.MateriaPrimaMateriaPrimaIDNavigation).WithMany(p => p.OrcamentosItem)
-                .HasForeignKey(d => d.MateriaPrimaMateriaPrimaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKOrcamentoI247272");
+            // FK → Matéria-prima
+            entity.HasOne(d => d.MateriaPrima)
+                  .WithMany(p => p.OrcamentosItem)
+                  .HasForeignKey(d => d.MateriaPrimaID)               // usar a propriedade *ID*
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FKOrcamentoI247272");
 
-            entity.HasOne(d => d.OrcamentoOrcamento).WithMany(p => p.OrcamentosItem)
-                .HasForeignKey(d => d.OrcamentoOrcamentoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKOrcamentoI811131");
+            // FK → Cabeçalho de Orçamento
+            entity.HasOne(d => d.Orcamento)
+                  .WithMany(p => p.OrcamentoItems)
+                  .HasForeignKey(d => d.OrcamentoOrcamentoID)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FKOrcamentoI811131");
         });
 
         modelBuilder.Entity<OrdemProducao>(entity =>
@@ -330,24 +360,33 @@ public partial class LogisControlContext : DbContext
 
         modelBuilder.Entity<PedidoCotacao>(entity =>
         {
-            entity.HasKey(e => e.PedidoCotacaoId).HasName("PK__PedidoCo__C1AE3DCE1957AE9C");
+            entity.HasKey(e => e.PedidoCotacaoId);
 
             entity.ToTable("PedidoCotacao");
 
             entity.Property(e => e.PedidoCotacaoId).HasColumnName("PedidoCotacaoID");
-            entity.Property(e => e.Data).HasColumnType("datetime");
             entity.Property(e => e.Descricao)
-                .HasMaxLength(1000)
-                .IsUnicode(false);
+                  .HasMaxLength(1000)
+                  .IsUnicode(false);
+            entity.Property(e => e.Data).HasColumnType("datetime");
             entity.Property(e => e.Estado)
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.FornecedorFornecedorId).HasColumnName("FornecedorFornecedorID");
+                  .HasMaxLength(10)
+                  .IsUnicode(false);
 
-            entity.HasOne(d => d.FornecedorFornecedor).WithMany(p => p.PedidosCotacao)
-                .HasForeignKey(d => d.FornecedorFornecedorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKPedidoCota347557");
+            // mapeia a FK para fornecedor
+            entity.Property(e => e.FornecedorId).HasColumnName("FornecedorID");
+            entity.HasOne(d => d.Fornecedor)
+                  .WithMany(p => p.PedidosCotacao)
+                  .HasForeignKey(d => d.FornecedorId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_PedidoCotacao_Fornecedor");
+
+            // mapeia o novo token
+            entity.Property(e => e.TokenAcesso)
+                  .HasMaxLength(50)
+                  .IsUnicode(false)
+                  .IsRequired()
+                  .HasColumnName("TokenAcesso");
         });
 
         modelBuilder.Entity<PedidoManutencao>(entity =>
@@ -518,6 +557,21 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.Sobrenome)
                 .HasMaxLength(25)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<PedidoCompraItem>(entity =>
+        {
+            entity.HasKey(e => e.PedidoCompraItemId);
+            entity.ToTable("PedidoCompraItem");
+            entity.Property(e => e.Quantidade).IsRequired();
+            entity.HasOne(d => d.PedidoCompra)
+                  .WithMany(p => p.PedidoCompraItems)
+                  .HasForeignKey(d => d.PedidoCompraId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.MateriaPrima)
+                  .WithMany()
+                  .HasForeignKey(d => d.MateriaPrimaId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         OnModelCreatingPartial(modelBuilder);
