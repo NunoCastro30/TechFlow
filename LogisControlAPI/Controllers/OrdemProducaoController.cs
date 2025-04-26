@@ -92,7 +92,7 @@ namespace LogisControlAPI.Controllers
             {
                 Estado = dto.Estado,
                 Quantidade = dto.Quantidade,
-                DataAbertura = dto.DataAbertura,
+                DataAbertura = DateTime.Now,
                 DataConclusao = dto.DataConclusao,
                 MaquinaMaquinaId = dto.MaquinaMaquinaId,
                 EncomendaClienteEncomendaClienteId = dto.EncomendaClienteEncomendaClienteId
