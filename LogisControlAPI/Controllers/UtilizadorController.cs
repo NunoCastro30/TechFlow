@@ -211,7 +211,38 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro ao atualizar o utilizador: {ex.Message}");
             }
         }
-        #endregion      
+        #endregion
+
+        #region ResetPassword
+        /// <summary>
+        /// Redefine a password de um utilizador com base no número de funcionário.
+        /// Apenas acessível a gestores.
+        /// </summary>
+        /// <param name="dto">Dados para reset da password.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        /// <response code="200">Password redefinida com sucesso.</response>
+        /// <response code="404">Utilizador não encontrado.</response>
+        /// <response code="500">Erro interno ao redefinir password.</response>
+        [Authorize(Roles = "Gestor")]
+        [HttpPut("ResetPassword")]
+        [Produces("application/json")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
+        {
+            try
+            {
+                var sucesso = await _utilizadorService.ResetPasswordAsync(dto.NumFuncionario, dto.NovaPassword);
+
+                if (!sucesso)
+                    return NotFound("Utilizador não encontrado.");
+
+                return Ok("Password redefinida com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao redefinir a password: {ex.Message}");
+            }
+        }
+        #endregion
 
     }
 }

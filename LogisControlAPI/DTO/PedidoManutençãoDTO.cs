@@ -1,4 +1,6 @@
-﻿namespace LogisControlAPI.DTO
+﻿using LogisControlAPI.Models;
+
+namespace LogisControlAPI.DTO
 {
     public class PedidoManutençãoDTO
     {
@@ -15,8 +17,11 @@
         public int MaquinaMaquinaId { get; set; }
 
         public int UtilizadorUtilizadorId { get; set; }
+
         public string? MaquinaNome { get; set; }
+
         public string? UtilizadorNome { get; set; }
+
 
     }
 }

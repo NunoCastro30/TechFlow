@@ -24,4 +24,6 @@ public partial class PedidoManutencao
     public virtual ICollection<RegistoManutencao> RegistosManutencao { get; set; } = new List<RegistoManutencao>();
 
     public virtual Utilizador UtilizadorUtilizador { get; set; } = null!;
+
+
 }

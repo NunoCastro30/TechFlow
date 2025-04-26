@@ -3,6 +3,9 @@ using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
+using System;
 
 namespace LogisControlAPI.Controllers
 {
@@ -32,12 +35,14 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Retorna a lista de registos com sucesso.</response>
         /// <response code="500">Erro interno ao tentar obter os registos.</response>
         [HttpGet("ObterRegistos")]
-        public async Task<ActionResult<IEnumerable<RegistoManutencaoDTO>>> GetRegistos()
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<RegistoManutencaoDetalheDTO>>> GetRegistos()
         {
             try
             {
                 var registos = await _context.RegistosManutencao
-                    .Select(r => new RegistoManutencaoDTO
+                    .Select(r => new RegistoManutencaoDetalheDTO
                     {
                         RegistoManutencaoId = r.RegistoManutencaoId,
                         Descricao = r.Descricao,
@@ -67,13 +72,15 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Registo não encontrado.</response>
         /// <response code="500">Erro interno ao procurar o registo.</response>
         [HttpGet("ObterRegisto/{id}")]
-        public async Task<ActionResult<RegistoManutencaoDTO>> GetRegistoPorId(int id)
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
+        public async Task<ActionResult<RegistoManutencaoDetalheDTO>> GetRegistoPorId(int id)
         {
             try
             {
                 var registo = await _context.RegistosManutencao
                     .Where(r => r.RegistoManutencaoId == id)
-                    .Select(r => new RegistoManutencaoDTO
+                    .Select(r => new RegistoManutencaoDetalheDTO
                     {
                         RegistoManutencaoId = r.RegistoManutencaoId,
                         Descricao = r.Descricao,
@@ -106,17 +113,28 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos.</response>
         /// <response code="500">Erro interno ao criar o registo.</response>
         [HttpPost("CriarRegisto")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult> CriarRegisto([FromBody] RegistoManutencaoDTO novoRegistoDto)
         {
             try
             {
+
+                var idClaim = User.FindFirst("id")?.Value;
+                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                    return Unauthorized("Não foi possível identificar o utilizador.");
+
+                var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+                if (utilizador == null)
+                    return BadRequest("Utilizador não encontrado.");
+
                 var novoRegisto = new RegistoManutencao
                 {
                     Descricao = novoRegistoDto.Descricao,
                     Estado = novoRegistoDto.Estado,
                     PedidoManutencaoPedidoManutId = novoRegistoDto.PedidoManutencaoPedidoManutId,
-                    UtilizadorUtilizadorId = novoRegistoDto.UtilizadorUtilizadorId,
-                    AssistenciaExternaAssistenteId = novoRegistoDto.AssistenciaExternaAssistenteId
+                    UtilizadorUtilizadorId = utilizadorId,
+                    AssistenciaExternaAssistenteId = novoRegistoDto.AssistenciaExternaAssistenteId // pode ser null
                 };
 
                 _context.RegistosManutencao.Add(novoRegisto);
@@ -142,6 +160,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Registo não encontrado.</response>
         /// <response code="500">Erro interno ao tentar atualizar o registo.</response>
         [HttpPut("AtualizarRegisto/{registoId}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<IActionResult> AtualizarRegisto(int registoId, [FromBody] RegistoManutencaoDTO registoAtualizado)
         {
             try
@@ -151,11 +171,20 @@ namespace LogisControlAPI.Controllers
                 if (registo == null)
                     return NotFound("Registo de manutenção não encontrado.");
 
+                // Obter ID do utilizador autenticado
+                var idClaim = User.FindFirst("id")?.Value;
+                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                    return Unauthorized("Não foi possível identificar o utilizador.");
+
+                var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
+                if (utilizador == null)
+                    return BadRequest("Utilizador não encontrado.");
+
                 // Atualizar os campos
                 registo.Descricao = registoAtualizado.Descricao;
                 registo.Estado = registoAtualizado.Estado;
                 registo.PedidoManutencaoPedidoManutId = registoAtualizado.PedidoManutencaoPedidoManutId;
-                registo.UtilizadorUtilizadorId = registoAtualizado.UtilizadorUtilizadorId;
+                registo.UtilizadorUtilizadorId = utilizadorId;
                 registo.AssistenciaExternaAssistenteId = registoAtualizado.AssistenciaExternaAssistenteId;
 
                 await _context.SaveChangesAsync();
@@ -165,6 +194,40 @@ namespace LogisControlAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro ao atualizar registo de manutenção: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region ObterRegistosPorPedido
+        /// <summary>
+        /// Obtém todos os registos de manutenção associados a um pedido específico.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de manutenção.</param>
+        /// <returns>Lista de registos (descrição e estado).</returns>
+        /// <response code="200">Registos obtidos com sucesso.</response>
+        /// <response code="404">Nenhum registo encontrado para o pedido.</response>
+        /// <response code="500">Erro interno ao obter os registos.</response>
+        [HttpGet("ObterRegistosPorPedido/{pedidoId}")]
+        [Authorize]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<RegistoManutencaoVisualDTO>>> ObterRegistosPorPedido(int pedidoId)
+        {
+            try
+            {
+                var registos = await _context.RegistosManutencao
+                    .Where(r => r.PedidoManutencaoPedidoManutId == pedidoId)
+                    .Select(r => new RegistoManutencaoVisualDTO
+                    {
+                        RegistoManutencaoId = r.RegistoManutencaoId,
+                        Descricao = r.Descricao,
+                        Estado = r.Estado
+                    })
+                    .ToListAsync();
+                return Ok(registos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao obter registos: {ex.Message}");
             }
         }
         #endregion
