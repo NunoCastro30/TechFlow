@@ -26,9 +26,9 @@ TechFlow é um sistema de gestão empresarial desenvolvido para otimizar os proc
 
 ## Tecnologias Utilizadas
 
-- **Backend:** 
-- **Frontend:**
-- **Base de Dados:** 
+- **Backend:** C#
+- **Frontend:** JavaScript + Html & Css
+- **Base de Dados:** Sql Server  
 - **Autenticação:** JWT
 - **Integração:** API RESTful
 
