@@ -92,7 +92,7 @@ namespace LogisControlAPI.Controllers
             {
                 Estado = dto.Estado,
                 Quantidade = dto.Quantidade,
-                DataAbertura = dto.DataAbertura,
+                DataAbertura = DateTime.Now,
                 DataConclusao = dto.DataConclusao,
                 MaquinaMaquinaId = dto.MaquinaMaquinaId,
                 EncomendaClienteEncomendaClienteId = dto.EncomendaClienteEncomendaClienteId
@@ -100,6 +100,16 @@ namespace LogisControlAPI.Controllers
 
             _context.OrdensProducao.Add(ordem);
             await _context.SaveChangesAsync();
+
+            // Atualiza o estado da encomenda para "Em produção"
+            var encomenda = await _context.EncomendasCliente
+                .FindAsync(dto.EncomendaClienteEncomendaClienteId);
+
+            if (encomenda != null)
+            {
+                encomenda.Estado = "Em produção";
+                await _context.SaveChangesAsync();
+            }
 
             return CreatedAtAction(nameof(GetById), new { id = ordem.OrdemProdId }, ordem);
         }
