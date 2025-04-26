@@ -42,6 +42,7 @@ namespace LogisControlAPI.Controllers
                 var orcamentos = await _context.Orcamentos
                     .Select(o => new OrcamentoDTO
                     {
+                        OrcamentoId=o.OrcamentoId,
                         Data = o.Data,
                         Estado = o.Estado,
                         PedidoCotacaoPedidoCotacaoId = o.PedidoCotacaoPedidoCotacaoId

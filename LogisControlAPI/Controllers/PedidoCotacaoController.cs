@@ -11,7 +11,7 @@ namespace LogisControlAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class CriarPedidoCotacaoController : ControllerBase
+    public class PedidoCotacaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
 
@@ -24,7 +24,7 @@ namespace LogisControlAPI.Controllers
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public CriarPedidoCotacaoController(LogisControlContext context)
+        public PedidoCotacaoController(LogisControlContext context)
         {
             _context = context;
         }
@@ -36,15 +36,15 @@ namespace LogisControlAPI.Controllers
         /// <returns>Lista de pedidos de cotação existentes.</returns>
         /// <response code="200">Retorna a lista de pedidos de cotação com sucesso.</response>
         /// <response code="500">Erro interno ao tentar obter pedidos de cotação.</response>
-        [HttpGet ("GetPedidoCotacao")]
-        public async Task<ActionResult<IEnumerable<CriarPedidoCotacaoDTO>>> GetPedidosDeCotacao()
+        [HttpGet("GetPedidoCotacao")]
+        public async Task<ActionResult<IEnumerable<PedidoCotacaoDTO>>> GetPedidosDeCotacao()
         {
             try
             {
                 var pedidosDeCotacao = await _context.PedidosCotacao
-                    .Select(p => new CriarPedidoCotacaoDTO
+                    .Select(p => new PedidoCotacaoDTO
                     {
-
+                        PedidoCotacaoId = p.PedidoCotacaoId,
                         Descricao = p.Descricao,
                         Data = p.Data,
                         Estado = p.Estado,
@@ -70,14 +70,14 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Pedido de cotação encontrado com sucesso.</response>
         /// <response code="404">Pedido de cotação não encontrado.</response>
         [HttpGet("GetPedidoDeCotacao/{id}")]
-        public async Task<ActionResult<CriarPedidoCotacaoDTO>> GetPedidoDeCotacao(int id)
+        public async Task<ActionResult<PedidoCotacaoDTO>> GetPedidoDeCotacao(int id)
         {
             var pedidoDeCotacao = await _context.PedidosCotacao.FindAsync(id);
             if (pedidoDeCotacao == null)
             {
                 return NotFound();
             }
-            return Ok(new CriarPedidoCotacaoDTO
+            return Ok(new PedidoCotacaoDTO
             {
                 //PedidoCotacaoId = pedidoDeCotacao.PedidoCotacaoId,
                 Descricao = pedidoDeCotacao.Descricao,
@@ -98,7 +98,7 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos para o pedido de cotação.</response>
         /// <response code="500">Erro interno ao criar o pedido de cotação.</response>
         [HttpPost]
-        public async Task<ActionResult<CriarPedidoCotacaoDTO>> CreatePedidoDeCotacao([FromBody] CriarPedidoCotacaoDTO pedidoDeCotacaoDTO)
+        public async Task<ActionResult<PedidoCotacaoDTO>> CreatePedidoDeCotacao([FromBody] PedidoCotacaoDTO pedidoDeCotacaoDTO)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Pedido de cotação não encontrado.</response>
         /// <response code="500">Erro interno ao tentar atualizar o pedido de cotação.</response>
         [HttpPut("UpdatePedidoDeCotacao/{id}")]
-        public async Task<IActionResult> UpdatePedidoDeCotacao(int id, [FromBody] CriarPedidoCotacaoDTO pedidoDeCotacaoDTO)
+        public async Task<IActionResult> UpdatePedidoDeCotacao(int id, [FromBody] PedidoCotacaoDTO pedidoDeCotacaoDTO)
         {
             try
             {

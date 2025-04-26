@@ -3,6 +3,7 @@
     public class NotaEncomendaDTO
     {
 
+        public int NotaEncomendaId { get; set; }
 
         public DateTime DataEmissao { get; set; }
 

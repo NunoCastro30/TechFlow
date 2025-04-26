@@ -39,7 +39,7 @@ namespace LogisControlAPI.Controllers
                 var notasEncomenda = await _context.NotasEncomenda
                     .Select(n => new NotaEncomendaDTO
                     {
-                       // NotaEncomendaId = n.NotaEncomendaId,
+                        NotaEncomendaId = n.NotaEncomendaId,
                         DataEmissao = n.DataEmissao,
                         Estado = n.Estado,
                         ValorTotal = n.ValorTotal,
@@ -74,7 +74,7 @@ namespace LogisControlAPI.Controllers
             }
             return Ok(new NotaEncomendaDTO
             {
-               // NotaEncomendaId = notaEncomenda.NotaEncomendaId,
+                NotaEncomendaId = notaEncomenda.NotaEncomendaId,
                 DataEmissao = notaEncomenda.DataEmissao,
                 Estado = notaEncomenda.Estado,
                 ValorTotal = notaEncomenda.ValorTotal,

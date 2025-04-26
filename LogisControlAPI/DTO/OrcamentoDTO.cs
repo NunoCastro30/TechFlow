@@ -3,10 +3,12 @@
     public class OrcamentoDTO
     {
 
-            public DateTime Data { get; set; }
+        public int OrcamentoId { get; set; }
 
-            public string Estado { get; set; } = null!;
+        public DateTime Data { get; set; }
 
-            public int PedidoCotacaoPedidoCotacaoId { get; set; }
-        }
+        public string Estado { get; set; } = null!;
+
+        public int PedidoCotacaoPedidoCotacaoId { get; set; }
+    }
 }
