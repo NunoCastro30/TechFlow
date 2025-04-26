@@ -1,228 +1,77 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using LogisControlAPI.Models;
-using LogisControlAPI.Data;
+using System.Threading.Tasks;
 using LogisControlAPI.DTO;
-using Microsoft.AspNetCore.Authorization;
-
+using LogisControlAPI.Services;
 
 namespace LogisControlAPI.Controllers
 {
     /// <summary>
-    /// Controlador responsável pela gestão dos pedidos de compra.
+    /// Controlador responsável pela gestão dos pedidos de compra:
+    /// criação, listagem e detalhe.
     /// </summary>
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/pedidos-compra")]
     public class PedidoCompraController : ControllerBase
     {
-        private readonly LogisControlContext _context;
+        private readonly ComprasService _comprasService;
 
         /// <summary>
-        /// Construtor que injeta o contexto da base de dados.
+        /// Injeta o serviço de compras que contém toda a lógica de negócio.
         /// </summary>
-        public PedidoCompraController(LogisControlContext context)
+        public PedidoCompraController(ComprasService comprasService)
         {
-            _context = context;
+            _comprasService = comprasService;
         }
 
-        #region CriarPedidoCompra
         /// <summary>
-        /// Cria um novo pedido de compra.
+        /// Cria um novo pedido de compra, incluindo os itens especificados.
         /// </summary>
-        /// <param name="dto">Dados para criação do pedido.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="201">Pedido de compra criado com sucesso.</response>
-        /// <response code="400">Utilizador não encontrado ou dados inválidos.</response>
-        /// <response code="500">Erro interno ao criar o pedido de compra.</response>
-        [HttpPost("CriarPedidoCompra")]
-        [Authorize]
-        [Produces("application/json")]
+        /// <param name="dto">Dados do pedido, incluindo lista de itens.</param>
+        /// <returns>201 Created com header Location apontando para o GET de detalhe.</returns>
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> CriarPedidoCompra([FromBody] CriarPedidoCompraDTO dto)
         {
-            try
-            {
-                var idClaim = User.FindFirst("id")?.Value;
-                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
-                    return Unauthorized("Não foi possível identificar o utilizador.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
-                if (utilizador == null)
-                    return BadRequest("Utilizador não encontrado.");
+            var id = await _comprasService.CriarPedidoCompraAsync(dto);
 
-                var novoPedido = new PedidoCompra
-                {
-                    Descricao = dto.Descricao,
-                    Estado = "Aberto",
-                    DataAbertura = DateTime.UtcNow,
-                    UtilizadorUtilizadorId = utilizadorId
-                };
-
-                _context.PedidosCompra.Add(novoPedido);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(201, "Pedido de compra criado com sucesso.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao criar pedido de compra: {ex.Message}");
-            }
+            return CreatedAtAction(
+                nameof(ObterPedidoCompra),
+                new { id },
+                null
+            );
         }
-        #endregion
 
-        #region ListarPedidosCompra
         /// <summary>
-        /// Lista todos os pedidos de compra com o nome do utilizador associado.
+        /// Lista todos os pedidos de compra filtrados por estado.
         /// </summary>
-        /// <returns>Lista de pedidos de compra.</returns>
-        /// <response code="200">Lista obtida com sucesso.</response>
-        /// <response code="500">Erro ao obter os pedidos.</response>
-        [HttpGet("ListarPedidoCompra")]
-        [Authorize(Roles = "Gestor")]
-        [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<PedidoCompraDTO>>> ListarPedidosCompra()
+        /// <param name="estado">Estado para filtrar (p.ex. "Aberto").</param>
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PedidoCompraDTO>), 200)]
+        public async Task<IActionResult> ListarPedidosCompra([FromQuery] string estado = "Aberto")
         {
-            try
-            {
-                var pedidos = await _context.PedidosCompra
-                    .Include(p => p.UtilizadorUtilizador)
-                    .Select(p => new PedidoCompraDTO
-                    {
-                        PedidoCompraId = p.PedidoCompraId,
-                        Descricao = p.Descricao,
-                        Estado = p.Estado,
-                        DataAbertura = p.DataAbertura,
-                        DataConclusao = p.DataConclusao,
-                        NomeUtilizador = $"{p.UtilizadorUtilizador.PrimeiroNome} {p.UtilizadorUtilizador.Sobrenome}"
-                    })
-                    .ToListAsync();
-
-                return Ok(pedidos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao obter pedidos de compra: {ex.Message}");
-            }
+            var lista = await _comprasService.ListarPedidosPorEstadoAsync(estado);
+            return Ok(lista);
         }
-        #endregion
 
-        #region ListarPedidosCompraPorUtilizador
         /// <summary>
-        /// Lista os pedidos de compra do utilizador autenticado.
+        /// Obtém o detalhe completo de um pedido de compra,
+        /// incluindo informações do utilizador e itens.
         /// </summary>
-        /// <returns>Lista de pedidos de compra do utilizador.</returns>
-        /// <response code="200">Lista obtida com sucesso.</response>
-        /// <response code="401">Utilizador não autenticado.</response>
-        /// <response code="500">Erro ao obter os pedidos.</response>
-        [HttpGet("ListarPedidoCompraPorUtilizador")]
-        [Authorize]
-        [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<PedidoCompraDTO>>> ListarPedidosCompraPorUtilizador()
+        /// <param name="id">ID do pedido a consultar.</param>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(PedidoCompraDetalheDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> ObterPedidoCompra(int id)
         {
-            try
-            {
-                // Obter o ID do token JWT
-                var idClaim = User.FindFirst("id")?.Value;
-                if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
-                    return Unauthorized("Não foi possível identificar o utilizador.");
+            var detalhe = await _comprasService.ObterPedidoCompraDetalheAsync(id);
+            if (detalhe == null)
+                return NotFound($"Pedido de compra com ID={id} não encontrado.");
 
-                var pedidos = await _context.PedidosCompra
-                    .Include(p => p.UtilizadorUtilizador)
-                    .Where(p => p.UtilizadorUtilizadorId == utilizadorId)
-                    .Select(p => new PedidoCompraDTO
-                    {
-                        PedidoCompraId = p.PedidoCompraId,
-                        Descricao = p.Descricao,
-                        Estado = p.Estado,
-                        DataAbertura = p.DataAbertura,
-                        DataConclusao = p.DataConclusao,
-                        NomeUtilizador = $"{p.UtilizadorUtilizador.PrimeiroNome} {p.UtilizadorUtilizador.Sobrenome}"
-                    })
-                    .ToListAsync();
-
-                return Ok(pedidos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao obter pedidos de compra: {ex.Message}");
-            }
+            return Ok(detalhe);
         }
-        #endregion
-
-        #region AtualizarEstadoPedido
-        /// <summary>
-        /// Atualiza o estado de um pedido de compra. Se o estado for "Concluído", define também a data de conclusão.
-        /// </summary>
-        /// <param name="pedidoId">ID do pedido a atualizar.</param>
-        /// <param name="dto">Novo estado.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="200">Estado atualizado com sucesso.</response>
-        /// <response code="404">Pedido de compra não encontrado.</response>
-        /// <response code="400">Dados inválidos.</response>
-        /// <response code="500">Erro interno ao atualizar o estado.</response>
-        [HttpPut("AtualizarEstado/{pedidoId}")]
-        [Authorize(Roles = "Gestor")]
-        [Produces("application/json")]
-        public async Task<IActionResult> AtualizarEstadoPedido(int pedidoId, [FromBody] AtualizarEstadoPedidoDTO dto)
-        {
-            try
-            {
-                var pedido = await _context.PedidosCompra.FindAsync(pedidoId);
-                if (pedido == null)
-                    return NotFound("Pedido de compra não encontrado.");
-
-                pedido.Estado = dto.Estado;
-
-                if (dto.Estado == "Aceite" || dto.Estado == "Recusado")
-                {
-                    pedido.DataConclusao = DateTime.UtcNow;
-                }
-                else
-                {
-                    pedido.DataConclusao = null;
-                }
-
-                await _context.SaveChangesAsync();
-                return Ok("Estado atualizado com sucesso.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao atualizar estado do pedido: {ex.Message}");
-            }
-        }
-        #endregion
-
-        #region AtualizarDescricao
-        /// <summary>
-        /// Atualiza a descrição de um pedido de compra.
-        /// </summary>
-        /// <param name="pedidoId">ID do pedido.</param>
-        /// <param name="dto">Nova descrição.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="200">Descrição atualizada com sucesso.</response>
-        /// <response code="404">Pedido não encontrado.</response>
-        /// <response code="500">Erro interno.</response>
-        [HttpPut("AtualizarDescricao/{pedidoId}")]
-        [Authorize]
-        [Produces("application/json")]
-        public async Task<IActionResult> AtualizarDescricao(int pedidoId, [FromBody] AtualizarDescricaoPedidoDTO dto)
-        {
-            try
-            {
-                var pedido = await _context.PedidosCompra.FindAsync(pedidoId);
-                if (pedido == null)
-                    return NotFound("Pedido de compra não encontrado.");
-
-                pedido.Descricao = dto.NovaDescricao;
-                await _context.SaveChangesAsync();
-
-                return Ok("Descrição atualizada com sucesso.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao atualizar a descrição: {ex.Message}");
-            }
-        }
-        #endregion
-
     }
 }

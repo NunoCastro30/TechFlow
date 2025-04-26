@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LogisControlAPI.Models;
-
-public partial class NotaEncomendaItens
+namespace LogisControlAPI.Models
 {
-    public int NotaEncomendaItensId { get; set; }
+    public class NotaEncomendaItens
+    {
+        public int NotaEncomendaItensId { get; set; }
+        public int NotaEncomendaId { get; set; }             // ← Chave FK
+        public virtual NotaEncomenda NotaEncomenda { get; set; } = null!;
 
-    public int Quantidade { get; set; }
+        public int MateriaPrimaId { get; set; }               // ← Chave FK
+        public virtual MateriaPrima MateriaPrima { get; set; } = null!;
 
-    public double PrecoUnit { get; set; }
-
-    public int NotaEncomendaNotaEncomendaId { get; set; }
-
-    public int MateriaPrimaMateriaPrimaId { get; set; }
-
-    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
-
-    public virtual NotaEncomenda NotaEncomendaNotaEncomenda { get; set; } = null!;
+        public int Quantidade { get; set; }
+        public double PrecoUnit { get; set; }
+    }
 }

@@ -18,6 +18,15 @@ builder.Services.AddDbContext<LogisControlContext>(options =>
 //Ativar controladores para API REST
 builder.Services.AddControllers();
 builder.Services.AddScoped<UtilizadorService>();
+builder.Services.AddScoped<ComprasService>();
+
+//Configurar o serviço de email
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<StockService>();
+
+//Configurar o serviço Pedidos Manutenção
+builder.Services.AddScoped<PedidoManutencaoService>();
 
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
@@ -119,6 +128,10 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 app.UseCors("CorsPolicy");
+
+// **Importante**: primeiro autenticação, depois autorização
+app.UseAuthentication();
+app.UseAuthorization();
 
 //Ativar Swagger
 app.UseSwagger();
