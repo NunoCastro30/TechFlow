@@ -24,6 +24,9 @@ builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
 
+//Configurar o serviço Pedidos Manutenção
+builder.Services.AddScoped<PedidoManutencaoService>();
+
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

@@ -37,6 +37,22 @@ namespace LogisControlAPI.Services
             return _passwordHasher.VerifyHashedPassword(null, hashedPassword, inputPassword) == PasswordVerificationResult.Success;
         }
 
+        public async Task<bool> ResetPasswordAsync(int numFuncionario, string novaPassword)
+        {
+            var utilizador = await _context.Utilizadores
+                .FirstOrDefaultAsync(u => u.NumFuncionario == numFuncionario);
+
+            if (utilizador == null)
+                return false;
+
+            utilizador.Password = HashPassword(novaPassword);
+            _context.Utilizadores.Update(utilizador);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }
 
