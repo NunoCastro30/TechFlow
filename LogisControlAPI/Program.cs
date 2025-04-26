@@ -1,7 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Data;
 using LogisControlAPI.Services;
+using LogisControlAPI.Interfaces;
 using System.Reflection;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using LogisControlAPI.Auxiliar;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +18,15 @@ builder.Services.AddDbContext<LogisControlContext>(options =>
 //Ativar controladores para API REST
 builder.Services.AddControllers();
 builder.Services.AddScoped<UtilizadorService>();
+builder.Services.AddScoped<ComprasService>();
+
+//Configurar o serviço de email
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<StockService>();
+
+//Configurar o serviço Pedidos Manutenção
+builder.Services.AddScoped<PedidoManutencaoService>();
 
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -33,9 +48,82 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AuthSettings.PrivateKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+//mais simples
+//builder.Services.AddAuthorization(); // Add default authorization services
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("Operador", policy => policy.RequireRole("Operador"));
+    options.AddPolicy("Gestor", policy => policy.RequireRole("Gestor"));
+    options.AddPolicy("Manutencao", policy => policy.RequireRole("Manutencao"));
+    options.AddPolicy("Compras", policy => policy.RequireRole("Compras"));
+});
+
+builder.Services.AddTransient<AuthService>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "LogisControl API", Version = "v1" });
+
+    // Adiciona suporte para comentários XML
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "JWT Authentication",
+        Description = "Enter your JWT token in this field",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    };
+
+    c.AddSecurityDefinition("Bearer", securityScheme);
+
+    var securityRequirement = new OpenApiSecurityRequirement
+            {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+            };
+
+    c.AddSecurityRequirement(securityRequirement);
+});
+
 var app = builder.Build();
 
 app.UseCors("CorsPolicy");
+
+// **Importante**: primeiro autenticação, depois autorização
+app.UseAuthentication();
+app.UseAuthorization();
 
 //Ativar Swagger
 app.UseSwagger();

@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisControlAPI.Controllers
 {
-
+    /// <summary>
+    /// Controller responsável pela gestão das matérias-primas.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MateriaPrimaController : ControllerBase
@@ -18,92 +20,184 @@ namespace LogisControlAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Obtém todas as matérias-primas.
+        /// </summary>
+        /// <returns>
+        /// 200 OK com a lista de <see cref="MateriaPrimaDTO"/>;
+        /// 500 Internal Server Error em caso de falha.
+        /// </returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MateriaPrimaDTO>>> GetMateriasPrimas()
+        [ProducesResponseType(typeof(IEnumerable<MateriaPrimaDTO>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<IEnumerable<MateriaPrimaDTO>>> GetAll()
         {
-            try
-            {
-                var materiasPrimas = await _context.MateriasPrimas
-                    .Select(m => new MateriaPrimaDTO
-                    {
-                        MateriaPrimaId = m.MateriaPrimaId,
-                        Nome = m.Nome,
-                        Quantidade = m.Quantidade,
-                        Descricao = m.Descricao,
-                        Categoria = m.Categoria,
-                        CodInterno = m.CodInterno,
-                        Preco = m.Preco
-                    })
-                    .ToListAsync();
+            var list = await _context.MateriasPrimas
+                .AsNoTracking()
+                .Select(m => new MateriaPrimaDTO
+                {
+                    MateriaPrimaId = m.MateriaPrimaId,
+                    Nome = m.Nome,
+                    Quantidade = m.Quantidade,
+                    Descricao = m.Descricao,
+                    Categoria = m.Categoria,
+                    CodInterno = m.CodInterno,
+                    Preco = m.Preco
+                })
+                .ToListAsync();
 
-                return Ok(materiasPrimas);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno ao obter matérias-primas: {ex.Message}");
-            }
+            return Ok(list);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MateriaPrimaDTO>> GetMateriaPrima(int id)
+        /// <summary>
+        /// Obtém uma matéria-prima pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima (PK).</param>
+        /// <returns>
+        /// 200 OK com <see cref="MateriaPrimaDTO"/>;
+        /// 404 Not Found se não existir;
+        /// 500 Internal Server Error em caso de falha.
+        /// </returns>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(MateriaPrimaDTO), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<MateriaPrimaDTO>> GetById(int id)
         {
-            var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
-            if (materiaPrima == null)
-            {
+            var m = await _context.MateriasPrimas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.MateriaPrimaId == id);
+
+            if (m == null)
                 return NotFound();
-            }
-            return Ok(materiaPrima);
+
+            var dto = new MateriaPrimaDTO
+            {
+                MateriaPrimaId = m.MateriaPrimaId,
+                Nome = m.Nome,
+                Quantidade = m.Quantidade,
+                Descricao = m.Descricao,
+                Categoria = m.Categoria,
+                CodInterno = m.CodInterno,
+                Preco = m.Preco
+            };
+            return Ok(dto);
         }
 
+        /// <summary>
+        /// Cria uma nova matéria-prima.
+        /// </summary>
+        /// <param name="dto">Dados para criação (<see cref="CriarMateriaPrimaDTO"/>).</param>
+        /// <returns>
+        /// 201 Created com o recurso criado;
+        /// 400 Bad Request se DTO inválido;
+        /// 500 Internal Server Error em caso de falha.
+        /// </returns>
         [HttpPost]
-        public async Task<ActionResult<MateriaPrimaDTO>> CreateMateriaPrima([FromBody] MateriaPrimaDTO materiaPrimaDTO)
+        [ProducesResponseType(typeof(MateriaPrimaDTO), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Create([FromBody] CriarMateriaPrimaDTO dto)
         {
-            var materiaPrima = new MateriaPrima
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var m = new MateriaPrima
             {
-                Nome = materiaPrimaDTO.Nome,
-                Quantidade = materiaPrimaDTO.Quantidade,
-                Descricao = materiaPrimaDTO.Descricao,
-                Categoria = materiaPrimaDTO.Categoria,
-                CodInterno = materiaPrimaDTO.CodInterno,
-                Preco = materiaPrimaDTO.Preco
+                Nome = dto.Nome,
+                Quantidade = dto.Quantidade,
+                Descricao = dto.Descricao,
+                Categoria = dto.Categoria,
+                CodInterno = dto.CodInterno,
+                Preco = dto.Preco
             };
 
-            _context.MateriasPrimas.Add(materiaPrima);
+            _context.MateriasPrimas.Add(m);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMateriaPrima), new { id = materiaPrima.MateriaPrimaId }, materiaPrima);
+            var resultDto = new MateriaPrimaDTO
+            {
+                MateriaPrimaId = m.MateriaPrimaId,
+                Nome = m.Nome,
+                Quantidade = m.Quantidade,
+                Descricao = m.Descricao,
+                Categoria = m.Categoria,
+                CodInterno = m.CodInterno,
+                Preco = m.Preco
+            };
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = m.MateriaPrimaId },
+                resultDto);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMateriaPrima(int id, [FromBody] MateriaPrimaDTO materiaPrimaDTO)
+        /// <summary>
+        /// Atualiza uma matéria-prima existente.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima a atualizar.</param>
+        /// <param name="dto">Dados de atualização (<see cref="UpdateMateriaPrimaDTO"/>).</param>
+        /// <returns>
+        /// 204 No Content se OK;
+        /// 400 Bad Request se DTO inválido;
+        /// 404 Not Found se não existir;
+        /// 409 Conflict em caso de concorrência;
+        /// 500 Internal Server Error em caso de falha.
+        /// </returns>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateMateriaPrimaDTO dto)
         {
-            var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
-            if (materiaPrima == null)
-            {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var m = await _context.MateriasPrimas.FindAsync(id);
+            if (m == null)
                 return NotFound();
+
+            m.Nome = dto.Nome;
+            m.Quantidade = dto.Quantidade;
+            m.Descricao = dto.Descricao;
+            m.Categoria = dto.Categoria;
+            m.CodInterno = dto.CodInterno;
+            m.Preco = dto.Preco;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict("O registo foi alterado por outro utilizador.");
             }
 
-            materiaPrima.Nome = materiaPrimaDTO.Nome;
-            materiaPrima.Quantidade = materiaPrimaDTO.Quantidade;
-            materiaPrima.Descricao = materiaPrimaDTO.Descricao;
-            materiaPrima.Categoria = materiaPrimaDTO.Categoria;
-            materiaPrima.CodInterno = materiaPrimaDTO.CodInterno;
-            materiaPrima.Preco = materiaPrimaDTO.Preco;
-
-            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMateriaPrima(int id)
+        /// <summary>
+        /// Remove uma matéria-prima.
+        /// </summary>
+        /// <param name="id">ID da matéria-prima a remover.</param>
+        /// <returns>
+        /// 204 No Content se OK;
+        /// 404 Not Found se não existir;
+        /// 500 Internal Server Error em caso de falha.
+        /// </returns>
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var materiaPrima = await _context.MateriasPrimas.FindAsync(id);
-            if (materiaPrima == null)
-            {
+            var m = await _context.MateriasPrimas.FindAsync(id);
+            if (m == null)
                 return NotFound();
-            }
 
-            _context.MateriasPrimas.Remove(materiaPrima);
+            _context.MateriasPrimas.Remove(m);
             await _context.SaveChangesAsync();
 
             return NoContent();
