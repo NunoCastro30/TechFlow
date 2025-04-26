@@ -1,23 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LogisControlAPI.Models;
-
-public partial class OrcamentoItem
+namespace LogisControlAPI.Models
 {
-    public int OrcamentoItemId { get; set; }
+    public partial class OrcamentoItem
+    {
+        public int OrcamentoItemID { get; set; }
 
-    public int Quantidade { get; set; }
+        // Quantidade orçada
+        public int Quantidade { get; set; }
 
-    public double PrecoUnit { get; set; }
+        // Preço unitário acordado
+        public double PrecoUnit { get; set; }
 
-    public int? PrazoEntrega { get; set; }
+        // Prazo de entrega (dias) — conforme ERD está NULLABLE
+        public int? PrazoEntrega { get; set; }
 
-    public int OrcamentoOrcamentoId { get; set; }
+        // FK para Orcamento
+        public int OrcamentoOrcamentoID { get; set; }
+        [ForeignKey(nameof(OrcamentoOrcamentoID))]
+        public virtual Orcamento Orcamento { get; set; } = null!;
 
-    public int MateriaPrimaMateriaPrimaId { get; set; }
-
-    public virtual MateriaPrima MateriaPrimaMateriaPrimaIDNavigation { get; set; } = null!;
-
-    public virtual Orcamento OrcamentoOrcamento { get; set; } = null!;
+        // FK para Matéria-Prima
+        [Column("MateriaPrimaID")]
+        public int MateriaPrimaID { get; set; }
+        [ForeignKey(nameof(MateriaPrimaID))]
+        public virtual MateriaPrima MateriaPrima { get; set; } = null!;
+    }
 }
