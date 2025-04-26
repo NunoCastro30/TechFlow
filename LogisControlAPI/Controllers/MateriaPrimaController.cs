@@ -1,8 +1,12 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LogisControlAPI.Controllers
 {
@@ -14,10 +18,15 @@ namespace LogisControlAPI.Controllers
     public class MateriaPrimaController : ControllerBase
     {
         private readonly LogisControlContext _context;
-
-        public MateriaPrimaController(LogisControlContext context)
+        private readonly StockService _stockService;
+        /// <summary>
+        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// </summary>
+        /// <param name="context">Instância do contexto da base de dados.</param>
+        public MateriaPrimaController(LogisControlContext context, StockService stockService)
         {
             _context = context;
+            _stockService = stockService;
         }
 
         /// <summary>
@@ -131,6 +140,7 @@ namespace LogisControlAPI.Controllers
                 new { id = m.MateriaPrimaId },
                 resultDto);
         }
+        #endregion
 
         /// <summary>
         /// Atualiza uma matéria-prima existente.
@@ -177,6 +187,7 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
 
         /// <summary>
         /// Remove uma matéria-prima.
@@ -202,5 +213,6 @@ namespace LogisControlAPI.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }

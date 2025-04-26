@@ -4,7 +4,7 @@
     /// <summary>
     /// DTO para atualizar o perfil do utilizador (dados pessoais + password).
     /// </summary>
-    public class AtualizarPerfilUtilizadorDTO
+    public class UtilizadorUpdateDTO
     {
         public string? PrimeiroNome { get; set; }
         public string? Sobrenome { get; set; }

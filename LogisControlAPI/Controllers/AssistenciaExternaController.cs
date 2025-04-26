@@ -3,6 +3,7 @@ using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LogisControlAPI.Controllers
 {
@@ -32,6 +33,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Retorna a lista com sucesso.</response>
         /// <response code="500">Erro interno ao tentar obter as assistências.</response>
         [HttpGet("ObterAssistencias")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<AssistenciaExternaDTO>>> GetAssistencias()
         {
             try
@@ -66,6 +69,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Assistência não encontrada.</response>
         /// <response code="500">Erro interno ao procurar a assistência.</response>
         [HttpGet("ObterAssistencia/{id}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult<AssistenciaExternaDTO>> GetAssistenciaPorId(int id)
         {
             try
@@ -104,6 +109,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos ou duplicados.</response>
         /// <response code="500">Erro interno ao criar a assistência.</response>
         [HttpPost("CriarAssistencia")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult> CriarAssistencia([FromBody] AssistenciaExternaDTO novaAssistenciaDto)
         {
             try
@@ -147,6 +154,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">NIF duplicado ou dados inválidos.</response>
         /// <response code="500">Erro interno ao tentar atualizar a assistência.</response>
         [HttpPut("AtualizarAssistencia/{assistenteId}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<IActionResult> AtualizarAssistencia(int assistenteId, [FromBody] AssistenciaExternaDTO assistenciaAtualizada)
         {
             try
@@ -179,5 +188,50 @@ namespace LogisControlAPI.Controllers
             }
         }
         #endregion
+
+        #region ObterAssistenciaPorPedido
+        /// <summary>
+        /// Obtém a assistência externa associada à máquina de um pedido de manutenção.
+        /// </summary>
+        /// <param name="pedidoId">ID do pedido de manutenção.</param>
+        /// <returns>Informação da assistência externa (ID e Nome), ou null se não existir.</returns>
+        /// <response code="200">Assistência obtida com sucesso ou inexistente.</response>
+        /// <response code="404">Pedido de manutenção não encontrado.</response>
+        /// <response code="500">Erro interno ao obter a assistência.</response>
+        [HttpGet("ObterAssistenciaPorPedido/{pedidoId}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
+        public async Task<ActionResult<AssistenciaExternaPedidoDTO>> ObterAssistenciaPorPedido(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _context.PedidosManutencao
+                    .Include(p => p.MaquinaMaquina)
+                        .ThenInclude(m => m.AssistenciaExternaAssistente)
+                    .FirstOrDefaultAsync(p => p.PedidoManutId == pedidoId);
+
+                if (pedido == null)
+                    return NotFound("Pedido de manutenção não encontrado.");
+
+                var assistencia = pedido.MaquinaMaquina?.AssistenciaExternaAssistente;
+
+                if (assistencia == null)
+                    return Ok(null); // máquina sem assistência associada
+
+                var dto = new AssistenciaExternaPedidoDTO
+                {
+                    AssistenteId = assistencia.AssistenteId,
+                    Nome = assistencia.Nome
+                };
+
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao obter assistência externa: {ex.Message}");
+            }
+        }
+        #endregion
+
     }
 }

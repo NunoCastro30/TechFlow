@@ -3,6 +3,7 @@ using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace LogisControlAPI.Controllers
@@ -33,6 +34,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Retorna a lista de máquinas com sucesso.</response>
         /// <response code="500">Erro interno ao tentar obter as máquinas.</response>
         [HttpGet("ObterMaquinas")]
+        [Authorize()]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<MaquinaDTO>>> GetMaquinas()
         {
             try
@@ -66,6 +69,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="404">Máquina não encontrada.</response>
         /// <response code="500">Erro interno ao procurar a máquina.</response>
         [HttpGet("ObterMaquina/{id}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult<MaquinaDTO>> GetMaquinaPorId(int id)
         {
             try
@@ -103,6 +108,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos ou duplicados.</response>
         /// <response code="500">Erro interno ao criar a máquina.</response>
         [HttpPost("CriarMaquina")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<ActionResult> CriarMaquina([FromBody] MaquinaDTO novaMaquinaDto)
         {
             try
@@ -145,6 +152,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos ou duplicados.</response>
         /// <response code="500">Erro interno ao tentar atualizar a máquina.</response>
         [HttpPut("AtualizarMaquina/{maquinaId}")]
+        [Authorize(Roles = "Tecnico")]
+        [Produces("application/json")]
         public async Task<IActionResult> AtualizarMaquina(int maquinaId, [FromBody] MaquinaDTO maquinaAtualizada)
         {
             try
