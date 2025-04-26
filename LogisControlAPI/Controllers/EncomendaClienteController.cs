@@ -47,7 +47,7 @@ namespace LogisControlAPI.Controllers
                     .Select(e => new EncomendaClienteDTO
                     {
                         EncomendaClienteId = e.EncomendaClienteId,
-                        DataEncomenda = DateTime.Now,
+                        DataEncomenda = e.DataEncomenda,
                         Estado = e.Estado,
                         NomeCliente = e.ClienteCliente.Nome
                     })
@@ -62,7 +62,46 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
-       
+        #region CriarEncomendaCliente
+        /// <summary>
+        /// Cria uma nova encomenda de cliente.
+        /// </summary>
+        /// <param name="dto">Dados da encomenda a ser criada.</param>
+        /// <returns>Encomenda criada ou mensagem de erro.</returns>
+        /// <response code="201">Encomenda criada com sucesso.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="500">Erro interno ao criar a encomenda.</response>
+        [HttpPost("CriarEncomenda")]
+        public async Task<ActionResult> CriarEncomendaCliente([FromBody] EncomendaClienteDTO dto)
+        {
+            try
+            {
+                var cliente = await _context.Clientes
+                    .FirstOrDefaultAsync(c => c.Nome.ToLower() == dto.NomeCliente.ToLower());
+
+                if (cliente == null)
+                    return BadRequest("Cliente não encontrado pelo nome informado.");
+
+                var novaEncomenda = new EncomendaCliente
+                {
+                    ClienteClienteId = cliente.ClienteId,
+                    DataEncomenda = dto.DataEncomenda,
+                    Estado = dto.Estado
+                };
+
+                _context.EncomendasCliente.Add(novaEncomenda);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(201, "Encomenda criada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao criar encomenda: {ex.Message}");
+            }
+        }
+        #endregion
+
+
         #region AtualizarEstado
         /// <summary>
         /// Atualiza manualmente o estado de uma encomenda.
