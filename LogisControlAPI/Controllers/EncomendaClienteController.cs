@@ -85,7 +85,7 @@ namespace LogisControlAPI.Controllers
                 var novaEncomenda = new EncomendaCliente
                 {
                     ClienteClienteId = cliente.ClienteId,
-                    DataEncomenda = dto.DataEncomenda,
+                    DataEncomenda = DateTime.Now,
                     Estado = dto.Estado
                 };
 
