@@ -15,7 +15,7 @@ namespace LogisControlAPI.Models
         
         public string Estado { get; set; } = null!;
 
-        
+
         public int ClienteClienteId { get; set; }
 
         
