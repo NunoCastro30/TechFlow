@@ -29,17 +29,17 @@ namespace LogisControlAPI.Services
         }
 
         /// <summary>
-        /// Verifica se a quantidade de uma matéria-prima está abaixo do limite crítico (5 unidades) e envia um alerta se necessário.
+        /// Verifica se a quantidade de uma matéria-prima diminuiu para abaixo do limite crítico e envia um alerta se necessário.
         /// </summary>
         /// <param name="materiaPrimaId">ID da matéria-prima a verificar.</param>
-        /// <returns>Uma tarefa assíncrona.</returns>
-        public async Task VerificarStockCritico(int materiaPrimaId)
+        /// <param name="quantidadeAnterior">Quantidade anterior da matéria-prima.</param>
+        public async Task VerificarStockCritico(int materiaPrimaId, int quantidadeAnterior)
         {
             var materia = await _context.MateriasPrimas.FindAsync(materiaPrimaId);
             if (materia == null)
                 return;
 
-            if (materia.Quantidade < 10)
+            if (materia.Quantidade < 10 && materia.Quantidade < quantidadeAnterior)
             {
                 var assunto = $"Stock Baixo - {materia.Nome}";
                 var mensagem = $"A matéria-prima \"{materia.Nome}\" tem apenas {materia.Quantidade} unidades em stock.";
@@ -47,5 +47,28 @@ namespace LogisControlAPI.Services
                 await _notificador.NotificarAsync(EmailResponsavelStock, assunto, mensagem);
             }
         }
+
+
+        /// <summary>
+        /// Verifica se a quantidade de um produto diminuiu para abaixo do limite crítico e envia um alerta se necessário.
+        /// </summary>
+        /// <param name="produtoId">ID do produto a verificar.</param>
+        /// <param name="quantidadeAnterior">Quantidade anterior do produto.</param>
+        public async Task VerificarStockCriticoProduto(int produtoId, int quantidadeAnterior)
+        {
+            var produto = await _context.Produtos.FindAsync(produtoId);
+            if (produto == null)
+                return;
+
+            if (produto.Quantidade < 10 && produto.Quantidade < quantidadeAnterior)
+            {
+                var assunto = $"Stock Baixo - Produto {produto.Nome}";
+                var mensagem = $"O produto \"{produto.Nome}\" tem apenas {produto.Quantidade} unidades em stock.";
+
+                await _notificador.NotificarAsync(EmailResponsavelStock, assunto, mensagem);
+            }
+        }
+
+
     }
 }
