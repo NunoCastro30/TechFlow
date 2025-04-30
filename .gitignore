@@ -33,3 +33,8 @@
 /LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.GeneratedMSBuildEditorConfig.editorconfig
 /LogisControlAPI.Tests/obj/LogisControlAPI.Tests.csproj.nuget.dgspec.json
 /LogisControlAPI.Tests/obj/LogisControlAPI.Tests.csproj.nuget.g.props
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.GeneratedMSBuildEditorConfig.editorconfig
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.AssemblyInfoInputs.cache
+/LogisControlAPI/obj/Debug/net8.0/LogisControlAPI.assets.cache
+/LogisControlAPI/.vs/LogisControlAPI/DesignTimeBuild/.dtbcache.v2
+/LogisControlAPI/.vs/LogisControlAPI/v17/.suo
