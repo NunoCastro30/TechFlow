@@ -23,3 +23,13 @@
 # Ficheiros de cache problemáticos
 *.assets.cache
 *.GeneratedMSBuildEditorConfig.editorconfig
+/LogisControlAPI.Tests/bin/Debug/net8.0/CoverletSourceRootsMapping_LogisControlAPI.Tests
+/LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.AssemblyInfo.cs
+/LogisControlAPI.Tests/obj/project.nuget.cache
+/LogisControlAPI.Tests/obj/project.assets.json
+/LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.AssemblyInfoInputs.cache
+/LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.assets.cache
+/LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.csproj.AssemblyReference.cache
+/LogisControlAPI.Tests/obj/Debug/net8.0/LogisControlAPI.Tests.GeneratedMSBuildEditorConfig.editorconfig
+/LogisControlAPI.Tests/obj/LogisControlAPI.Tests.csproj.nuget.dgspec.json
+/LogisControlAPI.Tests/obj/LogisControlAPI.Tests.csproj.nuget.g.props
