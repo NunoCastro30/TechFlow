@@ -1,6 +1,8 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +16,16 @@ namespace LogisControlAPI.Controllers
     public class ProdutoController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly StockService _stockService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public ProdutoController(LogisControlContext context)
+        public ProdutoController(LogisControlContext context, StockService stockService)
         {
             _context = context;
+            _stockService = stockService;
         }
 
         #region ListarProdutos
@@ -32,6 +36,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Lista obtida com sucesso.</response>
         /// <response code="500">Erro interno ao obter produtos.</response>
         [HttpGet("ListarProdutos")]
+        [Authorize ("Gestor")]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetAll()
         {
             try
@@ -87,6 +93,8 @@ namespace LogisControlAPI.Controllers
         /// <returns>Produto criado.</returns>
         /// <response code="201">Produto criado com sucesso.</response>
         [HttpPost("CriarProduto")]
+        [Authorize("Gestor")]
+        [Produces("application/json")]
         public async Task<ActionResult<ProdutoDTO>> Create([FromBody] ProdutoDTO dto)
         {
             var produto = new Produto
@@ -117,6 +125,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="204">Produto atualizado com sucesso.</response>
         /// <response code="404">Produto não encontrado.</response>
         [HttpPut("AtualizarProduto/{id}")]
+        [Authorize("Gestor")]
+        [Produces("application/json")]
         public async Task<IActionResult> Update(int id, [FromBody] ProdutoDTO dto)
         {
             var produto = await _context.Produtos.FindAsync(id);
@@ -124,6 +134,8 @@ namespace LogisControlAPI.Controllers
             {
                 return NotFound();
             }
+
+            var quantidadeAnterior = produto.Quantidade;
 
             produto.Nome = dto.Nome;
             produto.Quantidade = dto.Quantidade;
@@ -133,7 +145,10 @@ namespace LogisControlAPI.Controllers
             produto.OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId;
             produto.EncomendaItensEncomendaItensId = dto.EncomendaItensEncomendaItensId;
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                await _stockService.VerificarStockCriticoProduto(id, quantidadeAnterior);
+
+
             return NoContent();
         }
         #endregion
