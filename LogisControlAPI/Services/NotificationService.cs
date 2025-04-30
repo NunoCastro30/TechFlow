@@ -21,7 +21,7 @@ namespace LogisControlAPI.Services
         /// <param name="destinatario">Endereço de email do destinatário.</param>
         /// <param name="assunto">Assunto do email.</param>
         /// <param name="mensagem">Corpo da mensagem.</param>
-        public async Task NotificarAsync(string destinatario, string assunto, string mensagem)
+        public virtual async Task NotificarAsync(string destinatario, string assunto, string mensagem)
         {
             await _emailSender.EnviarAsync(destinatario, assunto, mensagem);
         }

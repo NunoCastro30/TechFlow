@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LogisControlAPI.Models;
-
-public partial class NotaEncomenda
+namespace LogisControlAPI.Models
 {
-    public int NotaEncomendaId { get; set; }
+    /// <summary>
+    /// Representa a nota de encomenda gerada após aprovação de um orçamento.
+    /// </summary>
+    public class NotaEncomenda
+    {
+        public int NotaEncomendaId { get; set; }
+        public DateTime DataEmissao { get; set; }
+        public string Estado { get; set; } = null!;
+        public double ValorTotal { get; set; }
 
-    public DateTime DataEmissao { get; set; }
+        public int OrcamentoId { get; set; }                  // ← Chave FK
+        public virtual Orcamento Orcamento { get; set; } = null!;
 
-    public string Estado { get; set; } = null!;
-
-    public double ValorTotal { get; set; }
-
-    public int OrcamentoOrcamentoId { get; set; }
-
-    public virtual ICollection<NotaEncomendaItens> NotasEncomendaItem { get; set; } = new List<NotaEncomendaItens>();
-
-    public virtual Orcamento OrcamentoOrcamento { get; set; } = null!;
+        public virtual ICollection<NotaEncomendaItens> Itens { get; set; }
+            = new List<NotaEncomendaItens>();
+    }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
+using LogisControlAPI.Services;
 
 namespace LogisControlAPI.Controllers
 {
@@ -17,14 +18,17 @@ namespace LogisControlAPI.Controllers
     public class RegistoManutencaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly ManutencaoService _manutencaoService;
+
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public RegistoManutencaoController(LogisControlContext context)
+        public RegistoManutencaoController(LogisControlContext context, ManutencaoService manutencaoService)
         {
             _context = context;
+            _manutencaoService = manutencaoService;
         }
 
         #region ObterRegistos
@@ -134,11 +138,12 @@ namespace LogisControlAPI.Controllers
                     Estado = novoRegistoDto.Estado,
                     PedidoManutencaoPedidoManutId = novoRegistoDto.PedidoManutencaoPedidoManutId,
                     UtilizadorUtilizadorId = utilizadorId,
-                    AssistenciaExternaAssistenteId = novoRegistoDto.AssistenciaExternaAssistenteId // pode ser null
+                    AssistenciaExternaAssistenteId = novoRegistoDto.AssistenciaExternaAssistenteId 
                 };
 
                 _context.RegistosManutencao.Add(novoRegisto);
                 await _context.SaveChangesAsync();
+                await _manutencaoService.AtualizarEstadoPedidoSeRegistoResolvido(novoRegisto.RegistoManutencaoId);
 
                 return StatusCode(201, "Registo de manutenção criado com sucesso.");
             }
