@@ -132,4 +132,21 @@ public class UtilizadorServiceTests
         Assert.False(service.VerifyPassword(hash, null));
         Assert.False(service.VerifyPassword(hash, ""));
     }
+
+    /// <summary>
+    /// Password com caracteres especiais deve ser validada corretamente.
+    /// </summary>
+    [Fact]
+    public void HashPassword_DeveAceitarCaracteresEspeciais()
+    {
+        var service = new UtilizadorService(null);
+        var senhaEspecial = "P@$$w0rd!#€&/()=çÇ~^";
+
+        var hash = service.HashPassword(senhaEspecial);
+
+        Assert.NotNull(hash);
+        Assert.True(service.VerifyPassword(hash, senhaEspecial)); // tem de validar corretamente
+    }
+
+
 }
