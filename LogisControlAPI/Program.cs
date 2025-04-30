@@ -26,7 +26,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
 
 //Configurar o serviço Pedidos Manutenção
-builder.Services.AddScoped<PedidoManutencaoService>();
+builder.Services.AddScoped<ManutencaoService>();
 
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
@@ -34,7 +34,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
 
 //Configurar o serviço Pedidos Manutenção
-builder.Services.AddScoped<PedidoManutencaoService>();
+builder.Services.AddScoped<ManutencaoService>();
 
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();
