@@ -171,7 +171,7 @@ public partial class LogisControlContext : DbContext
 
             entity.ToTable("MateriaPrima");
 
-            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaLD");
+            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaID");
             entity.HasIndex(e => e.CodInterno, "UQ__MateriaP__39F955FCFF814842").IsUnique();
 
             entity.Property(e => e.Categoria)
