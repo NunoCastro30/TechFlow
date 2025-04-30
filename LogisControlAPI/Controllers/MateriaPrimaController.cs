@@ -178,6 +178,7 @@ namespace LogisControlAPI.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await _stockService.VerificarStockCritico(id);
             }
             catch (DbUpdateConcurrencyException)
             {
