@@ -1,14 +1,16 @@
 ﻿namespace LogisControlAPI.DTO
 {
+    /// <summary>
+    /// Cabeçalho de um orçamento
+    /// </summary>
     public class OrcamentoDTO
     {
-
-        public int OrcamentoId { get; set; }
-
+        public int OrcamentoID { get; set; }
         public DateTime Data { get; set; }
 
         public string Estado { get; set; } = null!;
 
-        public int PedidoCotacaoPedidoCotacaoId { get; set; }
+        // FK para o pedido de cotação
+        public int PedidoCotacaoID { get; set; }
     }
 }

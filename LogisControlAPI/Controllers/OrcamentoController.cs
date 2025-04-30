@@ -1,6 +1,7 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -14,43 +15,43 @@ namespace LogisControlAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Route("api/orcamentos")]
     public class OrcamentoController : ControllerBase
     {
-        private readonly LogisControlContext _context;
+        private readonly LogisControlContext _ctx;
+        public OrcamentoController(LogisControlContext ctx) => _ctx = ctx;
 
         /// <summary>
-        /// Construtor do controlador que injeta o contexto da base de dados.
+        /// 1) Fornecedor cria um orçamento (cabeçalho) para um pedido de cotação.
         /// </summary>
-        /// <param name="context">Instância do contexto da base de dados.</param>
-        public OrcamentoController(LogisControlContext context)
+        [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CriarOrcamento([FromBody] OrcamentoDTO dto)
         {
-            _context = context;
-        }
+            // 1.1) valida FK em PedidoCotacao
+            var existePc = await _ctx.PedidosCotacao
+                .AnyAsync(pc => pc.PedidoCotacaoId == dto.PedidoCotacaoID);
+            if (!existePc)
+                return BadRequest("Pedido de cotação inválido.");
 
-        #region ObterOrcamentos
-        /// <summary>
-        /// Obtém a lista de todos os orçamentos registados.
-        /// </summary>
-        /// <returns>Lista de orçamentos existentes.</returns>
-        /// <response code="200">Retorna a lista de orçamentos com sucesso.</response>
-        /// <response code="500">Erro interno ao tentar obter os orçamentos.</response>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrcamentoDTO>>> GetOrcamentos()
-        {
-            try
+            // 1.2) cria o cabeçalho
+            var orc = new Orcamento
             {
-                var orcamentos = await _context.Orcamentos
-                    .Select(o => new OrcamentoDTO
-                    {
-                        OrcamentoId=o.OrcamentoId,
-                        Data = o.Data,
-                        Estado = o.Estado,
-                        PedidoCotacaoPedidoCotacaoId = o.PedidoCotacaoPedidoCotacaoId
-                    })
-                    .ToListAsync();
+                PedidoCotacaoPedidoCotacaoID = dto.PedidoCotacaoID,
+                Data = DateTime.UtcNow,
+                Estado = "Respondido"
+            };
+            _ctx.Orcamentos.Add(orc);
+            await _ctx.SaveChangesAsync();
 
-                return Ok(orcamentos);
-            }
+            // 1.3) devolve 201 Created com Location para GET /api/orcamentos/{orcId}
+            return CreatedAtAction(
+                nameof(ObterOrcamento),
+                new { orcId = orc.OrcamentoID },
+                new { OrcamentoId = orc.OrcamentoID }
+            );
+        }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro interno ao obter orçamentos: {ex.Message}");
@@ -60,18 +61,17 @@ namespace LogisControlAPI.Controllers
 
         #region ObterOrcamentoPorId
         /// <summary>
-        /// Obtém um orçamento pelo seu ID.
+        /// 2) Fornecedor adiciona linhas ao orçamento.
         /// </summary>
-        /// <param name="id">Identificador do orçamento.</param>
-        /// <returns>Dados do orçamento correspondente.</returns>
-        /// <response code="200">Orçamento encontrado com sucesso.</response>
-        /// <response code="404">Orçamento não encontrado.</response>
-        [HttpGet("GetOrcamento{id}")]
-        public async Task<ActionResult<OrcamentoDTO>> GetOrcamento(int id)
+        [HttpPost("{orcId:int}/itens")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> AdicionarItem(
+            [FromRoute] int orcId,
+            [FromBody] OrcamentoItemDTO dto)
         {
-            var orcamento = await _context.Orcamentos.FindAsync(id);
-            if (orcamento == null)
-            {
+            // 2.1) valida existência do orçamento
+            if (!await _ctx.Orcamentos.AnyAsync(o => o.OrcamentoID == orcId))
                 return NotFound("Orçamento não encontrado.");
             }
             return Ok(new OrcamentoDTO
@@ -84,105 +84,63 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
-        #region CriarOrcamento
-        /// <summary>
-        /// Cria um novo orçamento.
-        /// </summary>
-        /// <param name="orcamentoDTO">Dados para criação do orçamento.</param>
-        /// <returns>Orçamento criado com sucesso.</returns>
-        /// <response code="201">Orçamento criado com sucesso.</response>
-        /// <response code="400">Dados inválidos.</response>
-        /// <response code="500">Erro interno ao criar o orçamento.</response>
-        [HttpPost ("CriarOrcamento")]
-        public async Task<ActionResult<OrcamentoDTO>> CreateOrcamento([FromBody] OrcamentoDTO orcamentoDTO)
-        {
-            try
+            // 2.2) monta entidade e persiste
+            var item = new OrcamentoItem
             {
-                var orcamento = new Orcamento
-                {
-                    Data = orcamentoDTO.Data,
-                    Estado = orcamentoDTO.Estado,
-                    PedidoCotacaoPedidoCotacaoId = orcamentoDTO.PedidoCotacaoPedidoCotacaoId
-                };
+                OrcamentoOrcamentoID = orcId,
+                MateriaPrimaID = dto.MateriaPrimaID,
+                Quantidade = dto.Quantidade,
+                PrecoUnit = dto.PrecoUnit,
+                PrazoEntrega = dto.PrazoEntrega
+            };
+            _ctx.OrcamentosItem.Add(item);
+            await _ctx.SaveChangesAsync();
 
-                _context.Orcamentos.Add(orcamento);
-                await _context.SaveChangesAsync();
-
-                // Retorna o novo recurso criado com a rota para consulta
-                return CreatedAtAction(nameof(GetOrcamento), new { id = orcamento.OrcamentoId }, orcamento);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno ao criar orçamento: {ex.Message}");
-            }
+            return CreatedAtAction(
+                nameof(ObterOrcamento),
+                new { orcId },
+                new { OrcamentoItemId = item.OrcamentoItemID }
+            );
         }
         #endregion
 
         #region AtualizarOrcamento
         /// <summary>
-        /// Atualiza os dados de um orçamento existente.
+        /// 3) Recupera um orçamento e todos os seus itens.
         /// </summary>
-        /// <param name="id">ID do orçamento a atualizar.</param>
-        /// <param name="orcamentoDTO">Dados atualizados do orçamento.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="204">Orçamento atualizado com sucesso.</response>
-        /// <response code="404">Orçamento não encontrado.</response>
-        /// <response code="500">Erro interno ao tentar atualizar o orçamento.</response>
-        [HttpPut("UpdateOrcamento/{id}")]
-        public async Task<IActionResult> UpdateOrcamento(int id, [FromBody] OrcamentoDTO orcamentoDTO)
+        [HttpGet("{orcId:int}")]
+        [ProducesResponseType(typeof(OrcamentoDetalheDTO), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> ObterOrcamento([FromRoute] int orcId)
         {
-            try
+            var orc = await _ctx.Orcamentos
+                .Include(o => o.OrcamentoItems)
+                  .ThenInclude(it => it.MateriaPrima)
+                .Include(o => o.PedidoCotacaoPedidoCotacao)
+                .FirstOrDefaultAsync(o => o.OrcamentoID == orcId);
+
+            if (orc == null)
+                return NotFound();
+
+            // 3.1) mapear para DTO de detalhe
+            var detalhe = new OrcamentoDetalheDTO
             {
-                var orcamento = await _context.Orcamentos.FindAsync(id);
-                if (orcamento == null)
+                OrcamentoID = orc.OrcamentoID,
+                PedidoCotacaoID = orc.PedidoCotacaoPedidoCotacaoID,
+                Data = orc.Data,
+                Estado = orc.Estado,
+                Itens = orc.OrcamentoItems.Select(i => new OrcamentoItemDetalheDTO
                 {
-                    return NotFound("Orçamento não encontrado.");
-                }
+                    OrcamentoItemID = i.OrcamentoItemID,
+                    MateriaPrimaID = i.MateriaPrimaID,
+                    MateriaPrimaNome = i.MateriaPrima.Nome,
+                    Quantidade = i.Quantidade,
+                    PrecoUnit = i.PrecoUnit,
+                    PrazoEntrega = i.PrazoEntrega ?? 0
+                }).ToList()
+            };
 
-                // Atualiza os dados do orçamento
-                orcamento.Data = orcamentoDTO.Data;
-                orcamento.Estado = orcamentoDTO.Estado;
-                orcamento.PedidoCotacaoPedidoCotacaoId = orcamentoDTO.PedidoCotacaoPedidoCotacaoId;
-
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno ao atualizar orçamento: {ex.Message}");
-            }
-        }
-        #endregion
-
-        #region DeletarOrcamento
-        /// <summary>
-        /// Remove um orçamento existente.
-        /// </summary>
-        /// <param name="id">ID do orçamento a remover.</param>
-        /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="204">Orçamento removido com sucesso.</response>
-        /// <response code="404">Orçamento não encontrado.</response>
-        /// <response code="500">Erro interno ao tentar remover o orçamento.</response>
-        [HttpDelete("DeleteOrcamento/{id}")]
-        public async Task<IActionResult> DeleteOrcamento(int id)
-        {
-            try
-            {
-                var orcamento = await _context.Orcamentos.FindAsync(id);
-                if (orcamento == null)
-                {
-                    return NotFound("Orçamento não encontrado.");
-                }
-
-                _context.Orcamentos.Remove(orcamento);
-                await _context.SaveChangesAsync();
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno ao remover orçamento: {ex.Message}");
-            }
+            return Ok(detalhe);
         }
         #endregion
     }

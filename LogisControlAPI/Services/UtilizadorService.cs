@@ -48,11 +48,7 @@ namespace LogisControlAPI.Services
             utilizador.Password = HashPassword(novaPassword);
             _context.Utilizadores.Update(utilizador);
             await _context.SaveChangesAsync();
-
             return true;
         }
-
-
     }
 }
-
