@@ -16,16 +16,16 @@ namespace LogisControlAPI.Controllers
     public class PedidoManutencaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
-        private readonly PedidoManutencaoService _pedidoManutencaoService;
+        private readonly ManutencaoService _manutencaoService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public PedidoManutencaoController(LogisControlContext context, PedidoManutencaoService pedidoManutencaoService)
+        public PedidoManutencaoController(LogisControlContext context, ManutencaoService manutencaoService)
         {
             _context = context;
-            _pedidoManutencaoService = pedidoManutencaoService;
+            _manutencaoService = manutencaoService;
         }
 
         #region ObterPedidos
@@ -221,13 +221,14 @@ namespace LogisControlAPI.Controllers
                 if (pedido == null)
                     return NotFound("Pedido de manutenção não encontrado.");
 
-                // Atualizar os campos
+                // Atualizar campos que não são o Estado (porque o Estado vai pelo serviço)
                 pedido.Descricao = pedidoAtualizado.Descricao;
-                pedido.Estado = pedidoAtualizado.Estado;
                 pedido.DataAbertura = pedidoAtualizado.DataAbertura;
-                pedido.DataConclusao = pedidoAtualizado.DataConclusao;
                 pedido.MaquinaMaquinaId = pedidoAtualizado.MaquinaMaquinaId;
                 pedido.UtilizadorUtilizadorId = pedidoAtualizado.UtilizadorUtilizadorId;
+
+                // Atualizar Estado e possivelmente DataConclusao através do serviço
+                await _manutencaoService.AtualizarEstadoPedido(pedidoId, pedidoAtualizado.Estado);
 
                 await _context.SaveChangesAsync();
 
@@ -259,7 +260,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var pedidos = await _pedidoManutencaoService.ObterPedidosAtrasadosAsync();
+                var pedidos = await _manutencaoService.ObterPedidosAtrasadosAsync();
                 return Ok(pedidos);
             }
             catch (Exception ex)
