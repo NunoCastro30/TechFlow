@@ -6,6 +6,8 @@
     public class ProdMaterialDTO
     {
         public int QuantidadeUtilizada { get; set; }
-         
+        public int OrdemProducaoOrdemProdId { get; set; }
+        public int MateriaPrimaMateriaPrimaId { get; set; }
+
     }
 }

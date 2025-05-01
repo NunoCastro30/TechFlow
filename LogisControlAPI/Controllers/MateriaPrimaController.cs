@@ -59,6 +59,37 @@ namespace LogisControlAPI.Controllers
         }
 
         /// <summary>
+        /// Lista todas as matérias-primas associadas a uma determinada ordem de produção.
+        /// </summary>
+        /// <param name="ordemProducaoId">ID da ordem de produção.</param>
+        /// <returns>Lista de matérias-primas relacionadas.</returns>
+        /// <response code="200">Lista de matérias-primas obtida com sucesso.</response>
+        /// <response code="404">Nenhuma matéria-prima encontrada para a ordem de produção.</response>
+        [HttpGet("PorOrdemProducao/{ordemProducaoId:int}")]
+        public async Task<ActionResult<IEnumerable<MateriaPrimaDTO>>> GetMateriasPrimasPorOrdemProducao(int ordemProducaoId)
+        {
+            var materias = await _context.MateriasPrimas
+                .Where(mp => mp.MateriaPrimaProdutos
+                    .Any(mpp => mpp.ProdutoProduto.OrdemProducaoOrdemProdId == ordemProducaoId))
+                .Select(mp => new MateriaPrimaDTO
+                {
+                    MateriaPrimaId = mp.MateriaPrimaId,
+                    Nome = mp.Nome,
+                    Quantidade = mp.Quantidade,
+                    Descricao = mp.Descricao,
+                    Categoria = mp.Categoria,
+                    CodInterno = mp.CodInterno,
+                    Preco = mp.Preco
+                })
+                .ToListAsync();
+
+            if (materias == null || !materias.Any())
+                return NotFound($"Nenhuma matéria-prima associada à ordem de produção #{ordemProducaoId}.");
+
+            return Ok(materias);
+        }
+
+        /// <summary>
         /// Obtém uma matéria-prima pelo seu ID.
         /// </summary>
         /// <param name="id">ID da matéria-prima (PK).</param>
