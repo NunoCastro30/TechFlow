@@ -21,9 +21,10 @@ namespace LogisControlAPI.Models
         public virtual Orcamento Orcamento { get; set; } = null!;
 
         // FK para Matéria-Prima
-        [Column("MateriaPrimaID")]
         public int MateriaPrimaID { get; set; }
+
         [ForeignKey(nameof(MateriaPrimaID))]
         public virtual MateriaPrima MateriaPrima { get; set; } = null!;
+
     }
 }

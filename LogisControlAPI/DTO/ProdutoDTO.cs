@@ -15,8 +15,8 @@ namespace LogisControlAPI.DTO
 
         public double Preco { get; set; }
 
-        public int OrdemProducaoOrdemProdId { get; set; }
+        public int? OrdemProducaoOrdemProdId { get; set; }
 
-        public int EncomendaItensEncomendaItensId { get; set; }
+        public int? EncomendaItensEncomendaItensId { get; set; }
     }
 }
