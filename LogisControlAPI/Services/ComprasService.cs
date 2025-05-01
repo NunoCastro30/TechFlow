@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Interfaces;
 
 namespace LogisControlAPI.Services
 {
@@ -15,10 +16,12 @@ namespace LogisControlAPI.Services
     public class ComprasService
     {
         private readonly LogisControlContext _ctx;
+        private readonly IEmailSender _emailSender;
 
-        public ComprasService(LogisControlContext ctx)
+        public ComprasService(LogisControlContext ctx, IEmailSender emailSender)
         {
             _ctx = ctx;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -142,6 +145,32 @@ namespace LogisControlAPI.Services
             _ctx.PedidosCotacao.Add(cotacao);
             await _ctx.SaveChangesAsync();
 
+            // 5) Enviar email ao fornecedor
+            var fornecedor = await _ctx.Fornecedores.FindAsync(fornecedorId);
+            if (fornecedor != null && !string.IsNullOrWhiteSpace(fornecedor.Email))
+            {
+                var link = $"http://localhost:5173/fornecedor/cotacao/{cotacao.PedidoCotacaoId}?token={token}";
+
+                var mensagem = $"Caro fornecedor {fornecedor.Nome},\n\n" +
+                               $"Foi-lhe atribuído um pedido de cotação. " +
+                               $"Clique no link abaixo para aceder ao pedido:\n\n{link}\n\n" +
+                               "Este link é exclusivo para si.";
+
+                try
+                {
+                    Console.WriteLine($"A enviar e-mail para: {fornecedor.Email}");
+                    await _emailSender.EnviarAsync(fornecedor.Email, "Novo Pedido de Cotação", mensagem);
+                    Console.WriteLine("Email enviado com sucesso!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERRO AO ENVIAR EMAIL:");
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+
+
             return (cotacao.PedidoCotacaoId, token);
         }
 
@@ -194,11 +223,15 @@ namespace LogisControlAPI.Services
 
         public async Task<PedidoCotacaoDetalhadoDTO> ObterPedidoCotacaoParaFornecedorAsync(int id, string token)
         {
-            // 1) valida token
+            Console.WriteLine("[Fornecedor] A iniciar validação da cotação...");
+            Console.WriteLine($"ID Recebido: {id}");
+            Console.WriteLine($"Token Recebido: {token}");
+
+            // 1) Buscar cotação com orçamentos
             var cot = await _ctx.PedidosCotacao
-                .AsNoTracking()
+                .Include(c => c.Fornecedor)
                 .Include(c => c.Orcamentos)
-                  .ThenInclude(o => o.OrcamentoItems)
+                    .ThenInclude(o => o.OrcamentoItems)
                 .FirstOrDefaultAsync(c => c.PedidoCotacaoId == id);
 
             if (cot == null)
@@ -207,6 +240,22 @@ namespace LogisControlAPI.Services
             if (cot.TokenAcesso != token)
                 throw new UnauthorizedAccessException();
 
+            Console.WriteLine("Token válido. Cotação encontrada.");
+
+            // 2) Recolher o pedido de compra com base na descrição
+            var pedidoCompra = await _ctx.PedidosCompra
+                .Include(p => p.PedidoCompraItems)
+                    .ThenInclude(i => i.MateriaPrima)
+                .Where(p => p.Descricao == cot.Descricao)
+                .OrderByDescending(p => p.DataAbertura)
+                .FirstOrDefaultAsync();
+
+            if (pedidoCompra == null)
+                throw new Exception("Pedido de compra correspondente não encontrado.");
+
+            Console.WriteLine("Pedido de compra correspondente encontrado.");
+
+            // 3) Construir DTO
             return new PedidoCotacaoDetalhadoDTO
             {
                 Header = new PedidoCotacaoDTO
@@ -225,18 +274,14 @@ namespace LogisControlAPI.Services
                     Data = o.Data,
                     Estado = o.Estado
                 }).ToList(),
-                Itens = cot.Orcamentos
-                    .SelectMany(o => o.OrcamentoItems)
-                    .Select(i => new OrcamentoItemDTO
-                    {
-                        OrcamentoItemID = i.OrcamentoItemID,
-                        OrcamentoID = i.OrcamentoOrcamentoID,
-                        MateriaPrimaID = i.MateriaPrimaID,
-                        Quantidade = i.Quantidade,
-                        PrecoUnit = i.PrecoUnit,
-                        PrazoEntrega = i.PrazoEntrega ?? 0
-                    })
-                    .ToList()
+                Itens = pedidoCompra.PedidoCompraItems.Select(i => new OrcamentoItemDTO
+                {
+                    MateriaPrimaID = i.MateriaPrimaId,
+                    MateriaPrimaNome = i.MateriaPrima.Nome,
+                    Quantidade = i.Quantidade,
+                    PrecoUnit = 0,
+                    PrazoEntrega = 0
+                }).ToList()
             };
         }
 

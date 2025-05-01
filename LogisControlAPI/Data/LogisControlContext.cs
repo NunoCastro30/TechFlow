@@ -171,7 +171,7 @@ public partial class LogisControlContext : DbContext
 
             entity.ToTable("MateriaPrima");
 
-            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaLD");
+            entity.Property(e => e.MateriaPrimaId).HasColumnName("MateriaPrimaID");
             entity.HasIndex(e => e.CodInterno, "UQ__MateriaP__39F955FCFF814842").IsUnique();
 
             entity.Property(e => e.Categoria)
@@ -297,7 +297,7 @@ public partial class LogisControlContext : DbContext
             // FK → Matéria-prima
             entity.HasOne(d => d.MateriaPrima)
                   .WithMany(p => p.OrcamentosItem)
-                  .HasForeignKey(d => d.MateriaPrimaID)               // usar a propriedade *ID*
+                  .HasForeignKey(d => d.MateriaPrimaID)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FKOrcamentoI247272");
 
@@ -374,7 +374,7 @@ public partial class LogisControlContext : DbContext
                   .IsUnicode(false);
 
             // mapeia a FK para fornecedor
-            entity.Property(e => e.FornecedorId).HasColumnName("FornecedorID");
+            entity.Property(e => e.FornecedorId).HasColumnName("FornecedorFornecedorID");
             entity.HasOne(d => d.Fornecedor)
                   .WithMany(p => p.PedidosCotacao)
                   .HasForeignKey(d => d.FornecedorId)
