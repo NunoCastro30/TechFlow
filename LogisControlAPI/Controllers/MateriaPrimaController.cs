@@ -168,6 +168,9 @@ namespace LogisControlAPI.Controllers
             if (m == null)
                 return NotFound();
 
+            // Guarda a quantidade anterior antes de alterar
+            var quantidadeAnterior = m.Quantidade;
+
             m.Nome = dto.Nome;
             m.Quantidade = dto.Quantidade;
             m.Descricao = dto.Descricao;
@@ -178,6 +181,7 @@ namespace LogisControlAPI.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await _stockService.VerificarStockCritico(id, quantidadeAnterior);
             }
             catch (DbUpdateConcurrencyException)
             {

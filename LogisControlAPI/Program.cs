@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using LogisControlAPI.Auxiliar;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +26,20 @@ builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
 
+//Configurar o serviço de Telegram
+// Configura o binding da secção "Telegram" do appsettings.json
+builder.Services.Configure<TelegramConfig>(builder.Configuration.GetSection("TelegramConfig"));
+// Regista o serviço TelegramService com HttpClient e configuração injetada
+builder.Services.AddSingleton<TelegramService>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<TelegramConfig>>().Value;
+    var httpClient = new HttpClient();
+    return new TelegramService(httpClient, config);
+});
+
+
 //Configurar o serviço Pedidos Manutenção
-builder.Services.AddScoped<PedidoManutencaoService>();
+builder.Services.AddScoped<ManutencaoService>();
 
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
@@ -34,7 +47,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
 
 //Configurar o serviço Pedidos Manutenção
-builder.Services.AddScoped<PedidoManutencaoService>();
+builder.Services.AddScoped<ManutencaoService>();
 
 //Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();

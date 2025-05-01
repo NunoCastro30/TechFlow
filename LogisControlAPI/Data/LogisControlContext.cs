@@ -459,11 +459,13 @@ public partial class LogisControlContext : DbContext
 
             entity.HasOne(d => d.EncomendaItensEncomendaItensNavigation).WithMany(p => p.Produtos)
                 .HasForeignKey(d => d.EncomendaItensEncomendaItensId)
+                .IsRequired(false)// <- isto diz que a FK é opcional 
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduto171408");
 
             entity.HasOne(d => d.OrdemProducaoOrdemProd).WithMany(p => p.Produtos)
                 .HasForeignKey(d => d.OrdemProducaoOrdemProdId)
+                .IsRequired(false) // <- isto diz que a FK é opcional   
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduto647431");
         });

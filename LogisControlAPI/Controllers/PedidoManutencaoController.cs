@@ -16,16 +16,16 @@ namespace LogisControlAPI.Controllers
     public class PedidoManutencaoController : ControllerBase
     {
         private readonly LogisControlContext _context;
-        private readonly PedidoManutencaoService _pedidoManutencaoService;
+        private readonly ManutencaoService _manutencaoService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public PedidoManutencaoController(LogisControlContext context, PedidoManutencaoService pedidoManutencaoService)
+        public PedidoManutencaoController(LogisControlContext context, ManutencaoService manutencaoService)
         {
             _context = context;
-            _pedidoManutencaoService = pedidoManutencaoService;
+            _manutencaoService = manutencaoService;
         }
 
         #region ObterPedidos
@@ -159,11 +159,11 @@ namespace LogisControlAPI.Controllers
 
         #region CriarPedido
         /// <summary>
-        /// Cria um novo pedido de manutenção.
+        /// Cria um novo pedido de manutenção e envia notificação por Telegram.
         /// </summary>
         /// <param name="novoPedidoDto">Dados para criação do pedido.</param>
         /// <returns>Mensagem de sucesso ou erro.</returns>
-        /// <response code="201">Pedido de manutenção criado com sucesso.</response>
+        /// <response code="201">Pedido criado com sucesso.</response>
         /// <response code="400">Dados inválidos.</response>
         /// <response code="500">Erro interno ao criar o pedido.</response>
         [Authorize]
@@ -176,19 +176,8 @@ namespace LogisControlAPI.Controllers
                 if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
                     return Unauthorized("Não foi possível identificar o utilizador.");
 
-
-                var novoPedido = new PedidoManutencao
-                {
-                    Descricao = novoPedidoDto.Descricao,
-                    Estado = "Em Espera", // Pedido inicia em espera
-                    DataAbertura = DateTime.UtcNow,
-                    DataConclusao = null,
-                    MaquinaMaquinaId = novoPedidoDto.MaquinaMaquinaId,
-                    UtilizadorUtilizadorId = utilizadorId
-                };
-
-                _context.PedidosManutencao.Add(novoPedido);
-                await _context.SaveChangesAsync();
+                // Chamar o serviço
+                await _manutencaoService.CriarPedidoAsync(novoPedidoDto, utilizadorId);
 
                 return StatusCode(201, "Pedido de manutenção criado com sucesso.");
             }
@@ -198,6 +187,7 @@ namespace LogisControlAPI.Controllers
             }
         }
         #endregion
+
 
         #region AtualizarPedido
         /// <summary>
@@ -221,13 +211,14 @@ namespace LogisControlAPI.Controllers
                 if (pedido == null)
                     return NotFound("Pedido de manutenção não encontrado.");
 
-                // Atualizar os campos
+                // Atualizar campos que não são o Estado (porque o Estado vai pelo serviço)
                 pedido.Descricao = pedidoAtualizado.Descricao;
-                pedido.Estado = pedidoAtualizado.Estado;
                 pedido.DataAbertura = pedidoAtualizado.DataAbertura;
-                pedido.DataConclusao = pedidoAtualizado.DataConclusao;
                 pedido.MaquinaMaquinaId = pedidoAtualizado.MaquinaMaquinaId;
                 pedido.UtilizadorUtilizadorId = pedidoAtualizado.UtilizadorUtilizadorId;
+
+                // Atualizar Estado e possivelmente DataConclusao através do serviço
+                await _manutencaoService.AtualizarEstadoPedido(pedidoId, pedidoAtualizado.Estado);
 
                 await _context.SaveChangesAsync();
 
@@ -259,7 +250,7 @@ namespace LogisControlAPI.Controllers
         {
             try
             {
-                var pedidos = await _pedidoManutencaoService.ObterPedidosAtrasadosAsync();
+                var pedidos = await _manutencaoService.ObterPedidosAtrasadosAsync();
                 return Ok(pedidos);
             }
             catch (Exception ex)
@@ -267,9 +258,35 @@ namespace LogisControlAPI.Controllers
                 return StatusCode(500, $"Erro ao obter pedidos atrasados: {ex.Message}");
             }
         }
-
         #endregion
 
+        #region ReabrirPedido
+        /// <summary>
+        /// Reabre um pedido de manutenção, definindo o estado como "Em Espera",
+        /// limpando a data de conclusão e adicionando uma justificação à descrição.
+        /// Também envia uma notificação via Telegram.
+        /// </summary>
+        /// <param name="dto">DTO contendo o ID do pedido e a justificação.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        /// <response code="200">Pedido reaberto com sucesso.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="500">Erro ao processar o pedido.</response>
+        [Authorize]
+        [HttpPut("ReabrirPedido")]
+        [Produces("application/json")]
+        public async Task<IActionResult> ReabrirPedido([FromBody] ReabrirPedidoManutencaoDTO dto)
+        {
+            try
+            {
+                await _manutencaoService.ReabrirPedidoManutencaoAsync(dto);
+                return Ok("Pedido de manutenção reaberto com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao reabrir pedido: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }
 
