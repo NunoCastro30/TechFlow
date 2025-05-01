@@ -52,14 +52,12 @@ namespace LogisControlAPI.Controllers
         [ProducesResponseType(201)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> AdicionarItem(
-            [FromRoute] int orcId,
-            [FromBody] OrcamentoItemDTO dto)
+    [FromRoute] int orcId,
+    [FromBody] CriarOrcamentoItemDTO dto)
         {
-            // 2.1) valida existência do orçamento
             if (!await _ctx.Orcamentos.AnyAsync(o => o.OrcamentoID == orcId))
                 return NotFound("Orçamento não encontrado.");
 
-            // 2.2) monta entidade e persiste
             var item = new OrcamentoItem
             {
                 OrcamentoOrcamentoID = orcId,
@@ -68,14 +66,11 @@ namespace LogisControlAPI.Controllers
                 PrecoUnit = dto.PrecoUnit,
                 PrazoEntrega = dto.PrazoEntrega
             };
+
             _ctx.OrcamentosItem.Add(item);
             await _ctx.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(ObterOrcamento),
-                new { orcId },
-                new { OrcamentoItemId = item.OrcamentoItemID }
-            );
+            return CreatedAtAction(nameof(ObterOrcamento), new { orcId }, new { item.OrcamentoItemID });
         }
 
         /// <summary>
@@ -114,6 +109,44 @@ namespace LogisControlAPI.Controllers
             };
 
             return Ok(detalhe);
+        }
+
+        /// <summary>
+        /// Aceita um orçamento e recusa todos os outros do mesmo pedido de cotação.
+        /// </summary>
+        [HttpPost("{orcId:int}/aceitar")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> AceitarOrcamento([FromRoute] int orcId)
+        {
+            // 1) Carrega orçamento e pedido associado
+            var orcamento = await _ctx.Orcamentos
+                .Include(o => o.PedidoCotacaoPedidoCotacao)
+                .Where(o => o.OrcamentoID == orcId)
+                .FirstOrDefaultAsync();
+
+            if (orcamento == null)
+                return NotFound("Orçamento não encontrado.");
+
+            var pedidoCotacaoId = orcamento.PedidoCotacaoPedidoCotacaoID;
+
+            // 2) Vai buscar todos os orçamentos do mesmo pedido
+            var todosOrcamentos = await _ctx.Orcamentos
+                .Where(o => o.PedidoCotacaoPedidoCotacaoID == pedidoCotacaoId)
+                .ToListAsync();
+
+            // 3) Marca todos como recusado, exceto o atual
+            foreach (var o in todosOrcamentos)
+                o.Estado = (o.OrcamentoID == orcId ? "Aceite" : "Recusado");
+
+            // 4) Atualiza estado do PedidoCotacao
+            var pedidoCotacao = orcamento.PedidoCotacaoPedidoCotacao;
+            pedidoCotacao.Estado = "Finalizado";
+
+            // 5) Guarda alterações
+            await _ctx.SaveChangesAsync();
+
+            return Ok("Orçamento aceite com sucesso.");
         }
     }
 }

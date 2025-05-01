@@ -21,6 +21,7 @@ public class PedidoCotacaoController : ControllerBase
         [FromRoute] int pedidoCompraId,
         [FromQuery] int fornecedorId)
     {
+        Console.WriteLine("Entrou em CriarPedidoCotacao");
         try
         {
             var (cotacaoId, token) = await _service

@@ -297,7 +297,7 @@ public partial class LogisControlContext : DbContext
             // FK → Matéria-prima
             entity.HasOne(d => d.MateriaPrima)
                   .WithMany(p => p.OrcamentosItem)
-                  .HasForeignKey(d => d.MateriaPrimaID)               // usar a propriedade *ID*
+                  .HasForeignKey(d => d.MateriaPrimaID)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FKOrcamentoI247272");
 
