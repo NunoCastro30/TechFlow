@@ -1,5 +1,6 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
+using LogisControlAPI.Interfaces;
 using LogisControlAPI.Models;
 using LogisControlAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +19,12 @@ namespace LogisControlAPI.Controllers
     public class MateriaPrimaController : ControllerBase
     {
         private readonly LogisControlContext _context;
-        private readonly StockService _stockService;
+        private readonly IStockService _stockService;
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public MateriaPrimaController(LogisControlContext context, StockService stockService)
+        public MateriaPrimaController(LogisControlContext context, IStockService stockService)
         {
             _context = context;
             _stockService = stockService;

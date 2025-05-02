@@ -1,5 +1,6 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
+using LogisControlAPI.Interfaces;
 using LogisControlAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +12,14 @@ namespace LogisControlAPI.Services
     public class ProdutoService
     {
         private readonly LogisControlContext _context;
-        private readonly StockService _stockService;
+        private readonly IStockService _stockService;
 
-        /// <summary>
-        /// Construtor que injeta o contexto da base de dados.
-        /// </summary>
-        /// <param name="context">Contexto da base de dados.</param>
-        public ProdutoService(LogisControlContext context, StockService stockService)
+        public ProdutoService(LogisControlContext context, IStockService stockService)
         {
             _context = context;
             _stockService = stockService;
         }
+
 
         #region CriarProduto
 

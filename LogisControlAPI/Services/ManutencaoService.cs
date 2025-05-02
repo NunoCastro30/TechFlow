@@ -2,16 +2,17 @@
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using LogisControlAPI.Interfaces;
 
 namespace LogisControlAPI.Services
 {
     public class ManutencaoService
     {
         private readonly LogisControlContext _context;
-        private readonly TelegramService _telegramService;
+        private readonly ITelegramService _telegramService;
 
 
-        public ManutencaoService(LogisControlContext context, TelegramService telegramService)
+        public ManutencaoService(LogisControlContext context, ITelegramService telegramService)
         {
             _context = context;
             _telegramService = telegramService;
@@ -30,9 +31,9 @@ namespace LogisControlAPI.Services
         /// </remarks>
         public async Task<List<PedidoManutencao>> ObterPedidosAtrasadosAsync()
         {
-            var hoje = DateTime.Now;
+            var limite = DateTime.Now.AddDays(-7);
             return await _context.PedidosManutencao
-                .Where(p => p.Estado != "Resolvido" && EF.Functions.DateDiffDay(p.DataAbertura, hoje) > 7)
+                .Where(p => p.Estado != "Concluido" && p.DataAbertura < limite)
                 .ToListAsync();
         }
 
