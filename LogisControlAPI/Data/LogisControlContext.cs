@@ -140,7 +140,7 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.FornecedorId).HasColumnName("FornecedorID");
             entity.Property(e => e.Email)
-                .HasMaxLength(25)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Nome)
                 .HasMaxLength(100)

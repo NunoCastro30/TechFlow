@@ -41,6 +41,9 @@ builder.Services.AddSingleton<TelegramService>(sp =>
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();
 
+//configurar o serviço do produto
+builder.Services.AddScoped<ProdutoService>();
+
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
