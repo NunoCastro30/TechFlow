@@ -1,5 +1,6 @@
 ﻿using LogisControlAPI.Data;
 using System;
+using LogisControlAPI.Interfaces;
 using System.Threading.Tasks;
 
 namespace LogisControlAPI.Services
@@ -7,7 +8,7 @@ namespace LogisControlAPI.Services
     /// <summary>
     /// Serviço responsável por verificar o stock de matérias-primas e emitir alertas se necessário.
     /// </summary>
-    public class StockService
+    public class StockService : IStockService
     {
         private readonly LogisControlContext _context;
         private readonly NotificationService _notificador;
