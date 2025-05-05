@@ -45,6 +45,8 @@ builder.Services.AddScoped<ManutencaoService>();
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<VerificacaoStockEncomendaService>();
+builder.Services.AddScoped<ProducaoService>();
 
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();
