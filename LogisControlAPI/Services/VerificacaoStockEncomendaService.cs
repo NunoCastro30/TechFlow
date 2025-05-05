@@ -19,7 +19,7 @@ namespace LogisControlAPI.Services
             _notificador = notificador;
         }
 
-        public async Task VerificarStockParaEncomenda(int encomendaClienteId)
+        /*public async Task VerificarStockParaEncomenda(int encomendaClienteId)
         {
             var itens = await _context.EncomendasItem
                 .Where(ei => ei.EncomendaClienteEncomendaClienteId == encomendaClienteId)
@@ -65,6 +65,6 @@ namespace LogisControlAPI.Services
                     await _context.SaveChangesAsync();
                 }
             }
-        }
+        }*/
     }
 }
