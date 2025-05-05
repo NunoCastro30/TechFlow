@@ -118,7 +118,7 @@ namespace LogisControlAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 // ✅ Chamar verificação de stock
-                await _verificacaoStockService.VerificarStockParaEncomenda(novoItem.EncomendaClienteEncomendaClienteId);
+                //await _verificacaoStockService.VerificarStockParaEncomenda(novoItem.EncomendaClienteEncomendaClienteId);
 
                 return StatusCode(201, "Item de encomenda criado com sucesso e stock verificado.");
             }

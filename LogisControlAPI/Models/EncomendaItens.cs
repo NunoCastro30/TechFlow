@@ -12,6 +12,8 @@ public partial class EncomendaItens
     public int EncomendaClienteEncomendaClienteId { get; set; }
 
     public virtual EncomendaCliente EncomendaClienteEncomendaCliente { get; set; } = null!;
+    public int ProdutoId { get; set; } // ou int? se for nullable
+    public virtual Produto Produto { get; set; } = null!; // ou Produto? se for nullable
 
-    public virtual ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+
 }
