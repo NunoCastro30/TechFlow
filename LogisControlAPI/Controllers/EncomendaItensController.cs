@@ -3,9 +3,11 @@ using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using Microsoft.EntityFrameworkCore;
+using LogisControlAPI.Services;
 
 namespace LogisControlAPI.Controllers
 {
+
     /// <summary>
     /// Controlador responsável pela gestão dos itens de encomenda.
     /// </summary>
@@ -14,14 +16,16 @@ namespace LogisControlAPI.Controllers
     public class EncomendaItensController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly VerificacaoStockEncomendaService _verificacaoStockService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public EncomendaItensController(LogisControlContext context)
+        public EncomendaItensController(LogisControlContext context, VerificacaoStockEncomendaService verificacaoStockService)
         {
             _context = context;
+            _verificacaoStockService = verificacaoStockService;
         }
 
         #region ObterEncomendaItens
@@ -113,7 +117,10 @@ namespace LogisControlAPI.Controllers
                 _context.EncomendasItem.Add(novoItem);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, "Item de encomenda criado com sucesso.");
+                // ✅ Chamar verificação de stock
+                await _verificacaoStockService.VerificarStockParaEncomenda(novoItem.EncomendaClienteEncomendaClienteId);
+
+                return StatusCode(201, "Item de encomenda criado com sucesso e stock verificado.");
             }
             catch (Exception ex)
             {

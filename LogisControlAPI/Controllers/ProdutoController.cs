@@ -1,6 +1,9 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
+using LogisControlAPI.Interfaces;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +17,16 @@ namespace LogisControlAPI.Controllers
     public class ProdutoController : ControllerBase
     {
         private readonly LogisControlContext _context;
+        private readonly ProdutoService _produtoService;
 
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public ProdutoController(LogisControlContext context)
+        public ProdutoController(LogisControlContext context, ProdutoService produtoService)
         {
             _context = context;
+            _produtoService = produtoService;
         }
 
         #region ListarProdutos
@@ -32,6 +37,8 @@ namespace LogisControlAPI.Controllers
         /// <response code="200">Lista obtida com sucesso.</response>
         /// <response code="500">Erro interno ao obter produtos.</response>
         [HttpGet("ListarProdutos")]
+        [Authorize ("Gestor")]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetAll()
         {
             try
@@ -59,57 +66,56 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
-        #region ObterProdutoPorId
+        #region ObterProdutoParaEdicao
         /// <summary>
-        /// Obtém um produto pelo ID.
+        /// Obtém os dados de um produto e as matérias-primas associadas para edição.
         /// </summary>
         /// <param name="id">ID do produto.</param>
-        /// <returns>Produto correspondente ao ID.</returns>
+        /// <returns>DTO com os dados preenchidos para edição.</returns>
         /// <response code="200">Produto encontrado.</response>
         /// <response code="404">Produto não encontrado.</response>
-        [HttpGet("ObterProdutoPorId/{id}")]
-        public async Task<ActionResult<ProdutoDTO>> GetById(int id)
+        [HttpGet("ObterProdutoParaEdicao/{id}")]
+        [Authorize("Gestor")]
+        [Produces("application/json")]
+        public async Task<ActionResult<CriarProdutoDTO>> ObterProdutoParaEdicao(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto == null)
-            {
+            var dto = await _produtoService.ObterProdutoParaEdicaoAsync(id);
+
+            if (dto == null)
                 return NotFound();
-            }
-            return Ok(produto);
+
+            return Ok(dto);
         }
         #endregion
-
         #region CriarProduto
         /// <summary>
-        /// Cria um novo produto.
+        /// Cria um novo produto com matérias-primas associadas.
         /// </summary>
-        /// <param name="dto">Dados do produto a ser criado.</param>
-        /// <returns>Produto criado.</returns>
+        /// <param name="dto">Dados do produto e das matérias-primas.</param>
+        /// <returns>Resposta de sucesso ou erro.</returns>
         /// <response code="201">Produto criado com sucesso.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="500">Erro interno ao criar o produto.</response>
         [HttpPost("CriarProduto")]
-        public async Task<ActionResult<ProdutoDTO>> Create([FromBody] ProdutoDTO dto)
+        [Authorize("Gestor")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Create([FromBody] CriarProdutoDTO dto)
         {
-            var produto = new Produto
+            try
             {
-                Nome = dto.Nome,
-                Quantidade = dto.Quantidade,
-                Descricao = dto.Descricao,
-                CodInterno = dto.CodInterno,
-                Preco = dto.Preco,
-                OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId,
-                EncomendaItensEncomendaItensId = dto.EncomendaItensEncomendaItensId
-            };
-
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new { id = produto.ProdutoId }, produto);
+                await _produtoService.CriarProdutoAsync(dto);
+                return StatusCode(201, "Produto criado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao criar o produto: {ex.Message}");
+            }
         }
         #endregion
 
         #region AtualizarProduto
         /// <summary>
-        /// Atualiza um produto existente.
+        /// Atualiza um produto existente e as suas matérias-primas.
         /// </summary>
         /// <param name="id">ID do produto a ser atualizado.</param>
         /// <param name="dto">Novos dados do produto.</param>
@@ -117,24 +123,19 @@ namespace LogisControlAPI.Controllers
         /// <response code="204">Produto atualizado com sucesso.</response>
         /// <response code="404">Produto não encontrado.</response>
         [HttpPut("AtualizarProduto/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ProdutoDTO dto)
+        [Authorize("Gestor")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Update(int id, [FromBody] CriarProdutoDTO dto)
         {
-            var produto = await _context.Produtos.FindAsync(id);
-            if (produto == null)
+            try
             {
-                return NotFound();
+                await _produtoService.AtualizarProdutoAsync(id, dto);
+                return NoContent();
             }
-
-            produto.Nome = dto.Nome;
-            produto.Quantidade = dto.Quantidade;
-            produto.Descricao = dto.Descricao;
-            produto.CodInterno = dto.CodInterno;
-            produto.Preco = dto.Preco;
-            produto.OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId;
-            produto.EncomendaItensEncomendaItensId = dto.EncomendaItensEncomendaItensId;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (Exception ex)
+            {
+                return NotFound($"Erro ao atualizar produto: {ex.Message}");
+            }
         }
         #endregion
 

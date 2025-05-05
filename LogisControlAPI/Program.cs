@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using LogisControlAPI.Auxiliar;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,15 +24,24 @@ builder.Services.AddScoped<ComprasService>();
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<IStockService, StockService>();
+
+
+// Configurar o serviço de Telegram com injeção da interface
+builder.Services.Configure<TelegramConfig>(builder.Configuration.GetSection("TelegramConfig"));
+builder.Services.AddSingleton<ITelegramService>(sp =>
+{
+    var config = sp.GetRequiredService<IOptions<TelegramConfig>>().Value;
+    var httpClient = new HttpClient();
+    return new TelegramService(httpClient, config);
+});
+
 
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();
 
-//Configurar o serviço de email
-builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
-builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<StockService>();
+//configurar o serviço do produto
+builder.Services.AddScoped<ProdutoService>();
 
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();

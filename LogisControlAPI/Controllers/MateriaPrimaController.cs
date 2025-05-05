@@ -1,5 +1,6 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
+using LogisControlAPI.Interfaces;
 using LogisControlAPI.Models;
 using LogisControlAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +19,12 @@ namespace LogisControlAPI.Controllers
     public class MateriaPrimaController : ControllerBase
     {
         private readonly LogisControlContext _context;
-        private readonly StockService _stockService;
+        private readonly IStockService _stockService;
         /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>
-        public MateriaPrimaController(LogisControlContext context, StockService stockService)
+        public MateriaPrimaController(LogisControlContext context, IStockService stockService)
         {
             _context = context;
             _stockService = stockService;
@@ -56,6 +57,37 @@ namespace LogisControlAPI.Controllers
                 .ToListAsync();
 
             return Ok(list);
+        }
+
+        /// <summary>
+        /// Lista todas as matérias-primas associadas a uma determinada ordem de produção.
+        /// </summary>
+        /// <param name="ordemProducaoId">ID da ordem de produção.</param>
+        /// <returns>Lista de matérias-primas relacionadas.</returns>
+        /// <response code="200">Lista de matérias-primas obtida com sucesso.</response>
+        /// <response code="404">Nenhuma matéria-prima encontrada para a ordem de produção.</response>
+        [HttpGet("PorOrdemProducao/{ordemProducaoId:int}")]
+        public async Task<ActionResult<IEnumerable<MateriaPrimaDTO>>> GetMateriasPrimasPorOrdemProducao(int ordemProducaoId)
+        {
+            var materias = await _context.MateriasPrimas
+                .Where(mp => mp.MateriaPrimaProdutos
+                    .Any(mpp => mpp.ProdutoProduto.OrdemProducaoOrdemProdId == ordemProducaoId))
+                .Select(mp => new MateriaPrimaDTO
+                {
+                    MateriaPrimaId = mp.MateriaPrimaId,
+                    Nome = mp.Nome,
+                    Quantidade = mp.Quantidade,
+                    Descricao = mp.Descricao,
+                    Categoria = mp.Categoria,
+                    CodInterno = mp.CodInterno,
+                    Preco = mp.Preco
+                })
+                .ToListAsync();
+
+            if (materias == null || !materias.Any())
+                return NotFound($"Nenhuma matéria-prima associada à ordem de produção #{ordemProducaoId}.");
+
+            return Ok(materias);
         }
 
         /// <summary>
@@ -168,6 +200,9 @@ namespace LogisControlAPI.Controllers
             if (m == null)
                 return NotFound();
 
+            // Guarda a quantidade anterior antes de alterar
+            var quantidadeAnterior = m.Quantidade;
+
             m.Nome = dto.Nome;
             m.Quantidade = dto.Quantidade;
             m.Descricao = dto.Descricao;
@@ -178,7 +213,7 @@ namespace LogisControlAPI.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                await _stockService.VerificarStockCritico(id);
+                await _stockService.VerificarStockCritico(id, quantidadeAnterior);
             }
             catch (DbUpdateConcurrencyException)
             {

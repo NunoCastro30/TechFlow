@@ -15,7 +15,6 @@ public class StockServiceTests
     /// <summary>
     /// Cria um contexto de base de dados em memória (InMemory) para testes isolados.
     /// </summary>
-    /// <returns>Instância de LogisControlContext configurada para testes.</returns>
     private LogisControlContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<LogisControlContext>()
@@ -36,7 +35,7 @@ public class StockServiceTests
         var service = new StockService(context, notificadorMock.Object);
 
         // Act
-        await service.VerificarStockCritico(999); // ID inexistente
+        await service.VerificarStockCritico(999, 20); // ID inexistente, valor anterior arbitrário
 
         // Assert
         notificadorMock.Verify(
@@ -46,7 +45,7 @@ public class StockServiceTests
     }
 
     /// <summary>
-    /// Garante que uma notificação é enviada se a quantidade da matéria-prima for inferior a 10.
+    /// Garante que uma notificação é enviada se a quantidade da matéria-prima for inferior a 10 e diminuiu.
     /// </summary>
     [Fact]
     public async Task VerificarStockCritico_DeveEnviarNotificacao_SeQuantidadeInferiorA10()
@@ -68,7 +67,7 @@ public class StockServiceTests
         var service = new StockService(context, notificadorMock.Object);
 
         // Act
-        await service.VerificarStockCritico(1);
+        await service.VerificarStockCritico(1, 15); // Redução de 15 para 5
 
         // Assert
         notificadorMock.Verify(
@@ -82,7 +81,7 @@ public class StockServiceTests
     }
 
     /// <summary>
-    /// Garante que nenhuma notificação é enviada se a quantidade da matéria-prima for igual ou superior a 10.
+    /// Garante que nenhuma notificação é enviada se a quantidade for >= 10.
     /// </summary>
     [Fact]
     public async Task VerificarStockCritico_NaoEnviaNotificacao_SeQuantidadeIgualOuSuperiorA10()
@@ -104,7 +103,39 @@ public class StockServiceTests
         var service = new StockService(context, notificadorMock.Object);
 
         // Act
-        await service.VerificarStockCritico(2);
+        await service.VerificarStockCritico(2, 15); // Redução de 15 para 12, mas ainda acima do limiar
+
+        // Assert
+        notificadorMock.Verify(
+            n => n.NotificarAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never()
+        );
+    }
+
+    /// <summary>
+    /// Garante que nenhuma notificação é enviada se a quantidade atual for menor que 10, mas não diminuiu.
+    /// </summary>
+    [Fact]
+    public async Task VerificarStockCritico_NaoEnviaNotificacao_SeNaoHouveReducao()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        context.MateriasPrimas.Add(new MateriaPrima
+        {
+            MateriaPrimaId = 3,
+            Nome = "Cobre",
+            Quantidade = 8,
+            Categoria = "Metais",
+            CodInterno = "CB001",
+            Descricao = "Cobre eletrolítico"
+        });
+        await context.SaveChangesAsync();
+
+        var notificadorMock = new Mock<NotificationService>(null as object);
+        var service = new StockService(context, notificadorMock.Object);
+
+        // Act
+        await service.VerificarStockCritico(3, 5); // Aumentou de 5 para 8
 
         // Assert
         notificadorMock.Verify(

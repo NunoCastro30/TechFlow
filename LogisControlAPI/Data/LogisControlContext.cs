@@ -140,7 +140,7 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.FornecedorId).HasColumnName("FornecedorID");
             entity.Property(e => e.Email)
-                .HasMaxLength(25)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Nome)
                 .HasMaxLength(100)
@@ -297,7 +297,7 @@ public partial class LogisControlContext : DbContext
             // FK → Matéria-prima
             entity.HasOne(d => d.MateriaPrima)
                   .WithMany(p => p.OrcamentosItem)
-                  .HasForeignKey(d => d.MateriaPrimaID)               // usar a propriedade *ID*
+                  .HasForeignKey(d => d.MateriaPrimaID)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FKOrcamentoI247272");
 
@@ -374,7 +374,7 @@ public partial class LogisControlContext : DbContext
                   .IsUnicode(false);
 
             // mapeia a FK para fornecedor
-            entity.Property(e => e.FornecedorId).HasColumnName("FornecedorID");
+            entity.Property(e => e.FornecedorId).HasColumnName("FornecedorFornecedorID");
             entity.HasOne(d => d.Fornecedor)
                   .WithMany(p => p.PedidosCotacao)
                   .HasForeignKey(d => d.FornecedorId)
@@ -459,11 +459,13 @@ public partial class LogisControlContext : DbContext
 
             entity.HasOne(d => d.EncomendaItensEncomendaItensNavigation).WithMany(p => p.Produtos)
                 .HasForeignKey(d => d.EncomendaItensEncomendaItensId)
+                .IsRequired(false)// <- isto diz que a FK é opcional 
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduto171408");
 
             entity.HasOne(d => d.OrdemProducaoOrdemProd).WithMany(p => p.Produtos)
                 .HasForeignKey(d => d.OrdemProducaoOrdemProdId)
+                .IsRequired(false) // <- isto diz que a FK é opcional   
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKProduto647431");
         });
