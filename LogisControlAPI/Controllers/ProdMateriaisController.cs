@@ -20,6 +20,45 @@ namespace LogisControlAPI.Controllers
             _context = context;
         }
 
+        #region CriarProdMaterial
+        /// <summary>
+        /// Regista um novo material utilizado numa ordem de produção.
+        /// </summary>
+        /// <param name="dto">Dados do material a registar.</param>
+        /// <returns>Mensagem de sucesso ou erro.</returns>
+        /// <response code="201">Material registado com sucesso.</response>
+        /// <response code="400">Dados inválidos.</response>
+        /// <response code="500">Erro interno ao registar o material.</response>
+        [HttpPost("CriarProdMaterial")]
+        public async Task<IActionResult> CriarProdMaterial([FromBody] ProdMaterialDTO dto)
+        {
+            try
+            {
+                // Validação básica
+                if (dto.QuantidadeUtilizada <= 0 || dto.OrdemProducaoOrdemProdId <= 0 || dto.MateriaPrimaMateriaPrimaId <= 0)
+                {
+                    return BadRequest("Todos os campos devem ter valores válidos.");
+                }
+
+                var novaEntrada = new ProdMateriais
+                {
+                    QuantidadeUtilizada = dto.QuantidadeUtilizada,
+                    OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId,
+                    MateriaPrimaMateriaPrimaId = dto.MateriaPrimaMateriaPrimaId
+                };
+
+                await _context.ProdMateriais.AddAsync(novaEntrada);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(AtualizarQuantidade), new { id = novaEntrada.ProdMateriaisId }, "Material registado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao registar o material: {ex.Message}");
+            }
+        }
+        #endregion
+
         #region AtualizarQuantidade
         /// <summary>
         /// Atualiza a quantidade utilizada de uma matéria-prima numa ordem de produção.

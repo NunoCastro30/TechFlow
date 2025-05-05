@@ -1,6 +1,7 @@
 ﻿using LogisControlAPI.Data;
 using LogisControlAPI.DTO;
 using LogisControlAPI.Models;
+using LogisControlAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
