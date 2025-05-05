@@ -48,7 +48,7 @@ namespace LogisControlAPI.Controllers
                 var novoPedido = new PedidoCompra
                 {
                     Descricao = dto.Descricao,
-                    Estado = "Aberto",
+                    Estado = "Pendente",
                     DataAbertura = DateTime.UtcNow,
                     UtilizadorUtilizadorId = utilizadorId
                 };
