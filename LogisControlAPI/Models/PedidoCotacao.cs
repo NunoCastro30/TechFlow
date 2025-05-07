@@ -9,15 +9,15 @@ public partial class PedidoCotacao
     public string Descricao { get; set; } = null!;
     public DateTime Data { get; set; }
     public string Estado { get; set; } = null!;
-
-    // FK pro fornecedor que vai responder à cotação
-    public int FornecedorId { get; set; }
-
-    // NOVO: token para acesso único
     public string TokenAcesso { get; set; } = null!;
 
+    // FK obrigatória para fornecedor
+    public int FornecedorId { get; set; }
     public virtual Fornecedor Fornecedor { get; set; } = null!;
 
-    // navegação para orçamentos, se quiser depois incluir orçamentos filhos
+    // NOVO: FK opcional para PedidoCompra
+    public int? PedidoCompraId { get; set; }
+    public virtual PedidoCompra? PedidoCompra { get; set; }
+
     public virtual ICollection<Orcamento> Orcamentos { get; set; } = new List<Orcamento>();
 }

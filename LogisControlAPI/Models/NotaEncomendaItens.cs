@@ -5,10 +5,12 @@ namespace LogisControlAPI.Models
     public class NotaEncomendaItens
     {
         public int NotaEncomendaItensId { get; set; }
-        public int NotaEncomendaId { get; set; }             // ← Chave FK
+
+        public int NotaEncomendaId { get; set; }
         public virtual NotaEncomenda NotaEncomenda { get; set; } = null!;
 
-        public int MateriaPrimaId { get; set; }               // ← Chave FK
+        [Column("MateriaPrimaMateriaPrimaID")]
+        public int MateriaPrimaId { get; set; }
         public virtual MateriaPrima MateriaPrima { get; set; } = null!;
 
         public int Quantidade { get; set; }

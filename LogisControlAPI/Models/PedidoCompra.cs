@@ -16,16 +16,12 @@ namespace LogisControlAPI.Models
         public DateTime? DataConclusao { get; set; }
 
         public int UtilizadorUtilizadorId { get; set; }
-
-        /// <summary>
-        /// Navegação para o utilizador que criou o pedido
-        /// </summary>
         public virtual Utilizador UtilizadorUtilizador { get; set; } = null!;
 
-        /// <summary>
-        /// Linhas (itens) associadas a este pedido de compra.
-        /// </summary>
         public virtual ICollection<PedidoCompraItem> PedidoCompraItems { get; set; }
             = new HashSet<PedidoCompraItem>();
+
+        public virtual ICollection<PedidoCotacao> PedidosCotacao { get; set; }
+            = new HashSet<PedidoCotacao>();
     }
 }

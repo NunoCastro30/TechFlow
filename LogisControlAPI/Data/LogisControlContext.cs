@@ -236,6 +236,7 @@ public partial class LogisControlContext : DbContext
         modelBuilder.Entity<NotaEncomendaItens>(entity =>
         {
             entity.ToTable("NotaEncomendaItens");
+
             entity.HasKey(e => e.NotaEncomendaItensId).HasName("PK_NotaEncomendaItens");
 
             entity.Property(e => e.NotaEncomendaItensId)
@@ -244,8 +245,9 @@ public partial class LogisControlContext : DbContext
             // FK → NotaEncomenda
             entity.Property(e => e.NotaEncomendaId)
                   .HasColumnName("NotaEncomendaNotaEncomendaID");
+
             entity.HasOne(e => e.NotaEncomenda)
-                  .WithMany(n => n.Itens)               // corresponde à propriedade ICollection<NotaEncomendaItens> Itens
+                  .WithMany(n => n.Itens)
                   .HasForeignKey(e => e.NotaEncomendaId)
                   .OnDelete(DeleteBehavior.Cascade)
                   .HasConstraintName("FK_NotaEncomendaItens_NotaEncomenda");
@@ -253,8 +255,10 @@ public partial class LogisControlContext : DbContext
             // FK → MateriaPrima
             entity.Property(e => e.MateriaPrimaId)
                   .HasColumnName("MateriaPrimaMateriaPrimaID");
+
+
             entity.HasOne(e => e.MateriaPrima)
-                  .WithMany(m => m.NotasEncomendaItem)   // ou outro nome que tenhas usado na MateriaPrima
+                  .WithMany(m => m.NotasEncomendaItem)
                   .HasForeignKey(e => e.MateriaPrimaId)
                   .OnDelete(DeleteBehavior.Restrict)
                   .HasConstraintName("FK_NotaEncomendaItens_MateriaPrima");
@@ -365,28 +369,36 @@ public partial class LogisControlContext : DbContext
             entity.ToTable("PedidoCotacao");
 
             entity.Property(e => e.PedidoCotacaoId).HasColumnName("PedidoCotacaoID");
-            entity.Property(e => e.Descricao)
-                  .HasMaxLength(1000)
-                  .IsUnicode(false);
-            entity.Property(e => e.Data).HasColumnType("datetime");
-            entity.Property(e => e.Estado)
-                  .HasMaxLength(10)
-                  .IsUnicode(false);
 
-            // mapeia a FK para fornecedor
+            entity.Property(e => e.Descricao)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+
+            entity.Property(e => e.Data).HasColumnType("datetime");
+
+            entity.Property(e => e.Estado)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+
+            entity.Property(e => e.TokenAcesso)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .IsRequired();
+
+            // FK obrigatória para Fornecedor
             entity.Property(e => e.FornecedorId).HasColumnName("FornecedorFornecedorID");
             entity.HasOne(d => d.Fornecedor)
-                  .WithMany(p => p.PedidosCotacao)
-                  .HasForeignKey(d => d.FornecedorId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
-                  .HasConstraintName("FK_PedidoCotacao_Fornecedor");
+                .WithMany(p => p.PedidosCotacao)
+                .HasForeignKey(d => d.FornecedorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PedidoCotacao_Fornecedor");
 
-            // mapeia o novo token
-            entity.Property(e => e.TokenAcesso)
-                  .HasMaxLength(50)
-                  .IsUnicode(false)
-                  .IsRequired()
-                  .HasColumnName("TokenAcesso");
+            // FK opcional para PedidoCompra
+            entity.HasOne(d => d.PedidoCompra)
+                .WithMany(p => p.PedidosCotacao)
+                .HasForeignKey(d => d.PedidoCompraId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PedidoCotacao_PedidoCompra");
         });
 
         modelBuilder.Entity<PedidoManutencao>(entity =>
