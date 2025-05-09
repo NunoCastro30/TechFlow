@@ -24,14 +24,18 @@ builder.Services.AddScoped<ComprasService>();
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
+
+//Producao
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<VerificacaoStockEncomendaService>();
 builder.Services.AddScoped<ProducaoService>();
 
 
-// Configurar o serviço de Telegram com injeção da interface
+//Configurar o serviço de Telegram
+// Configura o binding da secção "Telegram" do appsettings.json
 builder.Services.Configure<TelegramConfig>(builder.Configuration.GetSection("TelegramConfig"));
-builder.Services.AddSingleton<ITelegramService>(sp =>
+// Regista o serviço TelegramService com HttpClient e configuração injetada
+builder.Services.AddSingleton<TelegramService>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<TelegramConfig>>().Value;
     var httpClient = new HttpClient();
@@ -42,8 +46,12 @@ builder.Services.AddSingleton<ITelegramService>(sp =>
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();
 
-//configurar o serviço do produto
-builder.Services.AddScoped<ProdutoService>();
+//Configurar o serviço de email
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<VerificacaoStockEncomendaService>();
+builder.Services.AddScoped<ProducaoService>();
 
 //Configurar o serviço Pedidos Manutenção
 builder.Services.AddScoped<ManutencaoService>();
