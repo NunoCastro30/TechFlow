@@ -7,6 +7,8 @@
         public DateTime Data { get; set; }
         public string Estado { get; set; } = null!;
         public int FornecedorID { get; set; }
-        public string TokenAcesso { get; set; } = null!;   // <— novo
+        public string TokenAcesso { get; set; } = null!;
+        public string? FornecedorNome { get; set; }
+
     }
 }

@@ -29,8 +29,8 @@ public class PedidoCotacaoController : ControllerBase
 
             // 201 Created + Location (incluindo token) + body com token
             return CreatedAtAction(
-                nameof(ObterPorId),
-                new { id = cotacaoId, token = token },   // <-- adiciona o token aqui
+                nameof(ObterCotacaoFornecedor),
+                new { id = cotacaoId, token = token }, 
                 new
                 {
                     PedidoCotacaoId = cotacaoId,
@@ -51,14 +51,32 @@ public class PedidoCotacaoController : ControllerBase
     /// <summary>
     /// Retorna o pedido de cotação com seus orçamentos e itens.
     /// </summary>
-    // GET /api/pedidos-cotacao/{id}?token=XYZ
+    // Para o DEPARTAMENTO DE COMPRAS (sem token)
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(PedidoCotacaoDetalhadoDTO), 200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> ObterCotacaoAdmin([FromRoute] int id)
+    {
+        try
+        {
+            var dto = await _service.ObterPedidoCotacaoDetalhadoAsync(id);
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    /// <summary>
+    /// Retorna o pedido de cotação com seus orçamentos e itens.
+    /// </summary>
+    // Para o FORNECEDOR (com token)
+    [HttpGet("{id:int}/fornecedor")]
     [ProducesResponseType(typeof(PedidoCotacaoDetalhadoDTO), 200)]
     [ProducesResponseType(401)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ObterPorId(
-    [FromRoute] int id,
-    [FromQuery] string token)
+    public async Task<IActionResult> ObterCotacaoFornecedor([FromRoute] int id, [FromQuery] string token)
     {
         try
         {
@@ -74,4 +92,23 @@ public class PedidoCotacaoController : ControllerBase
             return Unauthorized("Token inválido");
         }
     }
+
+    /// <summary>
+    /// Obtém o ID do pedido de cotação mais recente associado a um pedido de compra.
+    /// </summary>
+    /// <param name="pedidoCompraId">ID do pedido de compra.</param>
+    /// <returns>ID do pedido de cotação.</returns>
+    [HttpGet("por-compra/{pedidoCompraId}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> ObterCotacaoPorPedidoCompraId([FromRoute] int pedidoCompraId)
+    {
+        var cotacao = await _service.ObterCotacaoPorPedidoCompraAsync(pedidoCompraId);
+
+        if (cotacao == null)
+            return NotFound("Não foi encontrada nenhuma cotação associada a este pedido de compra.");
+
+        return Ok(new { pedidoCotacaoId = cotacao.PedidoCotacaoId });
+    }
+
 }

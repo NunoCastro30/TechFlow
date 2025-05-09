@@ -30,7 +30,6 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<VerificacaoStockEncomendaService>();
 builder.Services.AddScoped<ProducaoService>();
 
-
 //Configurar o serviço de Telegram
 // Configura o binding da secção "Telegram" do appsettings.json
 builder.Services.Configure<TelegramConfig>(builder.Configuration.GetSection("TelegramConfig"));
