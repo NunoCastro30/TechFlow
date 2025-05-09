@@ -6,6 +6,8 @@
 
         public int? Quantidade { get; set; }
 
+        public int ProdutoId { get; set; } 
+
         public int EncomendaClienteEncomendaClienteId { get; set; }
     }
 }

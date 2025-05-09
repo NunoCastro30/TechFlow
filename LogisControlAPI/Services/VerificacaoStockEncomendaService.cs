@@ -1,70 +1,66 @@
 ﻿using LogisControlAPI.Data;
+using LogisControlAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace LogisControlAPI.Services
+
+public class VerificacaoStockEncomendaService
 {
-    public class VerificacaoStockEncomendaService
+    private readonly LogisControlContext _context;
+    private readonly NotificationService _notificador;
+    private const string EmailResponsavelStock = "nunofernandescastro@gmail.com";
+
+    public VerificacaoStockEncomendaService(LogisControlContext context, NotificationService notificador)
     {
-        private readonly LogisControlContext _context;
-        private readonly NotificationService _notificador;
+        _context = context;
+        _notificador = notificador;
+    }
 
-        /// <summary>
-        /// Email fixo (temporário) do responsável de stock.
-        /// </summary>
-        private const string EmailResponsavelStock = "nunofernandescastro@gmail.com";
+    public async Task VerificarStockParaEncomenda(int encomendaClienteId)
+    {
+        var itens = await _context.EncomendasItem
+            .Where(ei => ei.EncomendaClienteEncomendaClienteId == encomendaClienteId)
+            .Include(ei => ei.Produto)
+                .ThenInclude(p => p.MateriaPrimaProdutos)
+                    .ThenInclude(mp => mp.MateriaPrimaMateriaPrimaIDNavigation)
+            .ToListAsync();
 
-        public VerificacaoStockEncomendaService(LogisControlContext context, NotificationService notificador)
+        if (!itens.Any()) return;
+
+        var mensagens = new List<string>();
+
+        foreach (var item in itens)
         {
-            _context = context;
-            _notificador = notificador;
+            var produto = item.Produto;
+            int qtdEncomendada = item.Quantidade ?? 0;
+
+            foreach (var mp in produto.MateriaPrimaProdutos)
+            {
+                var materia = mp.MateriaPrimaMateriaPrimaIDNavigation;
+                int stockAtual = materia.Quantidade;
+                int qtdNecessaria = mp.QuantidadeNec * qtdEncomendada;
+
+                if (stockAtual < qtdNecessaria)
+                {
+                    mensagens.Add(
+                        $"⚠️ '{materia.Nome}': precisa de {qtdNecessaria} p/ {produto.Nome}, só há {stockAtual}."
+                    );
+                }
+            }
         }
 
-        /*public async Task VerificarStockParaEncomenda(int encomendaClienteId)
+        if (mensagens.Any())
         {
-            var itens = await _context.EncomendasItem
-                .Where(ei => ei.EncomendaClienteEncomendaClienteId == encomendaClienteId)
-                .Include(ei => ei.Produtos)
-                    .ThenInclude(p => p.MateriaPrimaProdutos)
-                        .ThenInclude(mp => mp.MateriaPrimaMateriaPrimaIDNavigation)
-                .ToListAsync();
+            var corpo = string.Join("\n", mensagens);
+            await _notificador.NotificarAsync(EmailResponsavelStock,
+                $"⚠️ Stock Insuficiente para Encomenda {encomendaClienteId}",
+                corpo);
 
-            var mensagens = new List<string>();
-
-            foreach (var item in itens)
+            var encomenda = await _context.EncomendasCliente.FindAsync(encomendaClienteId);
+            if (encomenda != null)
             {
-                foreach (var produto in item.Produtos)
-                {
-                    foreach (var mp in produto.MateriaPrimaProdutos)
-                    {
-                        int quantidadeEncomenda = item.Quantidade ?? 0;
-
-                        int stockDisponivel = mp.MateriaPrimaMateriaPrimaIDNavigation.Quantidade;
-                        int stockNecessario = mp.QuantidadeNec * quantidadeEncomenda;
-
-                        if (stockDisponivel < stockNecessario)
-                        {
-                            mensagens.Add(
-                                $"Matéria-prima '{mp.MateriaPrimaMateriaPrimaIDNavigation.Nome}' necessita de {stockNecessario}, mas só existem {stockDisponivel} em stock para o produto '{produto.Nome}'."
-                            );
-                        }
-                    }
-                }
+                encomenda.Estado = "Pendente por Falta de Stock";
+                await _context.SaveChangesAsync();
             }
-
-            if (mensagens.Any())
-            {
-                string assunto = $"⚠️ Stock Insuficiente para Encomenda {encomendaClienteId}";
-                string corpo = string.Join("\n", mensagens);
-                await _notificador.NotificarAsync(EmailResponsavelStock, assunto, corpo);
-
-                // Atualizar o estado da encomenda
-                var encomenda = await _context.EncomendasCliente.FindAsync(encomendaClienteId);
-                if (encomenda != null)
-                {
-                    encomenda.Estado = "Pendente por Falta de Stock";
-                    await _context.SaveChangesAsync();
-                }
-            }
-        }*/
+        }
     }
 }
