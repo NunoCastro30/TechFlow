@@ -109,7 +109,7 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.ClienteClienteId).HasColumnName("ClienteClienteID");
             entity.Property(e => e.DataEncomenda).HasColumnType("datetime");
             entity.Property(e => e.Estado)
-                .HasMaxLength(10)
+                .HasMaxLength(50)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.ClienteCliente).WithMany(p => p.EncomendasCliente)

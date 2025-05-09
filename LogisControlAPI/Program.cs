@@ -24,7 +24,12 @@ builder.Services.AddScoped<ComprasService>();
 //Configurar o serviço de email
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<StockService>();
+
+//Producao
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<VerificacaoStockEncomendaService>();
+builder.Services.AddScoped<ProducaoService>();
+
 
 //Configurar o serviço de Telegram
 // Configura o binding da secção "Telegram" do appsettings.json
