@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using LogisControlAPI.Auxiliar;
+using LogisControlAPI.Interfaces;
 
 
 namespace LogisControlAPI.Services
@@ -10,7 +11,7 @@ namespace LogisControlAPI.Services
     /// <summary>
     /// Serviço para envio de notificações via Telegram.
     /// </summary>
-    public class TelegramService
+    public class TelegramService : ITelegramService
     {
         private readonly HttpClient _httpClient;
         private readonly TelegramConfig _config;

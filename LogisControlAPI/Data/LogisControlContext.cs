@@ -109,7 +109,7 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.ClienteClienteId).HasColumnName("ClienteClienteID");
             entity.Property(e => e.DataEncomenda).HasColumnType("datetime");
             entity.Property(e => e.Estado)
-                .HasMaxLength(10)
+                .HasMaxLength(50)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.ClienteCliente).WithMany(p => p.EncomendasCliente)
@@ -126,10 +126,20 @@ public partial class LogisControlContext : DbContext
 
             entity.Property(e => e.EncomendaClienteEncomendaClienteId).HasColumnName("EncomendaClienteEncomendaClienteID");
 
+            //adicionado
+            entity.Property(e => e.ProdutoId).HasColumnName("ProdutoID");
+
             entity.HasOne(d => d.EncomendaClienteEncomendaCliente).WithMany(p => p.EncomendasItem)
                 .HasForeignKey(d => d.EncomendaClienteEncomendaClienteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKEncomendaI428182");
+
+            entity.HasOne(d => d.Produto)
+                  .WithMany()
+                  .HasForeignKey(d => d.ProdutoId)
+                  .OnDelete(DeleteBehavior.NoAction)
+                  .HasConstraintName("FK_EncomendaItens_Produto");
+
         });
 
         modelBuilder.Entity<Fornecedor>(entity =>
@@ -468,12 +478,6 @@ public partial class LogisControlContext : DbContext
             entity.Property(e => e.Quantidade)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-
-            entity.HasOne(d => d.EncomendaItensEncomendaItensNavigation).WithMany(p => p.Produtos)
-                .HasForeignKey(d => d.EncomendaItensEncomendaItensId)
-                .IsRequired(false)// <- isto diz que a FK é opcional 
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKProduto171408");
 
             entity.HasOne(d => d.OrdemProducaoOrdemProd).WithMany(p => p.Produtos)
                 .HasForeignKey(d => d.OrdemProducaoOrdemProdId)

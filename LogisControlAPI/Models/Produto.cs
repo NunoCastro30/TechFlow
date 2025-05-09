@@ -18,11 +18,6 @@ public partial class Produto
     public double Preco { get; set; }
 
     public int? OrdemProducaoOrdemProdId { get; set; }
-
-    public int? EncomendaItensEncomendaItensId { get; set; }
-
-    public virtual EncomendaItens EncomendaItensEncomendaItensNavigation { get; set; } = null!;
-
     public virtual ICollection<MateriaPrimaProduto> MateriaPrimaProdutos { get; set; } = new List<MateriaPrimaProduto>();
 
     public virtual OrdemProducao OrdemProducaoOrdemProd { get; set; } = null!;
