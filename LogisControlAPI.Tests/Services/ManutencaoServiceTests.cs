@@ -104,4 +104,125 @@ public class ManutencaoServiceTests
         Assert.NotNull(pedidoAtualizado.DataConclusao);
         telegramMock.Verify(t => t.EnviarMensagemAsync(It.Is<string>(m => m.Contains("Troca de fusível")), "Producao"), Times.Once);
     }
+
+
+    /// <summary>
+    /// Deve lançar exceção se a máquina associada não existir.
+    /// </summary>
+    [Fact]
+    public async Task CriarPedidoAsync_DeveLancarExcecao_SeMaquinaNaoExistir()
+    {
+        var ctx = GetInMemoryDbContext();
+        var telegramMock = new Mock<ITelegramService>();
+        var service = new ManutencaoService(ctx, telegramMock.Object);
+
+        var dto = new PedidoManutençãoDTO { Descricao = "Falha elétrica", MaquinaMaquinaId = 99 };
+
+        await Assert.ThrowsAsync<Exception>(() => service.CriarPedidoAsync(dto, 1));
+    }
+
+    /// <summary>
+    /// Não deve alterar o estado do pedido se o registo não estiver "Resolvido".
+    /// </summary>
+    [Fact]
+    public async Task AtualizarEstadoPedidoSeRegistoResolvido_NaoDeveAtualizar_SeEstadoNaoForResolvido()
+    {
+        var ctx = GetInMemoryDbContext();
+        ctx.Maquinas.Add(new Maquina { MaquinaId = 1, Nome = "Fresa" });
+
+        var pedido = new PedidoManutencao
+        {
+            PedidoManutId = 1,
+            Estado = "Em Espera",
+            MaquinaMaquinaId = 1,
+            Descricao = "Manutenção preventiva"
+        };
+
+        ctx.PedidosManutencao.Add(pedido);
+        ctx.RegistosManutencao.Add(new RegistoManutencao
+        {
+            RegistoManutencaoId = 200,
+            Estado = "Em Curso", // <--- Não é "Resolvido"
+            Descricao = "Inspeção inicial",
+            PedidoManutencaoPedidoManut = pedido
+        });
+
+        await ctx.SaveChangesAsync();
+
+        var telegramMock = new Mock<ITelegramService>();
+        var service = new ManutencaoService(ctx, telegramMock.Object);
+
+        await service.AtualizarEstadoPedidoSeRegistoResolvido(200);
+
+        var pedidoVerificado = await ctx.PedidosManutencao.FindAsync(1);
+        Assert.Equal("Em Espera", pedidoVerificado.Estado); // Não deve mudar
+        Assert.Null(pedidoVerificado.DataConclusao);
+        telegramMock.Verify(t => t.EnviarMensagemAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Deve lançar exceção se a descrição estiver vazia ou inválida.
+    /// </summary>
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task CriarPedidoAsync_DeveLancarExcecao_SeDescricaoInvalida(string descricaoInvalida)
+    {
+        var ctx = GetInMemoryDbContext();
+        ctx.Maquinas.Add(new Maquina { MaquinaId = 1, Nome = "Prensa Hidráulica" });
+        await ctx.SaveChangesAsync();
+
+        var telegramMock = new Mock<ITelegramService>();
+        var service = new ManutencaoService(ctx, telegramMock.Object);
+
+        var dto = new PedidoManutençãoDTO
+        {
+            MaquinaMaquinaId = 1,
+            Descricao = descricaoInvalida
+        };
+
+        var excecao = await Assert.ThrowsAsync<Exception>(() => service.CriarPedidoAsync(dto, 1));
+        Assert.Equal("A descrição do pedido é obrigatória.", excecao.Message);
+    }
+
+    [Fact]
+    public async Task AtualizarEstadoPedidoSeRegistoResolvido_DeveIgnorarRegistoComPedidoNulo()
+    {
+        var ctx = GetInMemoryDbContext();
+        ctx.RegistosManutencao.Add(new RegistoManutencao
+        {
+            RegistoManutencaoId = 20,
+            Estado = "Resolvido",
+            Descricao = "Nada feito",
+            PedidoManutencaoPedidoManut = null
+        });
+        await ctx.SaveChangesAsync();
+
+        var service = new ManutencaoService(ctx, new Mock<ITelegramService>().Object);
+
+        await Assert.ThrowsAsync<Exception>(() => service.AtualizarEstadoPedidoSeRegistoResolvido(20));
+    }
+
+    /// <summary>
+    /// Deve lançar exceção se tentar inserir uma máquina sem nome (campo obrigatório).
+    /// </summary>
+    [Fact]
+    public async Task CriarMaquina_DeveLancarExcecao_SeNomeForNulo()
+    {
+        // Arrange
+        var ctx = GetInMemoryDbContext();
+
+        var maquinaInvalida = new Maquina
+        {
+            MaquinaId = 1,
+            Nome = null // Campo obrigatório ausente
+        };
+
+        ctx.Maquinas.Add(maquinaInvalida);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<DbUpdateException>(() => ctx.SaveChangesAsync());
+    }
+
+
 }

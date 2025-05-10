@@ -92,7 +92,12 @@ namespace LogisControlAPI.Controllers
                 _context.EncomendasCliente.Add(novaEncomenda);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, "Encomenda criada com sucesso.");
+                // Devolver o ID da encomenda criada para o frontend
+                return CreatedAtAction(nameof(CriarEncomendaCliente), new { id = novaEncomenda.EncomendaClienteId }, new
+                {
+                    mensagem = "Encomenda criada com sucesso.",
+                    encomendaClienteId = novaEncomenda.EncomendaClienteId
+                });
             }
             catch (Exception ex)
             {
