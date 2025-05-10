@@ -50,6 +50,16 @@ namespace LogisControlAPI.Services
         public async Task CriarPedidoAsync(PedidoManutençãoDTO dto, int utilizadorId)
         {
 
+            if (string.IsNullOrWhiteSpace(dto.Descricao))
+                throw new Exception("A descrição do pedido é obrigatória.");
+
+
+            var maquina = await _context.Maquinas.FindAsync(dto.MaquinaMaquinaId);
+            if (maquina == null)
+                throw new Exception("Máquina não encontrada.");
+
+          
+
             var pedido = new PedidoManutencao
             {
                 Descricao = dto.Descricao,
@@ -64,7 +74,7 @@ namespace LogisControlAPI.Services
             await _context.SaveChangesAsync();
 
             // Obter o nome da máquina
-            var maquina = await _context.Maquinas.FindAsync(dto.MaquinaMaquinaId);
+            maquina = await _context.Maquinas.FindAsync(dto.MaquinaMaquinaId);
             var nomeMaquina = maquina?.Nome ?? "Desconhecida";
 
             var mensagem = $"📢 Novo Pedido de Manutenção\nID: {pedido.PedidoManutId}\nMáquina: {nomeMaquina}\nDescrição: {pedido.Descricao}";

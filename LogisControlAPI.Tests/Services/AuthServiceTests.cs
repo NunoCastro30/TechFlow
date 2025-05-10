@@ -96,4 +96,43 @@ public class AuthServiceTests
 
         Assert.Contains(token.Claims, c => c.Value == role);
     }
+
+    /// <summary>
+    /// Verifica se o token contém exatamente 3 partes separadas por ponto (JWT formatado).
+    /// </summary>
+    [Fact]
+    public void GenerateToken_DeveTerFormatoJwtComTresPartes()
+    {
+        var service = new AuthService();
+        var token = service.GenerateToken(1, 1234, "Gestor");
+
+        var partes = token.Split('.');
+        Assert.Equal(3, partes.Length);
+    }
+
+    /// <summary>
+    /// Garante que o algoritmo usado na assinatura do token é HS256 (HMAC-SHA256).
+    /// </summary>
+    [Fact]
+    public void GenerateToken_DeveUsarAlgoritmoHS256()
+    {
+        var service = new AuthService();
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(service.GenerateToken(1, 1234, "Gestor"));
+
+        Assert.Equal("HS256", token.Header.Alg);
+    }
+
+    /// <summary>
+    /// Valida que o token não define issuer nem audience, ou que correspondem aos esperados.
+    /// </summary>
+    [Fact]
+    public void GenerateToken_DeveTerIssuerEAudienceNulos()
+    {
+        var service = new AuthService();
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(service.GenerateToken(1, 1234, "Gestor"));
+
+        Assert.True(string.IsNullOrEmpty(token.Issuer));
+        Assert.Empty(token.Audiences);
+    }
+
 }

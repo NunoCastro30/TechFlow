@@ -11,6 +11,11 @@ using LogisControlAPI.Auxiliar;
 
 public class TelegramServiceTests
 {
+
+    /// <summary>
+    /// Testa o envio de uma mensagem para o Telegram.
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task EnviarMensagemAsync_DeveEnviarComSucesso()
     {
@@ -45,6 +50,11 @@ public class TelegramServiceTests
         Assert.Null(exception); // Espera não lançar exceção
     }
 
+
+    /// <summary>
+    /// Testa o envio de uma mensagem para o Telegram com um tipo inválido.
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     public async Task EnviarMensagemAsync_DeveLancarExcecao_SeTipoNaoExistir()
     {

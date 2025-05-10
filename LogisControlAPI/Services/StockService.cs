@@ -36,6 +36,10 @@ namespace LogisControlAPI.Services
         /// <param name="quantidadeAnterior">Quantidade anterior da matéria-prima.</param>
         public async Task VerificarStockCritico(int materiaPrimaId, int quantidadeAnterior)
         {
+
+            if (materiaPrimaId <= 0)
+                throw new ArgumentException("O ID da matéria-prima deve ser maior que zero.");
+
             var materia = await _context.MateriasPrimas.FindAsync(materiaPrimaId);
             if (materia == null)
                 return;

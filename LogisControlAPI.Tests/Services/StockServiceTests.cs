@@ -143,4 +143,93 @@ public class StockServiceTests
             Times.Never()
         );
     }
+
+    /// <summary>
+    /// Garante que uma exceção é lançada se o ID da matéria-prima for inválido (0 ou negativo).
+    /// </summary>
+    /// <param name="idInvalido"></param>
+    /// <returns></returns>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public async Task VerificarStockCritico_DeveLancarExcecao_SeIdInvalido(int idInvalido)
+    {
+        var ctx = GetInMemoryDbContext();
+        var notificador = new Mock<NotificationService>(null as object);
+        var service = new StockService(ctx, notificador.Object);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.VerificarStockCritico(idInvalido, 10));
+    }
+
+    /// <summary>
+    /// Garante que uma notificação não é enviada se a quantidade atual for igual à anterior.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async Task VerificarStockCritico_NaoEnviaNotificacao_SeValorNaoAlterou()
+    {
+        var ctx = GetInMemoryDbContext();
+        ctx.MateriasPrimas.Add(new MateriaPrima
+        {
+            MateriaPrimaId = 5,
+            Nome = "Níquel",
+            Quantidade = 9,
+            Categoria = "Metais",
+            CodInterno = "NI001",
+            Descricao = "Níquel refinado"
+        });
+        await ctx.SaveChangesAsync();
+
+        var notificacoes = new Mock<NotificationService>(null as object);
+        var service = new StockService(ctx, notificacoes.Object);
+
+        await service.VerificarStockCritico(5, 9); // Quantidade igual
+
+        notificacoes.Verify(n => n.NotificarAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+    }
+
+
+    /// <summary>
+    /// Garante que nenhuma notificação é enviada se a quantidade atual for >= 10 ou se não houve redução.
+    /// </summary>
+    /// <param name="materiaPrimaId"></param>
+    /// <param name="quantidadeAnterior"></param>
+    /// <returns></returns>
+    [Theory]
+    [InlineData(999, 20)] // matéria-prima inexistente
+    [InlineData(1, 12)]   // stock >= 10
+    [InlineData(1, 3)]    // stock < 10 mas não diminuiu
+    public async Task VerificarStockCritico_NaoFazNada_SeCondicoesInvalidas(int materiaPrimaId, int quantidadeAnterior)
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+
+        if (materiaPrimaId == 1)
+        {
+            context.MateriasPrimas.Add(new MateriaPrima
+            {
+                MateriaPrimaId = 1,
+                Nome = "Teste",
+                Quantidade = quantidadeAnterior >= 10 ? 12 : 5,
+                Categoria = "Geral",
+                CodInterno = "MAT001",
+                Descricao = "Teste"
+            });
+            await context.SaveChangesAsync();
+        }
+
+        var notificadorMock = new Mock<NotificationService>(null as object);
+        var service = new StockService(context, notificadorMock.Object);
+
+        // Act
+        await service.VerificarStockCritico(materiaPrimaId, quantidadeAnterior);
+
+        // Assert
+        notificadorMock.Verify(
+            n => n.NotificarAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never
+        );
+    }
+
+
 }
