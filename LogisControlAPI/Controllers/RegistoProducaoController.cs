@@ -18,11 +18,6 @@ namespace LogisControlAPI.Controllers
         private readonly ProducaoService _producaoService;
 
         /// <summary>
-        /// Email fixo (temporário) do responsável de stock.
-        /// </summary>
-        private const string EmailResponsavelStock = "nunofernandescastro@gmail.com";
-
-        /// <summary>
         /// Construtor do controlador que injeta o contexto da base de dados.
         /// </summary>
         /// <param name="context">Instância do contexto da base de dados.</param>

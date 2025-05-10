@@ -45,6 +45,7 @@ namespace LogisControlAPI.Controllers
                     {
                         EncomendaItensId = e.EncomendaItensId,
                         Quantidade = e.Quantidade,
+                        ProdutoId = e.ProdutoId,
                         EncomendaClienteEncomendaClienteId = e.EncomendaClienteEncomendaClienteId
                     })
                     .ToListAsync();
@@ -104,27 +105,27 @@ namespace LogisControlAPI.Controllers
         /// <response code="400">Dados inválidos.</response>
         /// <response code="500">Erro interno ao criar o item.</response>
         [HttpPost("CriarEncomendaItem")]
-        public async Task<ActionResult> CriarEncomendaItem([FromBody] EncomendaItensDTO novoItemDto)
+        public async Task<IActionResult> CriarEncomendaItem([FromBody] EncomendaItensDTO novoItemDto)
         {
             try
             {
                 var novoItem = new EncomendaItens
                 {
                     Quantidade = novoItemDto.Quantidade,
+                    ProdutoId = novoItemDto.ProdutoId,
                     EncomendaClienteEncomendaClienteId = novoItemDto.EncomendaClienteEncomendaClienteId
                 };
 
                 _context.EncomendasItem.Add(novoItem);
                 await _context.SaveChangesAsync();
 
-                // ✅ Chamar verificação de stock
                 await _verificacaoStockService.VerificarStockParaEncomenda(novoItem.EncomendaClienteEncomendaClienteId);
 
-                return StatusCode(201, "Item de encomenda criado com sucesso e stock verificado.");
+                return StatusCode(201, "Item criado e stock verificado.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno ao criar item de encomenda: {ex.Message}");
+                return StatusCode(500, $"Erro: {ex.Message}");
             }
         }
         #endregion

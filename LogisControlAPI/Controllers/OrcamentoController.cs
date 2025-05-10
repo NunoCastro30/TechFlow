@@ -3,6 +3,7 @@ using LogisControlAPI.Models;
 using LogisControlAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using LogisControlAPI.Services;
 
 namespace LogisControlAPI.Controllers
 {
@@ -11,7 +12,13 @@ namespace LogisControlAPI.Controllers
     public class OrcamentoController : ControllerBase
     {
         private readonly LogisControlContext _ctx;
-        public OrcamentoController(LogisControlContext ctx) => _ctx = ctx;
+        private readonly ComprasService _comprasService;
+
+        public OrcamentoController(LogisControlContext ctx, ComprasService comprasService)
+        {
+            _ctx = ctx;
+            _comprasService = comprasService;
+        }
 
         /// <summary>
         /// 1) Fornecedor cria um orçamento (cabeçalho) para um pedido de cotação.
@@ -52,25 +59,65 @@ namespace LogisControlAPI.Controllers
         [ProducesResponseType(201)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> AdicionarItem(
-    [FromRoute] int orcId,
-    [FromBody] CriarOrcamentoItemDTO dto)
+            [FromRoute] int orcId,
+            [FromBody] CriarOrcamentoItemDTO dto)
         {
-            if (!await _ctx.Orcamentos.AnyAsync(o => o.OrcamentoID == orcId))
-                return NotFound("Orçamento não encontrado.");
-
-            var item = new OrcamentoItem
+            try
             {
-                OrcamentoOrcamentoID = orcId,
-                MateriaPrimaID = dto.MateriaPrimaID,
-                Quantidade = dto.Quantidade,
-                PrecoUnit = dto.PrecoUnit,
-                PrazoEntrega = dto.PrazoEntrega
-            };
+                if (!await _ctx.Orcamentos.AnyAsync(o => o.OrcamentoID == orcId))
+                    return NotFound("Orçamento não encontrado.");
 
-            _ctx.OrcamentosItem.Add(item);
-            await _ctx.SaveChangesAsync();
+                var item = new OrcamentoItem
+                {
+                    OrcamentoOrcamentoID = orcId,
+                    MateriaPrimaID = dto.MateriaPrimaID,
+                    Quantidade = dto.Quantidade,
+                    PrecoUnit = dto.PrecoUnit,
+                    PrazoEntrega = dto.PrazoEntrega
+                };
 
-            return CreatedAtAction(nameof(ObterOrcamento), new { orcId }, new { item.OrcamentoItemID });
+                _ctx.OrcamentosItem.Add(item);
+
+                // Atualiza o estado do orçamento
+                var orcamento = await _ctx.Orcamentos
+        .Include(o => o.PedidoCotacaoPedidoCotacao)
+        .FirstOrDefaultAsync(o => o.OrcamentoID == orcId);
+
+                if (orcamento == null)
+                    return NotFound("Orçamento não encontrado.");
+
+                orcamento.Estado = "Respondido";
+
+                var cotacao = orcamento.PedidoCotacaoPedidoCotacao;
+                if (cotacao != null)
+                {
+                    cotacao.Estado = "ComOrcamentos";
+
+                    var pedidoCompra = await _ctx.PedidosCompra
+                        .FirstOrDefaultAsync(p => p.PedidoCompraId == cotacao.PedidoCompraId);
+
+                    if (pedidoCompra != null && pedidoCompra.Estado == "EmCotacao")
+                    {
+                        pedidoCompra.Estado = "ComOrcamentos";
+                    }
+                }
+
+                Console.WriteLine("Orçamento recebido:");
+                Console.WriteLine($"OrcamentoID: {orcId}");
+                Console.WriteLine($"MateriaPrimaID: {dto.MateriaPrimaID}");
+                Console.WriteLine($"PedidoCotacaoID: {orcamento.PedidoCotacaoPedidoCotacaoID}");
+                Console.WriteLine($"Cotacao FK: {(orcamento.PedidoCotacaoPedidoCotacao != null ? "ok" : "null")}");
+
+                await _ctx.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(ObterOrcamento), new { orcId }, new { item.OrcamentoItemID });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERRO INTERNO:");
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, "Erro interno: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -83,14 +130,13 @@ namespace LogisControlAPI.Controllers
         {
             var orc = await _ctx.Orcamentos
                 .Include(o => o.OrcamentoItems)
-                  .ThenInclude(it => it.MateriaPrima)
+                    .ThenInclude(it => it.MateriaPrima)
                 .Include(o => o.PedidoCotacaoPedidoCotacao)
                 .FirstOrDefaultAsync(o => o.OrcamentoID == orcId);
 
             if (orc == null)
                 return NotFound();
 
-            // 3.1) mapear para DTO de detalhe
             var detalhe = new OrcamentoDetalheDTO
             {
                 OrcamentoID = orc.OrcamentoID,
@@ -111,42 +157,30 @@ namespace LogisControlAPI.Controllers
             return Ok(detalhe);
         }
 
+
         /// <summary>
         /// Aceita um orçamento e recusa todos os outros do mesmo pedido de cotação.
         /// </summary>
-        [HttpPost("{orcId:int}/aceitar")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
+        [HttpPost("{orcId:int}/aceitar")]
         public async Task<IActionResult> AceitarOrcamento([FromRoute] int orcId)
         {
-            // 1) Carrega orçamento e pedido associado
-            var orcamento = await _ctx.Orcamentos
-                .Include(o => o.PedidoCotacaoPedidoCotacao)
-                .Where(o => o.OrcamentoID == orcId)
-                .FirstOrDefaultAsync();
-
-            if (orcamento == null)
+            try
+            {
+                var notaId = await _comprasService.AceitarOrcamentoAsync(orcId);
+                return Ok(new { Mensagem = "Orçamento aceite com sucesso", NotaEncomendaId = notaId });
+            }
+            catch (KeyNotFoundException)
+            {
                 return NotFound("Orçamento não encontrado.");
-
-            var pedidoCotacaoId = orcamento.PedidoCotacaoPedidoCotacaoID;
-
-            // 2) Vai buscar todos os orçamentos do mesmo pedido
-            var todosOrcamentos = await _ctx.Orcamentos
-                .Where(o => o.PedidoCotacaoPedidoCotacaoID == pedidoCotacaoId)
-                .ToListAsync();
-
-            // 3) Marca todos como recusado, exceto o atual
-            foreach (var o in todosOrcamentos)
-                o.Estado = (o.OrcamentoID == orcId ? "Aceite" : "Recusado");
-
-            // 4) Atualiza estado do PedidoCotacao
-            var pedidoCotacao = orcamento.PedidoCotacaoPedidoCotacao;
-            pedidoCotacao.Estado = "Finalizado";
-
-            // 5) Guarda alterações
-            await _ctx.SaveChangesAsync();
-
-            return Ok("Orçamento aceite com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERRO AO ACEITAR ORÇAMENTO:");
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, "Erro interno ao aceitar orçamento.");
+            }
         }
     }
 }

@@ -24,15 +24,36 @@ namespace LogisControlAPI.Services
             _emailSender = emailSender;
         }
 
-        /// <summary>
-        /// Lista todos os pedidos de compra filtrados por estado.
+        /// Lista todos os pedidos de compra conforme o estado especificado.
         /// </summary>
+        /// <param name="estado">Estado atual do pedido (Aberto, EmCotacao, etc.)</param>
+        /// <returns>Lista de pedidos de compra no estado indicado.</returns>
         public async Task<List<PedidoCompraDTO>> ListarPedidosPorEstadoAsync(string estado)
         {
-            return await _ctx.PedidosCompra
-                .AsNoTracking()
+            var query = _ctx.PedidosCompra
                 .Include(p => p.UtilizadorUtilizador)
-                .Where(p => p.Estado == estado)
+                .AsQueryable();
+
+            switch (estado)
+            {
+                case "Aberto":
+                    query = query.Where(p => p.Estado == "Aberto");
+                    break;
+
+                case "EmCotacao":
+                    query = query.Where(p => p.Estado == "EmCotacao");
+                    break;
+
+                case "ComOrcamentos":
+                    query = query.Where(p => p.Estado == "ComOrcamentos");
+                    break;
+
+                case "Concluido":
+                    query = query.Where(p => p.Estado == "Concluido");
+                    break;
+            }
+
+            return await query
                 .Select(p => new PedidoCompraDTO
                 {
                     PedidoCompraId = p.PedidoCompraId,
@@ -136,6 +157,7 @@ namespace LogisControlAPI.Services
             var token = Guid.NewGuid().ToString("N");
             var cotacao = new PedidoCotacao
             {
+                PedidoCompraId = pedido.PedidoCompraId,
                 Descricao = pedido.Descricao,
                 Data = DateTime.UtcNow,
                 Estado = "Emitido",
@@ -144,6 +166,7 @@ namespace LogisControlAPI.Services
             };
             _ctx.PedidosCotacao.Add(cotacao);
             await _ctx.SaveChangesAsync();
+            Console.WriteLine($"Cotação criada: ID = {cotacao.PedidoCotacaoId}, FK Pedido = {cotacao.PedidoCompraId}, Fornecedor = {cotacao.FornecedorId}");
 
             // 5) Enviar email ao fornecedor
             var fornecedor = await _ctx.Fornecedores.FindAsync(fornecedorId);
@@ -181,8 +204,10 @@ namespace LogisControlAPI.Services
         {
             var cot = await _ctx.PedidosCotacao
                 .AsNoTracking()
+                .Include(c => c.Fornecedor) // <-- adicionar isto
                 .Include(c => c.Orcamentos)
                     .ThenInclude(o => o.OrcamentoItems)
+                    .ThenInclude(i => i.MateriaPrima)
                 .FirstOrDefaultAsync(c => c.PedidoCotacaoId == cotacaoId);
 
             if (cot == null)
@@ -197,7 +222,8 @@ namespace LogisControlAPI.Services
                     Data = cot.Data,
                     Estado = cot.Estado,
                     FornecedorID = cot.FornecedorId,
-                    TokenAcesso = cot.TokenAcesso
+                    TokenAcesso = cot.TokenAcesso,
+                    FornecedorNome = cot.Fornecedor.Nome
                 },
                 Orcamentos = cot.Orcamentos.Select(o => new OrcamentoDTO
                 {
@@ -215,7 +241,8 @@ namespace LogisControlAPI.Services
                         MateriaPrimaID = i.MateriaPrimaID,
                         Quantidade = i.Quantidade,
                         PrecoUnit = i.PrecoUnit,
-                        PrazoEntrega = i.PrazoEntrega ?? 0
+                        PrazoEntrega = i.PrazoEntrega ?? 0,
+                        MateriaPrimaNome = i.MateriaPrima?.Nome
                     })
                     .ToList()
             };
@@ -237,25 +264,32 @@ namespace LogisControlAPI.Services
             if (cot == null)
                 throw new KeyNotFoundException();
 
-            if (cot.TokenAcesso != token)
+            if (!string.Equals(cot.TokenAcesso.Trim(), token.Trim(), StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException();
 
             Console.WriteLine("Token válido. Cotação encontrada.");
 
-            // 2) Recolher o pedido de compra com base na descrição
+            // 2) Buscar pedido de compra com itens e matéria-prima
             var pedidoCompra = await _ctx.PedidosCompra
                 .Include(p => p.PedidoCompraItems)
                     .ThenInclude(i => i.MateriaPrima)
-                .Where(p => p.Descricao == cot.Descricao)
-                .OrderByDescending(p => p.DataAbertura)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.PedidoCompraId == cot.PedidoCompraId);
 
             if (pedidoCompra == null)
+            {
+                Console.WriteLine("Pedido de compra não encontrado!");
                 throw new Exception("Pedido de compra correspondente não encontrado.");
+            }
 
             Console.WriteLine("Pedido de compra correspondente encontrado.");
+            Console.WriteLine($"Total de itens do pedido: {pedidoCompra.PedidoCompraItems.Count}");
 
-            // 3) Construir DTO
+            foreach (var item in pedidoCompra.PedidoCompraItems)
+            {
+                Console.WriteLine($"Item: {item.MateriaPrimaId} - Qtd: {item.Quantidade} - Nome: {item.MateriaPrima?.Nome}");
+            }
+
+            // 3) Construir DTO de resposta
             return new PedidoCotacaoDetalhadoDTO
             {
                 Header = new PedidoCotacaoDTO
@@ -265,7 +299,8 @@ namespace LogisControlAPI.Services
                     Data = cot.Data,
                     Estado = cot.Estado,
                     FornecedorID = cot.FornecedorId,
-                    TokenAcesso = cot.TokenAcesso
+                    TokenAcesso = cot.TokenAcesso,
+                    FornecedorNome = cot.Fornecedor?.Nome
                 },
                 Orcamentos = cot.Orcamentos.Select(o => new OrcamentoDTO
                 {
@@ -274,33 +309,63 @@ namespace LogisControlAPI.Services
                     Data = o.Data,
                     Estado = o.Estado
                 }).ToList(),
-                Itens = pedidoCompra.PedidoCompraItems.Select(i => new OrcamentoItemDTO
-                {
-                    MateriaPrimaID = i.MateriaPrimaId,
-                    MateriaPrimaNome = i.MateriaPrima.Nome,
-                    Quantidade = i.Quantidade,
-                    PrecoUnit = 0,
-                    PrazoEntrega = 0
-                }).ToList()
+                Itens = pedidoCompra.PedidoCompraItems
+                    .Select(i => new OrcamentoItemDTO
+                    {
+                        MateriaPrimaID = i.MateriaPrimaId,
+                        MateriaPrimaNome = i.MateriaPrima?.Nome ?? "(sem nome)",
+                        Quantidade = i.Quantidade,
+                        PrecoUnit = 0,
+                        PrazoEntrega = 0
+                    }).ToList()
             };
+        }
+
+        public async Task<PedidoCotacao?> ObterCotacaoPorPedidoCompraAsync(int pedidoCompraId)
+        {
+            return await _ctx.PedidosCotacao
+                .AsNoTracking()
+                .Where(c => c.PedidoCompraId == pedidoCompraId)
+                .OrderByDescending(c => c.Data) // caso existam várias
+                .FirstOrDefaultAsync();
         }
 
         public async Task<int> AceitarOrcamentoAsync(int orcamentoId)
         {
-            // 1) Carrega orçamento + itens
+            // 1) Carrega orçamento com itens e cotação associada
             var orc = await _ctx.Orcamentos
                 .Include(o => o.OrcamentoItems)
+                .Include(o => o.PedidoCotacaoPedidoCotacao)
+                    .ThenInclude(pc => pc.PedidoCompra)
                 .FirstOrDefaultAsync(o => o.OrcamentoID == orcamentoId);
-            if (orc == null) throw new KeyNotFoundException();
 
-            // 2) Recusa todos os irmãos
-            var orcamentosDoPedido = _ctx.Orcamentos
-            .Where(o => o.PedidoCotacaoPedidoCotacaoID == orc.PedidoCotacaoPedidoCotacaoID);
+            if (orc == null)
+                throw new KeyNotFoundException("Orçamento não encontrado.");
 
-            foreach (var orçamento in orcamentosDoPedido)
-                orçamento.Estado = (orçamento.OrcamentoID == orcamentoId ? "Aceite" : "Recusado");
+            var pedidoCotacao = orc.PedidoCotacaoPedidoCotacao;
+            if (pedidoCotacao == null)
+                throw new InvalidOperationException("Orçamento não está associado a uma cotação.");
 
-            // 3) Cria NotaEncomenda
+            // 2) Recusar todos os outros orçamentos do mesmo pedido de cotação
+            var todosOrcamentos = await _ctx.Orcamentos
+                .Where(o => o.PedidoCotacaoPedidoCotacaoID == pedidoCotacao.PedidoCotacaoId)
+                .ToListAsync();
+
+            foreach (var o in todosOrcamentos)
+                o.Estado = (o.OrcamentoID == orcamentoId ? "Aceite" : "Recusado");
+
+            // 3) Atualizar o estado da cotação
+            pedidoCotacao.Estado = "Finalizado";
+
+            // 4) Atualizar o estado do pedido de compra
+            var pedidoCompra = pedidoCotacao.PedidoCompra;
+            if (pedidoCompra != null)
+            {
+                pedidoCompra.Estado = "Concluido";
+                pedidoCompra.DataConclusao = DateTime.UtcNow;
+            }
+
+            // 5) Criar Nota de Encomenda
             var nota = new NotaEncomenda
             {
                 DataEmissao = DateTime.UtcNow,
@@ -311,21 +376,24 @@ namespace LogisControlAPI.Services
             _ctx.NotasEncomenda.Add(nota);
             await _ctx.SaveChangesAsync();
 
-            // 4) Cria itens de nota
-            foreach (var i in orc.OrcamentoItems)
+            // 6) Criar itens da nota
+            foreach (var item in orc.OrcamentoItems)
             {
                 _ctx.NotasEncomendaItem.Add(new NotaEncomendaItens
                 {
                     NotaEncomendaId = nota.NotaEncomendaId,
-                    MateriaPrimaId = i.MateriaPrimaID,
-                    Quantidade = i.Quantidade,
-                    PrecoUnit = i.PrecoUnit
+                    MateriaPrimaId = item.MateriaPrimaID,
+                    Quantidade = item.Quantidade,
+                    PrecoUnit = item.PrecoUnit
                 });
             }
+
+            // 7) Persistir tudo
             await _ctx.SaveChangesAsync();
 
             return nota.NotaEncomendaId;
         }
+
 
         public async Task<NotaEncomendaDetalheDTO> ObterNotaEncomendaAsync(int id)
         {
@@ -349,6 +417,255 @@ namespace LogisControlAPI.Services
                     PrecoUnit = it.PrecoUnit
                 }).ToList()
             };
+        }
+
+        public async Task<NotaEncomendaDetalheDTO?> ObterNotaPorOrcamentoAsync(int orcamentoId)
+        {
+            var nota = await _ctx.NotasEncomenda
+                .Include(n => n.Itens)
+                .ThenInclude(i => i.MateriaPrima)
+                .FirstOrDefaultAsync(n => n.OrcamentoId == orcamentoId);
+
+            if (nota == null)
+                return null;
+
+            return new NotaEncomendaDetalheDTO
+            {
+                NotaEncomendaId = nota.NotaEncomendaId,
+                DataEmissao = nota.DataEmissao,
+                Estado = nota.Estado,
+                ValorTotal = nota.ValorTotal,
+                OrcamentoId = nota.OrcamentoId,
+                Itens = nota.Itens.Select(i => new NotaEncomendaItemDTO
+                {
+                    MateriaPrimaId = i.MateriaPrimaId,
+                    MateriaPrimaNome = i.MateriaPrima.Nome,
+                    Quantidade = i.Quantidade,
+                    PrecoUnit = i.PrecoUnit
+                }).ToList()
+            };
+        }
+        public async Task<bool> ReceberNotaEncomendaAsync(int id, bool emBoasCondicoes)
+        {
+            var nota = await _ctx.NotasEncomenda
+                .Include(n => n.Itens)
+                .Include(n => n.Orcamento)
+                    .ThenInclude(o => o.PedidoCotacaoPedidoCotacao)
+                    .ThenInclude(pc => pc.PedidoCompra)
+                .FirstOrDefaultAsync(n => n.NotaEncomendaId == id);
+
+            if (nota == null)
+                throw new KeyNotFoundException();
+
+            if (nota.Estado != "Pendente")
+                throw new InvalidOperationException("Nota já foi processada.");
+
+            if (emBoasCondicoes)
+            {
+                nota.Estado = "Recebida";
+
+                foreach (var item in nota.Itens)
+                {
+                    var materia = await _ctx.MateriasPrimas.FindAsync(item.MateriaPrimaId);
+                    if (materia != null)
+                        materia.Quantidade += item.Quantidade;
+                }
+
+                var pedido = nota.Orcamento?.PedidoCotacaoPedidoCotacao?.PedidoCompra;
+                if (pedido != null && pedido.Estado != "Recebido")
+                {
+                    pedido.Estado = "Recebido";
+                    pedido.DataConclusao = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                //Garante que não envia o email mais do que uma vez
+                if (nota.Estado == "Reclamada" || nota.Estado == "Reentregue")
+                    throw new InvalidOperationException("Esta nota já foi reclamada ou reenviada anteriormente.");
+
+                nota.Estado = "Reclamada";
+                await EnviarEmailReclamacaoFornecedorAsync(nota.NotaEncomendaId);
+            }
+
+            await _ctx.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<NotaEncomendaDetalheDTO>> ListarNotasPendentesPorMateriaAsync(int materiaPrimaId)
+        {
+            var notas = await _ctx.NotasEncomenda
+                .Where(n => n.Estado == "Pendente" && n.Itens.Any(i => i.MateriaPrimaId == materiaPrimaId))
+                .Include(n => n.Itens)
+                .ThenInclude(i => i.MateriaPrima)
+                .ToListAsync();
+
+            return notas.Select(n => new NotaEncomendaDetalheDTO
+            {
+                NotaEncomendaId = n.NotaEncomendaId,
+                DataEmissao = n.DataEmissao,
+                Estado = n.Estado,
+                ValorTotal = n.ValorTotal,
+                OrcamentoId = n.OrcamentoId,
+                Itens = n.Itens.Select(i => new NotaEncomendaItemDTO
+                {
+                    MateriaPrimaId = i.MateriaPrimaId,
+                    MateriaPrimaNome = i.MateriaPrima.Nome,
+                    Quantidade = i.Quantidade,
+                    PrecoUnit = i.PrecoUnit
+                }).ToList()
+            }).ToList();
+        }
+
+        public async Task<List<NotaEncomendaDetalheDTO>> ObterNotasPendentesAsync()
+        {
+            return await _ctx.NotasEncomenda
+                .Where(n => n.Estado == "Pendente")
+                .Include(n => n.Itens)
+                    .ThenInclude(i => i.MateriaPrima)
+                .Select(n => new NotaEncomendaDetalheDTO
+                {
+                    NotaEncomendaId = n.NotaEncomendaId,
+                    DataEmissao = n.DataEmissao,
+                    Estado = n.Estado,
+                    ValorTotal = n.ValorTotal,
+                    OrcamentoId = n.OrcamentoId,
+                    Itens = n.Itens.Select(i => new NotaEncomendaItemDTO
+                    {
+                        MateriaPrimaId = i.MateriaPrimaId,
+                        MateriaPrimaNome = i.MateriaPrima.Nome,
+                        Quantidade = i.Quantidade,
+                        PrecoUnit = i.PrecoUnit
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<NotaEncomendaDetalheDTO>> ObterNotasPorEstadoAsync(string estado)
+        {
+            return await _ctx.NotasEncomenda
+                .Where(n => n.Estado == estado)
+                .Include(n => n.Itens).ThenInclude(i => i.MateriaPrima)
+                .Select(n => new NotaEncomendaDetalheDTO
+                {
+                    NotaEncomendaId = n.NotaEncomendaId,
+                    DataEmissao = n.DataEmissao,
+                    Estado = n.Estado,
+                    ValorTotal = n.ValorTotal,
+                    OrcamentoId = n.OrcamentoId,
+                    Itens = n.Itens.Select(i => new NotaEncomendaItemDTO
+                    {
+                        MateriaPrimaId = i.MateriaPrimaId,
+                        MateriaPrimaNome = i.MateriaPrima.Nome,
+                        Quantidade = i.Quantidade,
+                        PrecoUnit = i.PrecoUnit
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Envia um e-mail ao fornecedor a informar que a nota de encomenda foi reclamada,
+        /// solicitando nova entrega dos materiais.
+        /// Garante que o e-mail só é enviado uma vez.
+        /// </summary>
+        /// <param name="notaId">Identificador da nota de encomenda reclamada.</param>
+        /// <returns>True se o e-mail for enviado com sucesso; False caso contrário.</returns>
+        /// <exception cref="InvalidOperationException">Se a nota não existir, não estiver reclamada ou já houver nova entrega.</exception>
+        /// <exception cref="Exception">Se o fornecedor não tiver email válido.</exception>
+        public async Task<bool> EnviarEmailReclamacaoFornecedorAsync(int notaId)
+        {
+            var nota = await _ctx.NotasEncomenda
+                .Include(n => n.Orcamento)
+                    .ThenInclude(o => o.PedidoCotacaoPedidoCotacao)
+                    .ThenInclude(pc => pc.Fornecedor)
+                .FirstOrDefaultAsync(n => n.NotaEncomendaId == notaId);
+
+            if (nota == null)
+                throw new InvalidOperationException("Nota não encontrada.");
+
+            if (nota.Estado != "Reclamada")
+                throw new InvalidOperationException("A nota não está em estado 'Reclamada'.");
+
+            // ❗ Evitar envio se já foi reenviado
+            var jaReentregue = await _ctx.NotasEncomenda
+                .AnyAsync(n => n.OrcamentoId == nota.OrcamentoId && n.Estado == "Pendente" && n.NotaEncomendaId != notaId);
+
+            if (jaReentregue)
+                throw new InvalidOperationException("Já foi registada nova entrega para esta nota.");
+
+            var fornecedor = nota.Orcamento?.PedidoCotacaoPedidoCotacao?.Fornecedor;
+            if (fornecedor == null || string.IsNullOrWhiteSpace(fornecedor.Email))
+                throw new Exception("Fornecedor não encontrado ou sem email.");
+
+            var link = $"http://localhost:5173/fornecedor/nova-entrega/{nota.NotaEncomendaId}";
+            var mensagem = $"""
+                Caro fornecedor {fornecedor.Nome},
+
+                Foi detetado um problema com a entrega da nota #{nota.NotaEncomendaId}.
+                Solicitamos nova entrega dos materiais.
+
+                Por favor, aceda ao seguinte link para confirmar a nova entrega:
+
+                {link}
+
+                Este link é exclusivo para si.
+                """;
+
+            try
+            {
+                Console.WriteLine($"A enviar e-mail para: {fornecedor.Email}");
+                await _emailSender.EnviarAsync(fornecedor.Email, "Reclamação de Entrega - Nova Ação Requerida", mensagem);
+                Console.WriteLine("Email enviado com sucesso!");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERRO AO ENVIAR EMAIL:");
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
+
+        public async Task<bool> ConfirmarNovaEntregaAsync(int notaId)
+        {
+            var notaOriginal = await _ctx.NotasEncomenda
+                .Include(n => n.Itens)
+                .FirstOrDefaultAsync(n => n.NotaEncomendaId == notaId);
+
+            if (notaOriginal == null || notaOriginal.Estado != "Reclamada")
+                throw new InvalidOperationException("Nota inválida ou não reclamada.");
+
+            // Marcar nota original como "Reclamada-Finalizada".
+            notaOriginal.Estado = "Reentregue";
+            await _ctx.SaveChangesAsync();
+
+            // Criar nova nota com os mesmos dados
+            var novaNota = new NotaEncomenda
+            {
+                DataEmissao = DateTime.UtcNow,
+                Estado = "Pendente", // para que o operador a valide
+                OrcamentoId = notaOriginal.OrcamentoId,
+                ValorTotal = notaOriginal.ValorTotal
+            };
+            _ctx.NotasEncomenda.Add(novaNota);
+            await _ctx.SaveChangesAsync();
+
+            foreach (var item in notaOriginal.Itens)
+            {
+                _ctx.NotasEncomendaItem.Add(new NotaEncomendaItens
+                {
+                    NotaEncomendaId = novaNota.NotaEncomendaId,
+                    MateriaPrimaId = item.MateriaPrimaId,
+                    Quantidade = item.Quantidade,
+                    PrecoUnit = item.PrecoUnit
+                });
+            }
+
+            await _ctx.SaveChangesAsync();
+            return true;
         }
     }
 }

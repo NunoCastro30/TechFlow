@@ -52,8 +52,7 @@ namespace LogisControlAPI.Controllers
                         Descricao = p.Descricao,
                         CodInterno = p.CodInterno,
                         Preco = p.Preco,
-                        OrdemProducaoOrdemProdId = p.OrdemProducaoOrdemProdId,
-                        EncomendaItensEncomendaItensId = p.EncomendaItensEncomendaItensId
+                        OrdemProducaoOrdemProdId = p.OrdemProducaoOrdemProdId
                     })
                     .ToListAsync();
 
