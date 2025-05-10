@@ -149,4 +149,19 @@ public class UtilizadorServiceTests
     }
 
 
+    /// <summary>
+    /// Verifica se o método HashPassword lança uma exceção quando a senha é nula ou vazia.
+    /// </summary>
+    /// <param name="senhaInvalida"></param>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void HashPassword_DeveLancarExcecao_SeSenhaForNulaOuVazia(string senhaInvalida)
+    {
+        var service = new UtilizadorService(null);
+
+        var excecao = Assert.Throws<ArgumentException>(() => service.HashPassword(senhaInvalida));
+        Assert.Equal("A password não pode ser vazia ou nula.", excecao.Message);
+    }
+
 }

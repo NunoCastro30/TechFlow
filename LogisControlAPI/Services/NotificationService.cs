@@ -23,6 +23,17 @@ namespace LogisControlAPI.Services
         /// <param name="mensagem">Corpo da mensagem.</param>
         public virtual async Task NotificarAsync(string destinatario, string assunto, string mensagem)
         {
+
+            if (string.IsNullOrWhiteSpace(destinatario))
+                throw new ArgumentException("O destinatário é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(assunto))
+                throw new ArgumentException("O assunto é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(mensagem))
+                throw new ArgumentException("A mensagem é obrigatória.");
+
+
             await _emailSender.EnviarAsync(destinatario, assunto, mensagem);
         }
     }

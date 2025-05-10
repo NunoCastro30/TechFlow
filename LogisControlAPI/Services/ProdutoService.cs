@@ -31,6 +31,20 @@ namespace LogisControlAPI.Services
         /// <exception cref="Exception">Lança exceção se ocorrer falha ao gravar na base de dados.</exception>
         public async Task CriarProdutoAsync(CriarProdutoDTO dto)
         {
+
+            if (string.IsNullOrWhiteSpace(dto.Nome))
+                throw new Exception("Nome é obrigatório.");
+
+            if (dto.Quantidade < 0)
+                throw new Exception("Quantidade do produto não pode ser negativa.");
+
+            if (string.IsNullOrWhiteSpace(dto.CodInterno))
+                throw new Exception("Código interno é obrigatório.");
+
+            if (dto.Preco < 0)
+                throw new Exception("Preço não pode ser negativo.");
+
+
             // Criar a entidade Produto a partir do DTO recebido
             var novoProduto = new Produto
             {

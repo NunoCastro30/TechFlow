@@ -103,7 +103,37 @@ namespace LogisControlAPI.Services
         /// </summary>
         public async Task<int> CriarPedidoCompraAsync(CriarPedidoCompraDTO dto)
         {
-            // 1) Cria e guarda o cabeçalho do pedido
+
+            // Validação: descrição obrigatória
+            if (string.IsNullOrWhiteSpace(dto.Descricao))
+                throw new Exception("A descrição é obrigatória.");
+
+            // Validação: verificar se o utilizador existe
+            var utilizadorExiste = await _ctx.Utilizadores.AnyAsync(u => u.UtilizadorId == dto.UtilizadorId);
+            if (!utilizadorExiste)
+                throw new Exception("Utilizador não encontrado.");
+
+            // Validação: lista de itens nula
+            if (dto.Itens == null || !dto.Itens.Any())
+                throw new Exception("É necessário adicionar pelo menos um item ao pedido.");
+
+            // Validação: quantidades inválidas
+            if (dto.Itens.Any(i => i.Quantidade <= 0))
+                throw new Exception("Todos os itens devem ter uma quantidade superior a zero.");
+
+            // Validação: verificar se todas as matérias-primas existem
+            var idsMaterias = dto.Itens.Select(i => i.MateriaPrimaId).ToList();
+            var materiasExistentes = await _ctx.MateriasPrimas
+                .Where(mp => idsMaterias.Contains(mp.MateriaPrimaId))
+                .Select(mp => mp.MateriaPrimaId)
+                .ToListAsync();
+
+            var materiasInexistentes = idsMaterias.Except(materiasExistentes).ToList();
+            if (materiasInexistentes.Any())
+                throw new Exception($"Matéria-prima(s) não encontrada(s): {string.Join(", ", materiasInexistentes)}");
+
+
+            // 1) Cria o pedido
             var pedido = new PedidoCompra
             {
                 Descricao = dto.Descricao,
@@ -667,5 +697,6 @@ namespace LogisControlAPI.Services
             await _ctx.SaveChangesAsync();
             return true;
         }
+
     }
 }

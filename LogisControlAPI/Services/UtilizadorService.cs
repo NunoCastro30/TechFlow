@@ -26,6 +26,8 @@ namespace LogisControlAPI.Services
         //Gera um hash seguro da pass
         public string HashPassword(string senha)
         {
+            if (string.IsNullOrWhiteSpace(senha))
+                throw new ArgumentException("A password não pode ser vazia ou nula.");
             return _passwordHasher.HashPassword(null, senha);
         }
 
