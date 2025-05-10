@@ -156,5 +156,3 @@ app.UseAuthorization();
 //Mapear controladores da API
 app.MapControllers();
 app.Run();
-
-

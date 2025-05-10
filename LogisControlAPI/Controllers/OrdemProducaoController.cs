@@ -24,6 +24,19 @@ namespace LogisControlAPI.Controllers
         {
             _context = context;
         }
+        [HttpGet("{ordemProducaoId}/produtos")]
+
+        public async Task<IActionResult> ObterProdutosPorOrdemProducao(int ordemProducaoId)
+        {
+            var produtos = await _context.Produtos
+                .Where(p => p.OrdemProducaoOrdemProdId == ordemProducaoId)
+                .Select(p => new {
+                    p.ProdutoId,
+                })
+                .ToListAsync();
+
+            return Ok(produtos);
+        }
 
         #region ListarOrdens
         /// <summary>

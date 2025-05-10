@@ -99,6 +99,35 @@ namespace LogisControlAPI.Controllers
         }
         #endregion
 
+        #region ObterPorOrdemId
+        /// <summary>
+        /// Obtém registos de produção por ID da ordem de produção.
+        /// </summary>
+        /// <param name="ordemId">ID da ordem de produção.</param>
+        /// <returns>Lista de registos da ordem.</returns>
+        [HttpGet("ObterRegistosPorOrdemId/{ordemId}")]
+        public async Task<ActionResult<IEnumerable<RegistoProducaoDTO>>> GetByOrdemId(int ordemId)
+        {
+            var registos = await _context.RegistosProducao
+                .Include(r => r.ProdutoProduto)
+                .Include(r => r.UtilizadorUtilizador)
+                .Where(r => r.OrdemProducaoOrdemProdId == ordemId)
+                .Select(r => new RegistoProducaoDTO
+                {
+                    RegistoProducaoId = r.RegistoProducaoId,
+                    Estado = r.Estado,
+                    DataProducao = r.DataProducao,
+                    Observacoes = r.Observacoes,
+                    NomeProduto = r.ProdutoProduto.Nome,
+                    NomeUtilizador = r.UtilizadorUtilizador.PrimeiroNome + " " + r.UtilizadorUtilizador.Sobrenome,
+                    OrdemProducaoOrdemProdId = r.OrdemProducaoOrdemProdId
+                })
+                .ToListAsync();
+
+            return Ok(registos);
+        }
+        #endregion
+
         #region CriarRegisto
         /// <summary>
         /// Cria um novo registo de produção.
@@ -109,12 +138,16 @@ namespace LogisControlAPI.Controllers
         [HttpPost("CriarRegistoProducao")]
         public async Task<ActionResult<RegistoProducaoDTO>> Create([FromBody] RegistoProducaoCreateDTO dto)
         {
+            var idClaim = User.FindFirst("id")?.Value;
+            if (string.IsNullOrEmpty(idClaim) || !int.TryParse(idClaim, out int utilizadorId))
+                return Unauthorized("Não foi possível identificar o utilizador.");
+
             var registo = new RegistoProducao
             {
                 Estado = dto.Estado,
-                DataProducao = dto.DataProducao,
+                DataProducao = DateTime.Now,
                 Observacoes = dto.Observacoes,
-                UtilizadorUtilizadorId = dto.UtilizadorUtilizadorId,
+                UtilizadorUtilizadorId = utilizadorId,
                 ProdutoProdutoId = dto.ProdutoProdutoId,
                 OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId
             };
@@ -122,9 +155,9 @@ namespace LogisControlAPI.Controllers
             _context.RegistosProducao.Add(registo);
             await _context.SaveChangesAsync();
 
-            // Carregar dados adicionais para montar DTO de leitura
+            // Carrega dados relacionados
             var produto = await _context.Produtos.FindAsync(dto.ProdutoProdutoId);
-            var utilizador = await _context.Utilizadores.FindAsync(dto.UtilizadorUtilizadorId);
+            var utilizador = await _context.Utilizadores.FindAsync(utilizadorId);
 
             var registoDTO = new RegistoProducaoDTO
             {
@@ -137,7 +170,10 @@ namespace LogisControlAPI.Controllers
                 OrdemProducaoOrdemProdId = registo.OrdemProducaoOrdemProdId
             };
 
+            await _producaoService.AtualizarEstadoEObservacoesAsync(registo.RegistoProducaoId, registo.Estado, registo.Observacoes);
+
             return CreatedAtAction(nameof(GetById), new { id = registo.RegistoProducaoId }, registoDTO);
+
         }
         #endregion
 
@@ -160,9 +196,7 @@ namespace LogisControlAPI.Controllers
             }
 
             registo.Estado = dto.Estado;
-            registo.DataProducao = dto.DataProducao;
             registo.Observacoes = dto.Observacoes;
-            registo.UtilizadorUtilizadorId = dto.UtilizadorUtilizadorId;
             registo.ProdutoProdutoId = dto.ProdutoProdutoId;
             registo.OrdemProducaoOrdemProdId = dto.OrdemProducaoOrdemProdId;
 
