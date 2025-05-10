@@ -112,7 +112,18 @@ namespace LogisControlAPI.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = ordem.OrdemProdId }, ordem);
+            var ordemDto = new OrdemProducaoDTO
+            {
+                OrdemProdId = ordem.OrdemProdId,
+                Estado = ordem.Estado,
+                Quantidade = ordem.Quantidade,
+                DataAbertura = ordem.DataAbertura,
+                DataConclusao = ordem.DataConclusao,
+                MaquinaMaquinaId = ordem.MaquinaMaquinaId,
+                EncomendaClienteEncomendaClienteId = ordem.EncomendaClienteEncomendaClienteId
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = ordem.OrdemProdId }, ordemDto);
         }
         #endregion
 
